@@ -48,12 +48,16 @@ class Game extends Phaser.Game {
     // Pass configuration details to Phaser.Game
     super({
       pixelArt: true, // TODO: Turn this off if you aren't doing pixel art!!
-      width: config.gameWidth,
-      height: config.gameHeight,
       type: Phaser.WEBGL,
-      parent: 'content',
       title: 'Example Game for UW Stout\'s GDD325',
       backgroundColor: '#7f7f7f',
+      scale: {
+        parent: 'content',
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_HORIZONTAL,
+        width: config.gameWidth,
+        height: config.gameHeight
+      },
       plugins: {
         scene: scenePlugins
       },

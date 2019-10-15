@@ -48,7 +48,10 @@ class MainPlayer extends Phaser.GameObjects.Sprite {
     // Setup player physics
     if (this.scene.matter) {
       this.scene.matter.add.gameObject(this)
-      this.setRectangle(60, 120, { inertia: Infinity })
+      this.setRectangle(60, 120, {
+        inertia: Infinity,
+        restitution: 0.05
+      })
       this.setOrigin(0.5, 0.69)
     } else {
       this.setOrigin(0.5, 1.0)
@@ -86,7 +89,7 @@ class MainPlayer extends Phaser.GameObjects.Sprite {
     } else {
       this.runningSFX.stop()
     }
-    
+
     // Play the indicated animation (state names and animation names must match!)
     if (__DEV__) { console.log(`Playing ${this._moveFSM.state}`) }
     this.anims.play(this._moveFSM.state)
