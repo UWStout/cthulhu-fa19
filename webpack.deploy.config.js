@@ -5,7 +5,7 @@ const MinifyPlugin = require('babel-minify-webpack-plugin')
 
 // Phaser webpack config
 var phaserModule = path.join(__dirname, '/node_modules/phaser/')
-var phaser = path.join(phaserModule, 'src/phaser.js')
+var Phaser = path.join(phaserModule, 'src/phaser.js')
 
 // These variables will be injected into the global namespace
 // - if __DEV__ is true then the program is running in a development environment
@@ -20,7 +20,7 @@ const definePlugin = new webpack.DefinePlugin({
 module.exports = {
   entry: {
     app: path.resolve(__dirname, 'src/main.js'),
-    vendor: ['phaser', 'phaser-plugin-update', '@babel/polyfill']
+    vendor: ['phaser', 'phaser-plugin-update', 'three', '@babel/polyfill']
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -62,7 +62,8 @@ module.exports = {
       hash: false
     }),
     new MinifyPlugin({}, { comments: false }),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.ProvidePlugin({ THREE: 'three' })
   ],
   module: {
     rules: [
@@ -74,8 +75,7 @@ module.exports = {
   },
   resolve: {
     alias: {
-      'phaser': phaser
+      phaser: Phaser
     }
   }
 }
-
