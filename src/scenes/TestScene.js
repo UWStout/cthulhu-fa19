@@ -28,6 +28,10 @@ class TestScene extends Phaser.Scene {
     const width = this.game.config.width
     const height = this.game.config.height
 
+    // Time variables
+    this.t = 0
+    this.tIncrement = 0.005
+
     // Start playing the background music
     this.setupAudio()
     this.music.play('music-intro', { volume: config.MUSIC_VOLUME })
@@ -218,6 +222,10 @@ class TestScene extends Phaser.Scene {
   }
 
   update (time, delta) {
+
+    this.t += this.tIncrement
+    this.blurPipeline.setFloat1('time', this.t)
+
     // Ignore remaining updates while transition pausing
     if (this.pauseTransition) return
 
