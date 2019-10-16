@@ -141,7 +141,7 @@ class TestScene extends Phaser.Scene {
 
     // Turn on physics for the crates
     this.crateGroup.children.each((crate) => {
-      this.matter.add.gameObject(crate, { shape: 'rectangle' })
+      this.matter.add.gameObject(crate, { shape: 'rectangle', friction: 0.8 })
     })
   }
 

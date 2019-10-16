@@ -65,7 +65,8 @@
     "phaser": "^3.17.0",
     "phaser-plugin-debug-draw": "^2.0.1",
     "phaser-plugin-game-scale": "^1.3.3",
-    "phaser-plugin-update": "^2.0.2"
+    "phaser-plugin-update": "^2.0.2",
+    "three": "^0.109.0"
   },
   "window": {
     "title": "GDD 325 Example Game",

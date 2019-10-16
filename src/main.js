@@ -12,6 +12,7 @@ import UIPlugin from '../plugins/rexrainbow/rexuiplugin.min'
 import BootScene from './scenes/Boot' // A bootstraping loader that loads the assets need by ... the loader!
 import SplashScene from './scenes/Splash' // A fancy loading splash screen for loading more assets
 import TestScene from './scenes/TestScene' // The main game level for testing
+import Test3DScene from './scenes/Test3DScene' // An example level that uses Phaser3D to render a skybox
 import InfoScene from './scenes/InfoScene' // Some static info locked to the camera (like a HUD)
 import PauseMenuScene from './scenes/PauseMenuScene' // A menu displayed while the game is paused
 
@@ -30,11 +31,12 @@ const scenePlugins = [{
 }]
 
 if (__DEV__) {
-  scenePlugins.push({
-    key: 'DebugDrawPlugin',
-    plugin: PhaserDebugDrawPlugin,
-    mapping: 'debugDraw'
-  })
+  // WARNING! This does not work with Phaser3D
+  // scenePlugins.push({
+  //   key: 'DebugDrawPlugin',
+  //   plugin: PhaserDebugDrawPlugin,
+  //   mapping: 'debugDraw'
+  // })
 }
 
 /**
@@ -48,12 +50,16 @@ class Game extends Phaser.Game {
     // Pass configuration details to Phaser.Game
     super({
       pixelArt: true, // TODO: Turn this off if you aren't doing pixel art!!
-      width: config.gameWidth,
-      height: config.gameHeight,
       type: Phaser.WEBGL,
-      parent: 'content',
       title: 'Example Game for UW Stout\'s GDD325',
       backgroundColor: '#7f7f7f',
+      scale: {
+        parent: 'content',
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_HORIZONTAL,
+        width: config.gameWidth,
+        height: config.gameHeight
+      },
       plugins: {
         scene: scenePlugins
       },
@@ -72,6 +78,7 @@ class Game extends Phaser.Game {
     this.scene.add('Boot', BootScene, false)
     this.scene.add('Splash', SplashScene, false)
     this.scene.add('Test', TestScene, false)
+    this.scene.add('Test3D', Test3DScene, false)
 
     // Extra scenes showing how you can layer scenes together
     this.scene.add('Info', InfoScene, false)

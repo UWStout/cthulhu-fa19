@@ -121,7 +121,7 @@ class Splash extends Phaser.Scene {
 
   // Called repeatedly after pre-load finishes and after 'create' has run
   update () {
-    this.scene.start('Test')
+    this.scene.start('Test3D', { skyboxName: 'Conservatory', defaultFOV: 90 })
   }
 }
 
