@@ -44,7 +44,7 @@ class Splash extends Phaser.Scene {
     ])
 
     // Load a bunch of junk to slow down the preloader
-    for (let i = 0; i < 500; i++) {
+    for (let i = 0; i < 100; i++) {
       this.load.image(`logo${i}`, './assets/images/icon.png')
     }
   }

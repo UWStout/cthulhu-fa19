@@ -7,6 +7,7 @@ import Phaser3D from '../../plugins/phaser3D/Phaser3D'
 // Get the important pieces from three.js
 import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
+import 'three/examples/js/controls/FlyControls'
 
 class P3dScene extends Phaser.Scene {
   init (initData) {
@@ -19,7 +20,9 @@ class P3dScene extends Phaser.Scene {
 
   preload () {
     // Disc sprite used to render cloud of points
-    this.load.image('disc', 'assets/images/circle.png')
+    this.load.image('bigmouth', 'assets/images/BigMouth_FrontView.png')
+    this.load.image('tom', 'assets/images/TiredTom_FrontView.png')
+    this.load.image('longarms', 'assets/images/LongArmsBoi_FrontView.png')
   }
 
   create () {
@@ -27,7 +30,7 @@ class P3dScene extends Phaser.Scene {
     this.phaser3d = new Phaser3D(this, {
       fov: this.defaultFOV,
       near: 2,
-      far: 2000,
+      far: 100000,
       z: 1000
     })
 
@@ -43,14 +46,14 @@ class P3dScene extends Phaser.Scene {
     )
 
     // Enable fog (causes dots in the distance to be darker)
-    this.phaser3d.enableFogExp2(0x000000, 0.001)
+    // this.phaser3d.enableFogExp2(0x000000, 0.001)
 
     // Build list of random points
     const vertices = []
-    for (let i = 0; i < 1000; i++) {
-      const x = 2000 * Math.random() - 1000
-      const y = 2000 * Math.random() - 1000
-      const z = 2000 * Math.random() - 1000
+    for (let i = 0; i < 1; i++) {
+      const x = 0
+      const y = 0
+      const z = 100
 
       vertices.push(x, y, z)
     }
@@ -62,25 +65,39 @@ class P3dScene extends Phaser.Scene {
     // Create material from disc sprite
     // Note: while this sprite is rendered by three.js it is a Phaser image asset and WAS
     // loaded in preload() above.  This is in contrast to the skybox.
-    this.material = this.phaser3d.createMaterial('disc', null, {
-      size: 25,
-      sizeAttenuation: false,
-      alphaTest: 0.5,
-      transparent: true,
-      points: true
+    // this.material = this.phaser3d.createMaterial('bigmouth', null, {
+    //   size: 500,
+    //   sizeAttenuation: false,
+    //   alphaTest: 0.5,
+    //   transparent: true,
+    //   points: true
+    // })
+
+    this.plane = this.phaser3d.addPlane({
+      width: 500,
+      height: 500,
+      Z: 10,
+      texture: 'bigmouth',
+      material: {
+        size: 500,
+        sizeAttenuation: true
+      }
     })
+    // this.plane.rotateX(-90)
 
     // Set default color
-    this.material.color.setHSL(1.0, 0.3, 0.7)
+    // this.material.color.setHSL(1.0, 0.3, 0.7)
 
     // Add the points with the previously created geometry and material
-    this.phaser3d.addPoints({
-      geometry: geometry,
-      material: this.material
-    })
+    // this.phaser3d.addPoints({
+    //   geometry: geometry,
+    //   material: this.material
+    // })
 
     // Setup standard orbit controls
     this.controls = new THREE.OrbitControls(this.phaser3d.camera, this.scale.parent)
+    this.controls.enableZoom = false
+    this.controls.enablePan = false
 
     this.setupSceneChangeKeys()
   }
@@ -95,7 +112,7 @@ class P3dScene extends Phaser.Scene {
     }, this)
 
     this.scene2Key.on('up', (e) => {
-      this.scene.start('Test3D', { skyboxName: 'ReceptionHall' })
+      this.scene.start('Test3D', { skyboxName: 'NewReceptionHall' })
     }, this)
 
     this.scene3Key.on('up', (e) => {
@@ -105,8 +122,8 @@ class P3dScene extends Phaser.Scene {
 
   update (time) {
     // Slowly change color of the points over time
-    const h = (360 * (1.0 + (time * 0.00005)) % 360) / 360
-    this.material.color.setHSL(h, 0.5, 0.5)
+    // const h = (360 * (1.0 + (time * 0.00005)) % 360) / 360
+    // this.material.color.setHSL(h, 0.5, 0.5)
   }
 }
 
