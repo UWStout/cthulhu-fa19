@@ -12,9 +12,12 @@ import UIPlugin from '../plugins/rexrainbow/rexuiplugin.min'
 import BootScene from './scenes/Boot' // A bootstraping loader that loads the assets need by ... the loader!
 import SplashScene from './scenes/Splash' // A fancy loading splash screen for loading more assets
 import TestScene from './scenes/TestScene' // The main game level for testing
-import Test3DScene from './scenes/Test3DScene' // An example level that uses Phaser3D to render a skybox
 import InfoScene from './scenes/InfoScene' // Some static info locked to the camera (like a HUD)
 import PauseMenuScene from './scenes/PauseMenuScene' // A menu displayed while the game is paused
+
+import ConservatoryScene from './scenes/Rooms/Conservatory'
+import TestRoomScene from './scenes/Rooms/TestRoom'
+import ReceptionHallScene from './scenes/Rooms/ReceptionHall'
 
 // Import our general configuration file
 import config from './config'
@@ -78,7 +81,10 @@ class Game extends Phaser.Game {
     this.scene.add('Boot', BootScene, false)
     this.scene.add('Splash', SplashScene, false)
     this.scene.add('Test', TestScene, false)
-    this.scene.add('Test3D', Test3DScene, false)
+
+    this.scene.add('Conservatory', ConservatoryScene, false)
+    this.scene.add('TestRoom', TestRoomScene, false)
+    this.scene.add('ReceptionHall', ReceptionHallScene, false)
 
     // Extra scenes showing how you can layer scenes together
     this.scene.add('Info', InfoScene, false)
