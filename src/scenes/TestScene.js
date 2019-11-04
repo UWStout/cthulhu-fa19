@@ -15,10 +15,17 @@ import Lever from '../sprites/Lever'
 // Import the special blur filter
 import BlurPipeline from '../shaders/BlurPipeline'
 
+// HEALTH VARIABLES
+var healthBar
+var healthAmount = 100
+var mouseCheckRadius = 20
+var withinRadius = false
+
 class TestScene extends Phaser.Scene {
   init (data) { }
 
   preload () {
+    this.load.image('bar', 'assets/images/bar.png')
     // Add custom render pipeline for the blur filter
     this.blurPipeline = this.game.renderer.addPipeline('BlurFilter', new BlurPipeline(this.game))
   }
@@ -27,6 +34,9 @@ class TestScene extends Phaser.Scene {
     // Local variables for accessing width and height
     const width = this.game.config.width
     const height = this.game.config.height
+
+    // HEALTH BAR
+    healthBar = this.add.image(width / 7, height / 20, 'bar')
 
     // Time variables
     this.t = 0
@@ -84,11 +94,21 @@ class TestScene extends Phaser.Scene {
     // This means is does NOT scroll with the camera (at least not this scene's camera)
     this.scene.run('Info', { floorHeight })
 
-    if (__DEV__) {
-      this.debugDraw.bringToTop()
-    }
-
     this.matter.world.setBounds(0, 0, this.cameras.main._bounds.width, floorHeight, 64, true, true, false, true)
+
+    // HEALTH FUNCTION
+    this.input.on('pointermove', (pointer) => {
+      var rectA = this.player.getBounds()
+      var rectB = new Phaser.Geom.Rectangle(pointer.x - mouseCheckRadius / 2, pointer.y + mouseCheckRadius / 2, mouseCheckRadius, mouseCheckRadius)
+      var rectC = new Phaser.Geom.Rectangle()
+      Phaser.Geom.Rectangle.Intersection(rectA, rectB, rectC)
+      if (!rectC.isEmpty()) {
+        withinRadius = true
+      }
+      else {
+        withinRadius = false
+      }
+    }, this)
   }
 
   setupText () {
@@ -285,6 +305,15 @@ class TestScene extends Phaser.Scene {
         this.player.do('jump')
       }
     }
+
+    if (withinRadius) {
+      healthAmount -= 0.1
+      if (healthAmount < 0) {
+        healthAmount = 0
+      }
+    }
+
+    healthBar.setCrop(0, 0, healthBar.width * healthAmount / 100, healthBar.height)
   }
 
   paused () {

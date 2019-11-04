@@ -9,6 +9,9 @@ import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 import 'three/examples/js/controls/FlyControls'
 
+var healthBar
+var healthAmount = 100
+
 class P3dScene extends Phaser.Scene {
   init (initData) {
     // Receive the name of the skybox that should be loaded
@@ -23,9 +26,12 @@ class P3dScene extends Phaser.Scene {
     this.load.image('bigmouth', 'assets/images/BigMouth_FrontView.png')
     this.load.image('tom', 'assets/images/TiredTom_FrontView.png')
     this.load.image('longarms', 'assets/images/LongArmsBoi_FrontView.png')
+    this.load.image('bar', 'assets/images/bar.png')
   }
 
   create () {
+    this.fadeoutTime = 500
+    healthBar = this.add.image(0, 0, 'bar')
     // Initialize a Phaser3D rendering system
     this.phaser3d = new Phaser3D(this, {
       fov: this.defaultFOV,
@@ -83,6 +89,10 @@ class P3dScene extends Phaser.Scene {
         sizeAttenuation: true
       }
     })
+    // this.plane.setInteractive()
+    // this.plane.on('pointerdown', function () {
+    //   print('Plane Clicked')
+    // })
     // this.plane.rotateX(-90)
 
     // Set default color
@@ -100,6 +110,91 @@ class P3dScene extends Phaser.Scene {
     this.controls.enablePan = false
 
     this.setupSceneChangeKeys()
+
+    // Stored list of inventory items
+    this.collectedObjects = []
+
+    // Collectable objects class
+    /* var CollectableObject = new Phaser.Class({
+
+      Extends: Phaser3D.plane,
+
+      initialize:
+
+      function CollectableObject (theWidth, theHeight, matSize, imgName) {
+        this.plane = this.phaser3d.addPlane({
+          width: theWidth,
+          height: theHeight,
+          Z: 10,
+          texture: imgName,
+          material: {
+            size: matSize,
+            sizeAttenuation: true
+          }
+        })
+        this.name = imgName
+      },
+
+      clicked: function () {
+        this.collectedObjects.push(this.name)
+        // Delete the object?
+        this.name = ''
+      }
+
+    })
+
+    // Interactable objects class (Like doors)
+    var InteractableObject = new Phaser.Class({
+
+      Extends: Phaser3D.plane,
+
+      initialize:
+
+      function CollectableObject (theWidth, theHeight, matSize, imgName, unlockImgName) {
+        this.plane = this.phaser3d.addPlane({
+          width: theWidth,
+          height: theHeight,
+          Z: 10,
+          texture: imgName,
+          material: {
+            size: matSize,
+            sizeAttenuation: true
+          }
+        })
+        this.name = imgName
+        this.unlockName = unlockImgName
+        this.unlocked = false
+      },
+
+      clicked: function () {
+        for (let i = 0; i < this.collectedObjects.length; i++) {
+          if (this.collectedObjects[i] === this.unlockName) {
+            this.unlocked = true
+            // Remove object from inventory?
+          }
+        }
+      }
+
+    })
+
+    this.collectableOne = new CollectableObject(500, 500, 500, 'tom')
+    this.collectableOne.setInteractive()
+    this.collectableOne.on('pointerdown', function () {
+      this.collectableOne.clicked()
+    })
+
+    this.doorOne = new InteractableObject(500, 500, 500, 'door', 'keyOne')
+    this.doorOne.setInteractive()
+    this.doorOne.on('pointerdown', function () {
+      this.doorOne.clicked()
+    }) */
+
+    this.cameras.main.fadeIn(this.fadeoutTime)
+  }
+
+  startScene (skyboxName) {
+    this.scene.start('Test3D', { skyboxName: skyboxName, defaultFOV: 90 })
+    console.log('Starting Scene')
   }
 
   setupSceneChangeKeys () {
@@ -108,15 +203,18 @@ class P3dScene extends Phaser.Scene {
     this.scene3Key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE)
 
     this.scene1Key.on('up', (e) => {
-      this.scene.start('Test3D', { skyboxName: 'Conservatory', defaultFOV: 90 })
+      this.cameras.main.fadeOut(this.fadeoutTime)
+      this.time.delayedCall(this.fadeoutTime, this.startScene, ['Conservatory'], this)
     }, this)
 
     this.scene2Key.on('up', (e) => {
-      this.scene.start('Test3D', { skyboxName: 'NewReceptionHall' })
+      this.cameras.main.fadeOut(this.fadeoutTime)
+      this.time.delayedCall(this.fadeoutTime, this.startScene, ['NewReceptionHall'], this)
     }, this)
 
     this.scene3Key.on('up', (e) => {
-      this.scene.start('Test3D', { skyboxName: 'Test', defaultFOV: 120 })
+      this.cameras.main.fadeOut(this.fadeoutTime)
+      this.time.delayedCall(this.fadeoutTime, this.startScene, ['Test'], this)
     }, this)
   }
 
@@ -124,6 +222,7 @@ class P3dScene extends Phaser.Scene {
     // Slowly change color of the points over time
     // const h = (360 * (1.0 + (time * 0.00005)) % 360) / 360
     // this.material.color.setHSL(h, 0.5, 0.5)
+    healthBar.setCrop(0, 0, healthBar.width * healthAmount / 100, healthBar.height)
   }
 }
 
