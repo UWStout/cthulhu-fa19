@@ -13,7 +13,10 @@ import MainPlayer from '../sprites/Player'
 import Lever from '../sprites/Lever'
 
 // Import the special blur filter
-import BlurPipeline from '../shaders/BlurPipeline'
+//import BlurPipeline from '../shaders/BlurPipeline'
+
+// Import the special pixelization filter
+import PixelationPipeline from '../shaders/PixelationPipeline'
 
 // HEALTH VARIABLES
 var healthBar
@@ -26,8 +29,9 @@ class TestScene extends Phaser.Scene {
 
   preload () {
     this.load.image('bar', 'assets/images/bar.png')
-    // Add custom render pipeline for the blur filter
-    this.blurPipeline = this.game.renderer.addPipeline('BlurFilter', new BlurPipeline(this.game))
+    // Add custom render pipeline for the blur and pixel filter
+    // this.blurPipeline = this.game.renderer.addPipeline('BlurFilter', new BlurPipeline(this.game))
+    this.pixelationPipeline = this.game.renderer.addPipeline('PixelFilter', new PixelationPipeline(this.game))
   }
 
   create () {
@@ -199,34 +203,35 @@ class TestScene extends Phaser.Scene {
     // Setup our camera with world bounds and make it follow the player
     this.cameras.main.setBounds(0, 0, 2000, this.game.config.height)
     this.cameras.main.startFollow(this.player)
-    this.cameras.main.setRenderToTexture('BlurFilter')
-    this.blurPipeline.res = {
+    
+    // this.cameras.main.setRenderToTexture('BlurFilter')
+    this.pixelationPipeline.res = {
       width: this.cameras.main.width,
       height: this.cameras.main.height
     }
+    this.cameras.main.setRenderToTexture('PixelFilter')
+    // // Setup blur in and out lerps
+    // this.blurOut = this.add.tween({
+    //   targets: this.blurPipeline,
+    //   blur: 4,
+    //   ease: 'Linear',
+    //   duration: 500,
+    //   paused: true,
+    //   onComplete: this.showPauseMenu.bind(this)
+    // })
 
-    // Setup blur in and out lerps
-    this.blurOut = this.add.tween({
-      targets: this.blurPipeline,
-      blur: 4,
-      ease: 'Linear',
-      duration: 500,
-      paused: true,
-      onComplete: this.showPauseMenu.bind(this)
-    })
-
-    this.blurIn = this.add.tween({
-      targets: this.blurPipeline,
-      blur: 0,
-      ease: 'Linear',
-      duration: 500,
-      paused: true,
-      onComplete: () => {
-        this.pauseTransition = false
-        this.matter.world.resume()
-        this.anims.resumeAll()
-      }
-    })
+    // this.blurIn = this.add.tween({
+    //   targets: this.blurPipeline,
+    //   blur: 0,
+    //   ease: 'Linear',
+    //   duration: 500,
+    //   paused: true,
+    //   onComplete: () => {
+    //     this.pauseTransition = false
+    //     this.matter.world.resume()
+    //     this.anims.resumeAll()
+    //   }
+    // })
   }
 
   showPauseMenu () {
@@ -244,7 +249,7 @@ class TestScene extends Phaser.Scene {
   update (time, delta) {
 
     this.t += this.tIncrement
-    this.blurPipeline.setFloat1('time', this.t)
+    //this.blurPipeline.setFloat1('time', this.t)
 
     // Ignore remaining updates while transition pausing
     if (this.pauseTransition) return
@@ -256,8 +261,8 @@ class TestScene extends Phaser.Scene {
       this.anims.pauseAll()
       this.escKey.oldDown = true
       this.pauseTransition = true
-      if (this.blurOut.paused) this.blurOut.play()
-      else this.blurOut.restart()
+      //if (this.blurOut.paused) this.blurOut.play()
+      //else this.blurOut.restart()
     }
 
     if (this.escKey.isUp) {
@@ -333,8 +338,8 @@ class TestScene extends Phaser.Scene {
     this.music.resume()
     this.input.keyboard.resetKeys()
     this.pauseTransition = true
-    if (this.blurIn.paused) this.blurIn.play()
-    else this.blurIn.restart()
+    //if (this.blurIn.paused) this.blurIn.play()
+    //else this.blurIn.restart()
   }
 
   render () {

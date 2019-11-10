@@ -4,12 +4,12 @@
 import Phaser from 'phaser'
 
 // Import the GLSL fragment shader (make sure webpack is setup to use raw-loader)
-import fragString from './BlurPipeline.frag'
+import fragString from './PixelationPipeline.frag'
 
 /**
- * A custom shader pipeline that blurs the image
+ * A custom shader pipeline that pixelized the image
  */
-class BlurPipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline {
+class PixelationPipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline {
   constructor (game) {
     // Pass parameters to the parent class
     super({
@@ -20,15 +20,7 @@ class BlurPipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline {
 
     // Default values for members
     this._res = { width: game.config.width, height: game.config.height }
-    this.blur = 0 // NOTE: this calls the setter
-  }
-
-  // Accessors for the blur value
-  get blur () { return this._blur }
-  set blur (newBlur) {
-    this._blur = newBlur
-    this.setFloat2('blur',
-      this._blur / this._res.width, this._blur / this._res.height)
+    this.setFloat1('pixelDensity', 200.0)
   }
 
   /**
@@ -38,11 +30,10 @@ class BlurPipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipeline {
   set res (newRes) {
     this._res.width = newRes.width
     this._res.height = newRes.height
-    this.blur = this._blur // trigger passing of uniform
+    this.setFloat2('aspectRatioMultiplier',
+      this._res.width / this._res.height, 1)
+    console.log('set resolution')
   }
 }
 
-// Name of the blur uniform in the shader
-BlurPipeline.U_BLUR_NAME = 'blur'
-
-export default BlurPipeline
+export default PixelationPipeline
