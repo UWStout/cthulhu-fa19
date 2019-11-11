@@ -24,9 +24,9 @@ class Conservatory extends PanoScene {
 
   create () {
     // Create enemies for this scene
-    this.addPanoSprite('bigmouth', -180, 0, 2.0)
-    this.addPanoSprite('tom', -135, 0, 2.0)
-    this.addPanoSprite('longarms', 135, 0, 2.0)
+    this.createMonster(-180, 0, 2, 'bigmouth')
+    this.createMonster(-135, 0, 2.0, 'tom')
+    this.createMonster(135, 0, 2.0, 'longarms')
 
     // Collectable Object interaction
     this.createCollectable(10, 10, 2, 'ConservatoryObj')

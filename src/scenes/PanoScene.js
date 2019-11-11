@@ -13,6 +13,11 @@ import PanoSprite from '../sprites/PanoSprite'
 // Import the special pixelization filter
 import PixelationPipeline from '../shaders/PixelationPipeline'
 
+// HEALTH VARIABLES
+var healthAmount = 100
+var mouseCheckRadius = 20
+var withinRadius = false
+
 class PanoScene extends Phaser.Scene {
   init (data) {
     this.startAngle = 0
@@ -38,8 +43,10 @@ class PanoScene extends Phaser.Scene {
   }
 
   preload () {
+    this.load.image('bar', 'assets/images/bar.png')
     this.pixelationPipeline = this.game.renderer.addPipeline('PixelFilter', new PixelationPipeline(this.game))
     this.downOnDoor = NONE
+    this.monsterList = []
     this.input.on('pointerup', (pointer) => { this.downOnDoor = NONE }, this)
   }
 
@@ -59,6 +66,24 @@ class PanoScene extends Phaser.Scene {
       z: 1000
     })
     this.horiFOV = this.vertFOV * this.phaser3d.camera.aspect
+
+    this.scene.run('Info')
+    this.infoScene = this.scene.get('Info')
+
+    // HEALTH FUNCTION
+    this.input.on('pointermove', (pointer) => {
+      let isWithin = false
+      for (let i = 0; i < this.monsterList.length; i++) {
+        var rectA = this.monsterList[i].getBounds()
+        var rectB = new Phaser.Geom.Rectangle(pointer.x - mouseCheckRadius / 2, pointer.y + mouseCheckRadius / 2, mouseCheckRadius, mouseCheckRadius)
+        var rectC = new Phaser.Geom.Rectangle()
+        Phaser.Geom.Rectangle.Intersection(rectA, rectB, rectC)
+        if (!rectC.isEmpty()) {
+          isWithin = true
+        }
+      }
+      withinRadius = isWithin
+    }, this)
 
     // Setup background skybox
     // Note: These assets are loaded direclty by three.js and are not in the preload() above.
@@ -162,7 +187,16 @@ class PanoScene extends Phaser.Scene {
   }
 
   update (time) {
-    //this.input.mouse.requestPointerLock()
+    // this.input.mouse.requestPointerLock()
+
+    if (withinRadius) {
+      healthAmount -= 0.1
+      if (healthAmount < 0) {
+        healthAmount = 0
+      }
+    }
+
+    this.infoScene.updateHealth(healthAmount)
   }
 
   // Door creation function used by the rooms
@@ -187,6 +221,11 @@ class PanoScene extends Phaser.Scene {
       console.log(this.collectedObjects)
       collectable.destroy()
     }, this)
+  }
+
+  createMonster (posX, posY, scale, spriteName) {
+    const monster = this.addPanoSprite(spriteName, posX, posY, scale)
+    this.monsterList.push(monster)
   }
 }
 
