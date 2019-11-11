@@ -23,11 +23,6 @@ class Conservatory extends PanoScene {
   }
 
   create () {
-    // Create enemies for this scene
-    this.addPanoSprite('bigmouth', -180, 0, 2.0)
-    this.addPanoSprite('tom', -135, 0, 2.0)
-    this.addPanoSprite('longarms', 135, 0, 2.0)
-
     // Doorway to Conservatory
     this.createDoor(50, 5, 0.7, 1.2, 'Conservatory', -1.6)
 

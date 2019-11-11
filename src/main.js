@@ -12,16 +12,17 @@ import UIPlugin from '../plugins/rexrainbow/rexuiplugin.min'
 import BootScene from './scenes/Boot' // A bootstraping loader that loads the assets need by ... the loader!
 import SplashScene from './scenes/Splash' // A fancy loading splash screen for loading more assets
 import TestScene from './scenes/TestScene' // The main game level for testing
+import TitleScene from './scenes/TitleScene' // Title Screen for game
 import InfoScene from './scenes/InfoScene' // Some static info locked to the camera (like a HUD)
 import PauseMenuScene from './scenes/PauseMenuScene' // A menu displayed while the game is paused
 
 import ConservatoryScene from './scenes/Rooms/Conservatory'
 import TestRoomScene from './scenes/Rooms/TestRoom'
 import ReceptionHallScene from './scenes/Rooms/ReceptionHall'
+import DiningRoomScene from './scenes/Rooms/DiningRoom'
 import LibraryScene from './scenes/Rooms/Library'
 import CaveScene from './scenes/Rooms/Cave'
 import BossRoomScene from './scenes/Rooms/BossRoom'
-import DiningRoomScene from './scenes/Rooms/DiningRoom'
 
 // Import our general configuration file
 import config from './config'
@@ -59,7 +60,7 @@ class Game extends Phaser.Game {
       pixelArt: true, // TODO: Turn this off if you aren't doing pixel art!!
       type: Phaser.WEBGL,
       title: 'Example Game for UW Stout\'s GDD325',
-      backgroundColor: '#7f7f7f',
+      backgroundColor: '#000000', //#7f7f7f
       scale: {
         parent: 'content',
         mode: Phaser.Scale.FIT,
@@ -84,15 +85,16 @@ class Game extends Phaser.Game {
     // Name and load ALL needed game scenes (add more scenes here as you make them)
     this.scene.add('Boot', BootScene, false)
     this.scene.add('Splash', SplashScene, false)
+    this.scene.add('TitleScene', TitleScene, false)
     this.scene.add('Test', TestScene, false)
 
     this.scene.add('Conservatory', ConservatoryScene, false)
     this.scene.add('TestRoom', TestRoomScene, false)
     this.scene.add('ReceptionHall', ReceptionHallScene, false)
+    this.scene.add('DiningRoom', DiningRoomScene, false)
     this.scene.add('Library', LibraryScene, false)
     this.scene.add('Cave', CaveScene, false)
     this.scene.add('BossRoom', BossRoomScene, false)
-    this.scene.add('DiningRoom', DiningRoomScene, false)
 
     // Extra scenes showing how you can layer scenes together
     this.scene.add('Info', InfoScene, false)

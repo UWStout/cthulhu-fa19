@@ -24,7 +24,7 @@ class ReceptionHall extends PanoScene {
   create () {
     // Create enemies for this scene
     // this.addPanoSprite('tom', 0, 0)
-    this.addPanoSprite('longarms', 180, 0)
+    this.createMonster(180, 0, 1, 'longarms')
 
     // Doorway to Conservatory
     this.createDoor(70, 0, 0.8, 1.4, 'Conservatory', 3)

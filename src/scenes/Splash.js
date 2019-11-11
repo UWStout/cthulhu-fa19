@@ -121,7 +121,7 @@ class Splash extends Phaser.Scene {
 
   // Called repeatedly after pre-load finishes and after 'create' has run
   update () {
-    this.scene.start('Conservatory')
+    this.scene.start('TitleScene')
   }
 }
 

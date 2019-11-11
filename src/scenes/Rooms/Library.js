@@ -33,6 +33,8 @@ class Conservatory extends PanoScene {
 
     // Doorway to Reception Hall
     this.createDoor(5, 0, 0.6, 1.4, 'ReceptionHall', 1.6)
+    // Door to Cave
+    this.createDoor(80, 0, 0.6, 1.4, 'Cave', 0)
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
