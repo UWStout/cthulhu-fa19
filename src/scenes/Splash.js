@@ -51,17 +51,17 @@ class Splash extends Phaser.Scene {
 
   setupProgressBar (yOffset) {
     // Local variables for accessing width and height
-    let width = this.cameras.main.width
-    let height = this.cameras.main.height
+    const width = this.cameras.main.width
+    const height = this.cameras.main.height
 
     // Create graphics assets for progress bar
-    let progressBar = this.add.graphics()
-    let progressBkg = this.add.graphics()
+    const progressBar = this.add.graphics()
+    const progressBkg = this.add.graphics()
     progressBkg.fillStyle(0x222222, 0.8)
     progressBkg.fillRect(width / 2 - 160, height / 2 - 25 + yOffset, 320, 50)
 
     // Create loading text
-    let loadingText = this.make.text({
+    const loadingText = this.make.text({
       x: width / 2,
       y: height / 2 - 50 + yOffset,
       text: 'Loading...',
@@ -72,7 +72,7 @@ class Splash extends Phaser.Scene {
     })
     loadingText.setOrigin(0.5, 0.5)
 
-    let percentText = this.make.text({
+    const percentText = this.make.text({
       x: width / 2,
       y: height / 2 + yOffset,
       text: '0%',
@@ -82,7 +82,7 @@ class Splash extends Phaser.Scene {
       }
     })
 
-    let assetText = this.make.text({
+    const assetText = this.make.text({
       x: width / 2,
       y: height / 2 + 50 + yOffset,
       text: '',

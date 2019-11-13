@@ -101,6 +101,8 @@ class PanoScene extends Phaser.Scene {
     this.controls.enableZoom = false
     this.controls.enablePan = false
     this.controls.initialRotate(this.startAngle)
+    this.controls.minPolarAngle = Math.PI / 2.4
+    this.controls.maxPolarAngle = Math.PI / 1.6
 
     // Update sprite positions when orbit controls move
     this.controls.addEventListener('change', this.updateSpritePositions)
@@ -111,13 +113,13 @@ class PanoScene extends Phaser.Scene {
     this.cameras.main.fadeIn(this.fadeoutTime) // Camera fade-in for start of game
 
     // Pixelation of camera
-    // this.pixelationPipeline.res = {
-    //   width: this.cameras.main.width,
-    //   height: this.cameras.main.height
-    // }
-    // this.cameras.main.setRenderToTexture('PixelFilter')
+    this.pixelationPipeline.res = {
+      width: this.cameras.main.width,
+      height: this.cameras.main.height
+    }
+    //this.cameras.main.setRenderToTexture('PixelFilter')
 
-    // Controls for clicking a door
+    // theImage.texture.getPixel() // Use to get pixel of image
   }
 
   addPanoSprite (textureKey, angX, angY, baseScale, zoomStrength) {

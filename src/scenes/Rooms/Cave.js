@@ -25,7 +25,7 @@ class Conservatory extends PanoScene {
   create () {
     // Create enemies for this scene
 
-    // Door to Cave
+    // Door to Boss Room
     this.createDoor(80, 0, 0.6, 1.4, 'BossRoom', 0)
 
     // Door to Library
