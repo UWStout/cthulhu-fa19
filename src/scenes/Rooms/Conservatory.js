@@ -19,6 +19,7 @@ class Conservatory extends PanoScene {
     this.load.image('bigmouth', 'assets/images/BigMouth_FrontView.png')
     this.load.image('tom', 'assets/images/TiredTom_FrontView.png')
     this.load.image('longarms', 'assets/images/LongArmsBoi_FrontView.png')
+    this.load.image('flashlight', 'assets/images/flashlight.png')
     super.preload()
   }
 
@@ -29,7 +30,8 @@ class Conservatory extends PanoScene {
     this.createMonster(135, 0, 2.0, 'longarms')
 
     // Collectable Object interaction
-    this.createCollectable(10, 10, 2, 'ConservatoryObj')
+    //this.createCollectable(10, 10, 2, 'ConservatoryObj')
+    this.createCollectable(20, -15, 0.2, 'flashlight')
 
     // Doorway to Dining Room
     this.createDoor(105, 0, 1, 2, 'DiningRoom', -1.7)

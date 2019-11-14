@@ -44,6 +44,11 @@ class PanoScene extends Phaser.Scene {
 
   preload () {
     this.load.image('bar', 'assets/images/bar.png')
+
+    this.load.image('mask', 'assets/images/mask1.png')//spotlight stuff
+    this.load.image('room', 'assets/images/Black.jpg')//blackbackground
+
+
     this.pixelationPipeline = this.game.renderer.addPipeline('PixelFilter', new PixelationPipeline(this.game))
     this.downOnDoor = NONE
     this.monsterList = []
@@ -120,6 +125,27 @@ class PanoScene extends Phaser.Scene {
     //this.cameras.main.setRenderToTexture('PixelFilter')
 
     // theImage.texture.getPixel() // Use to get pixel of image
+    
+    //spotlight-----------------------------------------------
+    var pic = this.add.image(500, 280, 'room').setScale(1.2)
+
+    var spotlight = this.make.sprite({
+      x: 400,
+      y: 400,
+      key: 'mask',
+      add: false
+    }).setScale(3)
+
+    pic.mask = new Phaser.Display.Masks.BitmapMask(this, spotlight)
+    pic.mask.invertAlpha = true;
+    this.input.on('pointermove', function (pointer) {
+
+        spotlight.x = pointer.x
+        spotlight.y = pointer.y
+
+    })
+    //--------------------------------------------------------
+    
   }
 
   addPanoSprite (textureKey, angX, angY, baseScale, zoomStrength) {
