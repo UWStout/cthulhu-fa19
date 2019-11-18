@@ -45,6 +45,10 @@ class PanoScene extends Phaser.Scene {
   preload () {
     this.load.image('bar', 'assets/images/bar.png')
     this.load.image('trace', 'assets/images/TestTraceImage.png')
+
+    this.load.image('mask', 'assets/images/mask1.png')//spotlight stuff
+    this.load.image('room', 'assets/images/Black.jpg')//blackbackground
+
     this.pixelationPipeline = this.game.renderer.addPipeline('PixelFilter', new PixelationPipeline(this.game))
     this.downOnDoor = NONE
     this.monsterList = []
