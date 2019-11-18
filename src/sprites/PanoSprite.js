@@ -50,7 +50,7 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
 
     // Compute normalized world position
     const xn = (xWrap - viewX) / hFOV
-    const yn = (this.angY - viewY) / vFOV / -0.8
+    const yn = (this.angY - viewY) / vFOV
 
     // Change units to pixels to set world coorinates
     // - We offset by 0.5 to center on screen

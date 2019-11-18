@@ -28,6 +28,9 @@ class Conservatory extends PanoScene {
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
+
+    // Set up trace image
+    this.infoScene.addTraceImage()
   }
 }
 

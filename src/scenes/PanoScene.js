@@ -44,6 +44,7 @@ class PanoScene extends Phaser.Scene {
 
   preload () {
     this.load.image('bar', 'assets/images/bar.png')
+    this.load.image('trace', 'assets/images/TestTraceImage.png')
     this.pixelationPipeline = this.game.renderer.addPipeline('PixelFilter', new PixelationPipeline(this.game))
     this.downOnDoor = NONE
     this.monsterList = []
@@ -69,6 +70,7 @@ class PanoScene extends Phaser.Scene {
 
     this.scene.run('Info')
     this.infoScene = this.scene.get('Info')
+    this.infoScene.create()
 
     // HEALTH FUNCTION
     this.input.on('pointermove', (pointer) => {
