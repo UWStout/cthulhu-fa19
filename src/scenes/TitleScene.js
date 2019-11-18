@@ -35,43 +35,43 @@ class TitleScene extends Phaser.Scene{
     // PLAY----------------------------------------------------------------
     playButton.setInteractive()
 
-    playButton.on("pointerover",()=>{ //sets playbutton alpha to 1 on hover
+    playButton.on("pointerover",()=>{ //sets button alpha to 1 on hover
       playButton.alpha = 1
     })
 
-    playButton.on("pointerout",()=>{ //dims play button when not hovering
+    playButton.on("pointerout",()=>{ //dims button when not hovering
       playButton.alpha = 0.5
     })
 
     playButton.on("pointerup",()=>{ //starts scene
-      console.log("click")
       this.scene.start('Conservatory')
+      console.log("Game started")
     })
 
     // OPTIONS--------------------------------------
     optionButton.setInteractive()
 
-    optionButton.on("pointerover",()=>{ //sets playbutton alpha to 1 on hover
+    optionButton.on("pointerover",()=>{ //sets button alpha to 1 on hover
       optionButton.alpha = 1
     })
 
-    optionButton.on("pointerout",()=>{ //dims play button when not hovering
+    optionButton.on("pointerout",()=>{ //dims button when not hovering
       optionButton.alpha = 0.5
     })
 
     optionButton.on("pointerup",()=>{ //starts scene
+      this.scene.start('Options')
       console.log("Options menu")
-      //this.scene.start('Conservatory')
     })
 
     // CREDITS--------------------------------------
     creditsButton.setInteractive()
 
-    creditsButton.on("pointerover",()=>{ //sets playbutton alpha to 1 on hover
+    creditsButton.on("pointerover",()=>{ //sets button alpha to 1 on hover
       creditsButton.alpha = 1
     })
 
-    creditsButton.on("pointerout",()=>{ //dims play button when not hovering
+    creditsButton.on("pointerout",()=>{ //dims button when not hovering
       creditsButton.alpha = 0.5
     })
 
