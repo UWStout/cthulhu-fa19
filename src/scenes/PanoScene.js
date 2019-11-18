@@ -46,8 +46,8 @@ class PanoScene extends Phaser.Scene {
     this.load.image('bar', 'assets/images/bar.png')
     this.load.image('trace', 'assets/images/TestTraceImage.png')
 
-    this.load.image('mask', 'assets/images/mask1.png')//spotlight stuff
-    this.load.image('room', 'assets/images/Black.jpg')//blackbackground
+    this.load.image('mask', 'assets/images/spotlight/mask1.png')//spotlight stuff
+    this.load.image('room', 'assets/images/spotlight/Black.jpg')//blackbackground
 
     this.pixelationPipeline = this.game.renderer.addPipeline('PixelFilter', new PixelationPipeline(this.game))
     this.downOnDoor = NONE
@@ -129,6 +129,7 @@ class PanoScene extends Phaser.Scene {
 
     // spotlight-----------------------------------------------
     var pic = this.add.image(500, 280, 'room').setScale(1.2)
+    pic.setDepth(100)
 
     var spotlight = this.make.sprite({
       x: 400,

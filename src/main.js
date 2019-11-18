@@ -15,6 +15,7 @@ import TestScene from './scenes/TestScene' // The main game level for testing
 import TitleScene from './scenes/TitleScene' // Title Screen for game
 import InfoScene from './scenes/InfoScene' // Some static info locked to the camera (like a HUD)
 import PauseMenuScene from './scenes/PauseMenuScene' // A menu displayed while the game is paused
+import CreditsScene from './scenes/CreditsScene'
 
 import ConservatoryScene from './scenes/Rooms/Conservatory'
 import TestRoomScene from './scenes/Rooms/TestRoom'
@@ -86,6 +87,7 @@ class Game extends Phaser.Game {
     this.scene.add('Boot', BootScene, false)
     this.scene.add('Splash', SplashScene, false)
     this.scene.add('TitleScene', TitleScene, false)
+    this.scene.add('Credits', CreditsScene, false)
     this.scene.add('Test', TestScene, false)
 
     this.scene.add('Conservatory', ConservatoryScene, false)
