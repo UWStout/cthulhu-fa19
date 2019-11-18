@@ -119,9 +119,28 @@ class PanoScene extends Phaser.Scene {
       width: this.cameras.main.width,
       height: this.cameras.main.height
     }
-    //this.cameras.main.setRenderToTexture('PixelFilter')
+    // this.cameras.main.setRenderToTexture('PixelFilter')
 
     // theImage.texture.getPixel() // Use to get pixel of image
+
+    // spotlight-----------------------------------------------
+    var pic = this.add.image(500, 280, 'room').setScale(1.2)
+
+    var spotlight = this.make.sprite({
+      x: 400,
+      y: 400,
+      key: 'mask',
+      add: false
+    }).setScale(3)
+
+    pic.mask = new Phaser.Display.Masks.BitmapMask(this, spotlight)
+    pic.mask.invertAlpha = true
+    this.input.on('pointermove', function (pointer) {
+      spotlight.x = pointer.x
+      spotlight.y = pointer.y
+
+    })
+    // --------------------------------------------------------
   }
 
   addPanoSprite (textureKey, angX, angY, baseScale, zoomStrength) {
