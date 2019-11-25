@@ -35,8 +35,7 @@ class PanoScene extends Phaser.Scene {
     // Variables for health management
     if (typeof data.healthAmount !== 'undefined') {
       this.healthAmount = data.healthAmount
-    }
-    else {
+    } else {
       this.healthAmount = 100
     }
 
@@ -62,6 +61,8 @@ class PanoScene extends Phaser.Scene {
     this.load.image('room', 'assets/images/Black.jpg')
 
     this.load.audio('ambienceTones', '../../assets/audio/ambience/ambient_tones_loop.wav')
+    this.load.image('mask', 'assets/images/spotlight/mask1.png') // spotlight stuff
+    this.load.image('room', 'assets/images/spotlight/Black.jpg') // blackbackground
 
     this.pixelationPipeline = this.game.renderer.addPipeline('PixelFilter', new PixelationPipeline(this.game))
     this.downOnDoor = NONE
@@ -142,7 +143,6 @@ class PanoScene extends Phaser.Scene {
     var pic = this.add.image(500, 280, 'room').setScale(1.2)
     pic.setDepth(100)
     pic.alpha = 0.98
-
     var spotlight = this.make.sprite({
       x: 400,
       y: 400,
