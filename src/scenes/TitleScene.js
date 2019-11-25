@@ -11,6 +11,8 @@ class TitleScene extends Phaser.Scene{
     this.load.image('title', 'assets/images/TitleScreen/LogoTransparent.png') //title name
     this.load.image('play_button', 'assets/images/TitleScreen/play_button.png') //play button
     this.load.image('options_button', 'assets/images/TitleScreen/options_button.png') //options button
+
+    this.load.audio('bgMusic', 'assets/audio/music-theme1.wav')
   }
 
   create(){
@@ -79,23 +81,21 @@ class TitleScene extends Phaser.Scene{
       this.scene.start('Credits')
       console.log("display credits")
     })
+
+    // MUSIC-----------------------------------------
+
+    this.model = this.sys.game.globals.model;
+    if (this.model.musicOn === true && this.model.bgMusicPlaying === false) {
+      this.bgMusic = this.sound.add('bgMusic', { volume: 0.5, loop: true })
+      this.bgMusic.play()
+      this.model.bgMusicPlaying = true;
+      this.sys.game.globals.bgMusic = this.bgMusic;
+    }
   }
 
   update () {
     //this.scene.start('Conservatory')
     //this.scene.start('MenuScene')
-
-    //Play button lights up when pointer is over
-    /*
-    if (playButton.input.pointerOver())
-    {
-        playButton.alpha = 1;
-    }
-    else
-    {
-        playButton.alpha = 0.5;
-    }
-    */
   }
 
  
