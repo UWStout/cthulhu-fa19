@@ -8,15 +8,11 @@ import Phaser3D from '../../plugins/phaser3D/Phaser3D'
 import * as THREE from 'three'
 import 'three/examples/js/controls/OrbitControls'
 
+// Import custom sprite class to make normal phaser sprites rotate in our 3D view
 import PanoSprite from '../sprites/PanoSprite'
 
 // Import the special pixelization filter
 import PixelationPipeline from '../shaders/PixelationPipeline'
-
-// HEALTH VARIABLES
-var healthAmount = 100
-var mouseCheckRadius = 20
-var withinRadius = false
 
 class PanoScene extends Phaser.Scene {
   init (data) {
@@ -36,15 +32,37 @@ class PanoScene extends Phaser.Scene {
     this.panoSprites = []
     this.overSprite = null
 
+    // Variables for health management
+    if (typeof data.healthAmount !== 'undefined') {
+      this.healthAmount = data.healthAmount
+    }
+    else {
+      this.healthAmount = 100
+    }
+
+    this.mouseCheckRadius = 20
+    this.withinRadius = false
+
     // Pre-bind the update method for orbit controls
     this.updateSpritePositions = this.updateSpritePositions.bind(this)
 
     this.events.on('shutdown', this.shutdown, this)
+
+    this.infoSceneData = {
+      healthAmount: 100,
+      showTrace: false
+    }
   }
 
   preload () {
     this.load.image('bar', 'assets/images/bar.png')
     this.load.image('trace', 'assets/images/TestTraceImage.png')
+
+    this.load.image('mask', 'assets/images/mask1.png')
+    this.load.image('room', 'assets/images/Black.jpg')
+
+    this.load.audio('ambienceTones', '../../assets/audio/ambience/ambient_tones_loop.wav')
+
     this.pixelationPipeline = this.game.renderer.addPipeline('PixelFilter', new PixelationPipeline(this.game))
     this.downOnDoor = NONE
     this.monsterList = []
@@ -68,29 +86,29 @@ class PanoScene extends Phaser.Scene {
     })
     this.horiFOV = this.vertFOV * this.phaser3d.camera.aspect
 
-    this.scene.run('Info')
+    // Runs the info scene to display on top of the screen
+    this.infoSceneData.healthAmount = this.healthAmount
+    this.infoSceneData.skyboxName = this.skyboxName
+    this.scene.run('Info', this.infoSceneData)
     this.infoScene = this.scene.get('Info')
-    this.infoScene.create()
 
-    // HEALTH FUNCTION
+    // Mouse event to decrease health if within range of monster
     this.input.on('pointermove', (pointer) => {
       let isWithin = false
       for (let i = 0; i < this.monsterList.length; i++) {
         var rectA = this.monsterList[i].getBounds()
-        var rectB = new Phaser.Geom.Rectangle(pointer.x - mouseCheckRadius / 2, pointer.y + mouseCheckRadius / 2, mouseCheckRadius, mouseCheckRadius)
+        var rectB = new Phaser.Geom.Rectangle(pointer.x - this.mouseCheckRadius / 2, pointer.y + this.mouseCheckRadius / 2, this.mouseCheckRadius, this.mouseCheckRadius)
         var rectC = new Phaser.Geom.Rectangle()
         Phaser.Geom.Rectangle.Intersection(rectA, rectB, rectC)
         if (!rectC.isEmpty()) {
           isWithin = true
         }
       }
-      withinRadius = isWithin
+      this.withinRadius = isWithin
     }, this)
 
     // Setup background skybox
     // Note: These assets are loaded direclty by three.js and are not in the preload() above.
-    // This can result in a flash of an untextured background as they load.  You may want to
-    // Hide this by having fade-in and fade-out transitions for these scenes.
     this.phaser3d.setCubeBackground(
       'assets/images/skybox/' + this.skyboxName + '/',
       'px.jpg', 'nx.jpg',
@@ -103,6 +121,7 @@ class PanoScene extends Phaser.Scene {
     this.controls.enableZoom = false
     this.controls.enablePan = false
     this.controls.initialRotate(this.startAngle)
+    // Limits vertical height the player can rotate to
     this.controls.minPolarAngle = Math.PI / 2.4
     this.controls.maxPolarAngle = Math.PI / 1.6
 
@@ -110,21 +129,19 @@ class PanoScene extends Phaser.Scene {
     this.controls.addEventListener('change', this.updateSpritePositions)
     this.updateSpritePositions() // Call once to initialize sprite positions
 
-    this.setupSceneChangeKeys()
-
     this.cameras.main.fadeIn(this.fadeoutTime) // Camera fade-in for start of game
 
-    // Pixelation of camera
+    // Pixelation effect of camera
     this.pixelationPipeline.res = {
       width: this.cameras.main.width,
       height: this.cameras.main.height
     }
     // this.cameras.main.setRenderToTexture('PixelFilter')
 
-    // theImage.texture.getPixel() // Use to get pixel of image
-
     // spotlight-----------------------------------------------
     var pic = this.add.image(500, 280, 'room').setScale(1.2)
+    pic.setDepth(100)
+    pic.alpha = 0.98
 
     var spotlight = this.make.sprite({
       x: 400,
@@ -138,11 +155,13 @@ class PanoScene extends Phaser.Scene {
     this.input.on('pointermove', function (pointer) {
       spotlight.x = pointer.x
       spotlight.y = pointer.y
-
     })
     // --------------------------------------------------------
+    this.ambience = this.sound.add('ambienceTones', { loop: true })
+    this.ambience.play()
   }
 
+  // Adds a sprite that is orientated in the 3D world
   addPanoSprite (textureKey, angX, angY, baseScale, zoomStrength) {
     // Make sure texture key was provided
     if (!textureKey) {
@@ -175,6 +194,7 @@ class PanoScene extends Phaser.Scene {
     return newSprite
   }
 
+  // Updates the positions for the panosprites
   updateSpritePositions () {
     this.panoSprites.forEach((pSprite) => {
       pSprite.updatePanoPosition(this.controls, this.horiFOV, this.vertFOV,
@@ -182,51 +202,41 @@ class PanoScene extends Phaser.Scene {
     })
   }
 
-  setupSceneChangeKeys () {
-    this.scene1Key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE)
-    this.scene2Key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO)
-    this.scene3Key = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE)
-
-    this.scene1Key.on('up', (e) => {
-      this.scene.start('Conservatory')
-    }, this)
-
-    this.scene2Key.on('up', (e) => {
-      this.scene.start('TestRoom')
-    }, this)
-
-    this.scene3Key.on('up', (e) => {
-      this.scene.start('ReceptionHall')
-    }, this)
-  }
-
+  // Used to fade between the current scene and a new scene
   transitionTo (sceneName, collectedObjects, startAngle) {
     this.cameras.main.fadeOut(this.fadeoutTime)
     this.time.delayedCall(this.fadeoutTime, this.startScene, [sceneName, collectedObjects, startAngle], this)
   }
 
+  // Starts the new scene, called by transitionTo()
   startScene (sceneName, collectedObjects, startAngle) {
-    this.scene.start(sceneName, { collectedObjects: collectedObjects, startAngle: startAngle })
+    this.scene.start(sceneName, { collectedObjects: collectedObjects, startAngle: startAngle, healthAmount: this.healthAmount })
   }
 
   update (time) {
     // this.input.mouse.requestPointerLock()
 
-    if (withinRadius) {
-      healthAmount -= 0.1
-      if (healthAmount < 0) {
-        healthAmount = 0
+    // Updates health bar
+    if (this.withinRadius) {
+      this.healthAmount -= 0.1
+      if (this.healthAmount < 0) {
+        this.healthAmount = 0
       }
     }
 
-    this.infoScene.updateHealth(healthAmount)
+    // TODO: Increase health if it hasn't decreased for a while
+
+    this.infoScene.updateHealth(this.healthAmount)
+    // Gets rotation of camera and sends it to the minimap in Info Scene
+    this.infoScene.setMapRotation(-this.controls.getAzimuthalAngle() / Math.PI * 180)
   }
 
-  // Door creation function used by the rooms
+  // Creates a door sprite that navigates you to a different room when clicked
   createDoor (posX, posY, scaleX, scaleY, sceneToLoad, startAngle) {
     const doorSprite = this.addPanoSprite(NONE, posX, posY, 5.0)
     doorSprite.baseScaleX *= scaleX
     doorSprite.baseScaleY *= scaleY
+    // TODO: Change alpha to 0.01 when in production so the door is basically invisible
     doorSprite.alpha = 0.1
     doorSprite.setInteractive(new Phaser.Geom.Rectangle(0, 0, doorSprite.width, doorSprite.height), Phaser.Geom.Rectangle.Contains)
 
@@ -235,21 +245,34 @@ class PanoScene extends Phaser.Scene {
     doorSprite.on('pointerup', (pointer) => { if (this.downOnDoor === doorSprite) { this.transitionTo(sceneToLoad, this.collectedObjects, startAngle) } this.downOnDoor = NONE }, this)
   }
 
-  // Collectable creation function used by rooms
+  // Collectable creation function used by rooms, spawns if not already in your list
   createCollectable (posX, posY, scale, spriteName) {
-    const collectable = this.addPanoSprite(spriteName, posX, posY, scale)
-    collectable.setInteractive(new Phaser.Geom.Rectangle(0, 0, collectable.width, collectable.height), Phaser.Geom.Rectangle.Contains)
-    collectable.on('pointerdown', (pointer) => {
-      this.collectedObjects.push(spriteName)
-      console.log(this.collectedObjects)
-      collectable.destroy()
-    }, this)
+    let haveObject = false
+    for (let i = 0; i < this.collectedObjects.length; i++) {
+      if (this.collectedObjects[i] === spriteName) {
+        haveObject = true
+      }
+    }
+    if (!haveObject) {
+      const collectable = this.addPanoSprite(spriteName, posX, posY, scale)
+      collectable.setInteractive(new Phaser.Geom.Rectangle(0, 0, collectable.width, collectable.height), Phaser.Geom.Rectangle.Contains)
+      collectable.on('pointerdown', (pointer) => {
+        this.collectedObjects.push(spriteName)
+        console.log(this.collectedObjects)
+        collectable.destroy()
+      }, this)
+    }
   }
 
+  // Creates a monster sprite that drains sanity
   createMonster (posX, posY, scale, spriteName) {
     const monster = this.addPanoSprite(spriteName, posX, posY, scale)
     this.monsterList.push(monster)
   }
+
+  // createMonsterPath () {
+  //   monsterPath stuff
+  // }
 }
 
 export default PanoScene

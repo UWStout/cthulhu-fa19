@@ -8,13 +8,26 @@ class InfoScene extends Phaser.Scene {
     // Data must be passed in when strting the scene
     if (data) {
       this.healthAmount = data.health || 100
+      this.showTrace = data.showTrace || false
+      this.skyboxName = data.skyboxName || ''
     } else {
       this.healthAmount = 100
+      this.showTrace = false
+      this.skyboxName = ''
     }
   }
 
   preload () {
     this.load.image('trace', 'assets/images/TestTraceImage.png')
+    this.load.image('arrow', 'assets/images/arrow.png')
+    this.load.image('minimapBackground', 'assets/images/minimapBackground.png')
+    // Load minimap image
+    this.load.image('minimapConservatory', 'assets/images/skybox/Conservatory/mini.png')
+    this.load.image('minimapDiningRoom', 'assets/images/skybox/DiningRoom/mini.png')
+    this.load.image('minimapReceptionHall', 'assets/images/skybox/ReceptionHall/mini.png')
+    this.load.image('minimapLibrary', 'assets/images/skybox/Library/mini.png')
+    this.load.image('minimapCave', 'assets/images/skybox/Cave/mini.png')
+    this.load.image('minimapBossRoom', 'assets/images/skybox/BossRoom/mini.png')
   }
 
   create () {
@@ -27,7 +40,16 @@ class InfoScene extends Phaser.Scene {
     this.hueChecking = false
 
     this.healthBar = this.add.image(this.width / 7, this.height / 20, 'bar')
+
+    this.add.image(this.width * 0.95, this.height / 13, 'minimapBackground')
+    this.arrow = this.add.image(this.width * 0.95, this.height / 13, 'arrow')
+    this.minimap = this.add.image(this.width * 0.95, this.height / 13, 'minimap' + this.skyboxName)
+    console.log(this.skyboxName)
     this.updateHealth(this.healthAmount)
+
+    if (this.showTrace) {
+      this.addTraceImage()
+    }
   }
 
   updateHealth (amount) {
@@ -37,9 +59,15 @@ class InfoScene extends Phaser.Scene {
   }
 
   addTraceImage () {
+    console.log('Trace image added')
+    if (this.trace) {
+      this.trace.destroy()
+    }
+
     this.trace = this.add.image(this.width / 2, this.height / 2, 'trace')
     this.trace.setInteractive()
     this.trace.scale = 2
+
     // Checks the hue of the image to check if the image is being traced
     this.trace.on('pointermove', (pointer) => {
       let texLocX = this.trace.x - this.trace.width - pointer.x
@@ -65,6 +93,20 @@ class InfoScene extends Phaser.Scene {
       }
       this.prevHue = colorGotten.h
     }, this)
+  }
+
+  setMapRotation (angle) {
+    if (typeof this.arrow !== 'undefined') {
+      let bonusAngle = 0
+      if (this.skyboxName === 'DiningRoom') {
+        bonusAngle = 180
+      } else if (this.skyboxName === 'ReceptionHall') {
+        bonusAngle = 90
+      } else if (this.skyboxName === 'Library') {
+        bonusAngle = 180
+      }
+      this.arrow.angle = angle + bonusAngle
+    }
   }
 }
 

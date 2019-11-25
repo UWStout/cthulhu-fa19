@@ -26,10 +26,10 @@ class Conservatory extends PanoScene {
     // Create enemies for this scene
 
     // Door to Boss Room
-    this.createDoor(80, 0, 0.6, 1.4, 'BossRoom', 0)
+    this.createDoor(135, 1, 0.5, 0.9, 'BossRoom', 0)
 
     // Door to Library
-    this.createDoor(160, 0, 0.6, 1.4, 'Library', 0)
+    this.createDoor(175, 0, 0.5, 0.75, 'Library', 0)
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()

@@ -30,7 +30,6 @@ class Conservatory extends PanoScene {
     this.createMonster(135, 0, 2.0, 'longarms')
 
     // Collectable Object interaction
-    //this.createCollectable(10, 10, 2, 'ConservatoryObj')
     this.createCollectable(20, -15, 0.2, 'flashlight')
 
     // Doorway to Dining Room
@@ -41,9 +40,6 @@ class Conservatory extends PanoScene {
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
-
-    // Set up trace image
-    this.infoScene.addTraceImage()
   }
 }
 
