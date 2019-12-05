@@ -3,29 +3,38 @@ export default class Model {
     this._soundOn = true
     this._musicOn = true
     this._bgMusicPlaying = false
+    this._musicName = ''
   }
  
-  set musicOn(value) {
+  set musicOn (value) {
     this._musicOn = value
   }
  
-  get musicOn() {
+  get musicOn () {
     return this._musicOn
   }
  
-  set soundOn(value) {
+  set soundOn (value) {
     this._soundOn = value
   }
  
-  get soundOn() {
+  get soundOn () {
     return this._soundOn
   }
  
-  set bgMusicPlaying(value) {
+  set bgMusicPlaying (value) {
     this._bgMusicPlaying = value
   }
  
-  get bgMusicPlaying() {
+  get bgMusicPlaying () {
     return this._bgMusicPlaying
+  }
+
+  set musicName (value) {
+    this._musicName = value
+  }
+
+  get musicName () {
+    return this._musicName
   }
 }

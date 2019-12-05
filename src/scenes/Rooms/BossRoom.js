@@ -24,13 +24,11 @@ class Conservatory extends PanoScene {
 
   create () {
     // Door to Boss Room
-    this.createDoor(180, 0, 0.6, 1.4, 'Cave', 0)
+    this.createDoor(180, 2, 0.85, 1.4, 'Cave', 0)
 
     // Initialize parent scene (must call AFTER creating sprites)
+    this.infoSceneData.showTrace = true
     super.create()
-
-    // Set up trace image
-    this.infoScene.addTraceImage()
   }
 }
 

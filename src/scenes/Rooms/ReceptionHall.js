@@ -27,13 +27,13 @@ class ReceptionHall extends PanoScene {
     this.createMonster(180, 0, 1, 'longarms')
 
     // Doorway to Conservatory
-    this.createDoor(70, 0, 0.8, 1.4, 'Conservatory', 3)
+    this.createDoor(75, 0, 0.8, 1.4, 'Conservatory', 3)
 
     // Doorway to Dining Room
-    this.createDoor(7, 0, 0.7, 1.4, 'DiningRoom', -1.7)
+    this.createDoor(10, 0, 0.7, 1.4, 'DiningRoom', 0.0)
 
     // Doorway to Library
-    this.createDoor(-78, 0, 0.7, 1.4, 'Library', 3.1)
+    this.createDoor(-72, 0, 0.7, 1.4, 'Library', 3.1)
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()

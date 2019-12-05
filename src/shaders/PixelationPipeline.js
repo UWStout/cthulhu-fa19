@@ -20,7 +20,7 @@ class PixelationPipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipe
 
     // Default values for members
     this._res = { width: game.config.width, height: game.config.height }
-    this.setFloat1('pixelDensity', 150.0)
+    this.setFloat1('pixelDensity', 120.0)
   }
 
   /**

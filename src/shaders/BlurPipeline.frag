@@ -1,6 +1,7 @@
 precision mediump float;
 
 uniform vec2 blur;
+uniform float magnitudeAmount;
 uniform float time;
 uniform sampler2D uSampler;
 
@@ -20,7 +21,8 @@ highp float rand(vec2 co)
 void main(void) {
   vec4 sum = vec4(0.0);
 
-  highp float magnitude = 0.0009;
+  highp float magnitude = 0.0009 + 0.0081 * magnitudeAmount;
+  //Original is 0.0009
 	
 	
 	// Set up offset
@@ -32,8 +34,11 @@ void main(void) {
 	offsetGreenUV.x = outTexCoord.x + rand(vec2(time*0.004,outTexCoord.y*0.002)) * 0.004;
 	offsetGreenUV.x += sin(time*9.0)*magnitude;
 
-  float r = texture2D(uSampler, offsetRedUV).r;
-  float g = texture2D(uSampler, offsetGreenUV).g;
+  vec2 usedOffsetRedUV = offsetRedUV * magnitudeAmount + outTexCoord * (1.0 - magnitudeAmount);
+  vec2 usedOffsetGreenUV = offsetGreenUV * magnitudeAmount + outTexCoord * (1.0 - magnitudeAmount);
+
+  float r = texture2D(uSampler, usedOffsetRedUV).r;
+  float g = texture2D(uSampler, usedOffsetGreenUV).g;
   float b = texture2D(uSampler, outTexCoord).b;
 
   sum = vec4(r, g, b, 0.0);

@@ -25,25 +25,24 @@ class Conservatory extends PanoScene {
 
   create () {
     // Create enemies for this scene
-    this.createMonster(-180, 0, 2, 'bigmouth')
-    this.createMonster(-135, 0, 2.0, 'tom')
-    this.createMonster(135, 0, 2.0, 'longarms')
+    const bigmouthMonster = this.createMonster(-180, -8, 2.0, 'bigmouth')
+    bigmouthMonster.addPath(-300, -8, 2.0, 0.5)
+    bigmouthMonster.addPath(300, -8, 2.0, 0.5)
+    // bigmouthMonster.pathLoops = true
+    this.createMonster(-135, -8, 2.0, 'tom')
+    this.createMonster(135, -8, 2.0, 'longarms')
 
     // Collectable Object interaction
-    //this.createCollectable(10, 10, 2, 'ConservatoryObj')
     this.createCollectable(20, -15, 0.2, 'flashlight')
 
     // Doorway to Dining Room
-    this.createDoor(105, 0, 1, 2, 'DiningRoom', -1.7)
+    this.createDoor(105, 0, 1, 2, 'DiningRoom', 0.0, 'flashlight')
 
     // Doorway to Reception Hall
     this.createDoor(-13, 0, 1, 2, 'ReceptionHall', -1.7)
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
-
-    // Set up trace image
-    this.infoScene.addTraceImage()
   }
 }
 
