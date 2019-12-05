@@ -99,7 +99,7 @@ class InfoScene extends Phaser.Scene {
     if (typeof this.arrow !== 'undefined') {
       let bonusAngle = 0
       if (this.skyboxName === 'DiningRoom') {
-        bonusAngle = 180
+        bonusAngle = 90
       } else if (this.skyboxName === 'ReceptionHall') {
         bonusAngle = 90
       } else if (this.skyboxName === 'Library') {

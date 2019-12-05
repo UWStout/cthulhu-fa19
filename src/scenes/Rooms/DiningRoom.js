@@ -24,10 +24,10 @@ class Conservatory extends PanoScene {
 
   create () {
     // Doorway to Conservatory
-    this.createDoor(50, 5, 0.7, 1.2, 'Conservatory', -1.6)
+    this.createDoor(150, -5, 0.7, 1.2, 'Conservatory', -1.6)
 
     // Doorway to Reception Hall
-    this.createDoor(110, 5, 0.7, 1.2, 'ReceptionHall', 3)
+    this.createDoor(210, -5, 0.7, 1.2, 'ReceptionHall', 3.14)
 
     // Doorway to kitchen WIP
 

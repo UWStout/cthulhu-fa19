@@ -90,6 +90,7 @@ class TitleScene extends Phaser.Scene {
       this.bgMusic.play()
       this.model.bgMusicPlaying = true
       this.sys.game.globals.bgMusic = this.bgMusic
+      this.model.musicName = 'bgMusic'
     }
   }
 
