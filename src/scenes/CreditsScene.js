@@ -65,6 +65,13 @@ class CreditsScene extends Phaser.Scene{
         this.scene.start('TitleScene')
       }.bind(this)
     })
+
+    this.input.on('pointerdown', function () {
+      //Allows you to exit to title screen if you don't wanna watch credits
+      this.scene.start('TitleScene')
+
+  }, this);
+
   }
 }
 

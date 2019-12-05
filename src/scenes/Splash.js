@@ -21,7 +21,8 @@ class Splash extends Phaser.Scene {
   preload () {
     // Add the logo to the screen and center it
     this.logo = this.add.sprite(centerX(this), centerY(this) - 100, 'logo')
-    this.logo.setScale(0.5, 0.5)
+    this.logo.setScale(2)
+    //this.logo.setScale(0.5, 0.5)
     centerGameObjects([this.logo])
 
     this.setupProgressBar(200)
@@ -57,7 +58,7 @@ class Splash extends Phaser.Scene {
     // Create graphics assets for progress bar
     const progressBar = this.add.graphics()
     const progressBkg = this.add.graphics()
-    progressBkg.fillStyle(0x222222, 0.8)
+    progressBkg.fillStyle(0x3ddf9a, 0.8) //#3ddf9a 0x222222
     progressBkg.fillRect(width / 2 - 160, height / 2 - 25 + yOffset, 320, 50)
 
     // Create loading text
