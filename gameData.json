@@ -7,7 +7,7 @@
   "media": [
     {
       "title": "Game Trailer",
-      "vimeoID": "305643953",
+      "vimeoID": "",
       "alt": "Light Within The Darkness SGX Trailer"
     }, {
       "title": "Screenshot 1",
@@ -19,11 +19,11 @@
       "alt": "Light Within The Darkness Screenshot"
     }, {
       "title": "Screenshot 3",
-      "link": "",
+      "link": "https://raw.githubusercontent.com/UWStout/cthulhu-fa19/master/assets/images/LongArmsBoi_FrontView.png?token=ANC5TSBT7VG3GQY5WP3JIZ257E67S",
       "alt": "Light Within The Darkness Screenshot"
     }, {
       "title": "Screenshot 4",
-      "link": "",
+      "link": "https://raw.githubusercontent.com/UWStout/cthulhu-fa19/master/assets/images/TT_WA_FrontFace_SPRITESHEET.png?token=ANC5TSCA6OPUN76SMZLM5KS57E642",
       "alt": "Light Within The Darkness Screenshot"
     }, {
       "title": "Source Code Evolution",

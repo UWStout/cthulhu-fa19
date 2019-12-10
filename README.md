@@ -1,8 +1,9 @@
 # Light Within The Darkness
-**catchy phrase**
+**Beware of the things unseen in the dark**
 
 ## Description
-Short paragraph
+An exploration horror game that ties around the insanity and style of HP Lovecraft.  
+Advance through various rooms interacting with things via wiimote with motion control.
 
 ## Core Team
 - Emily Shaffer - Artist
