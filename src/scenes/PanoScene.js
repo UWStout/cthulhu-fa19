@@ -56,11 +56,10 @@ class PanoScene extends Phaser.Scene {
   }
 
   preload () {
-    this.load.image('bar', 'assets/images/bar.png')
-    this.load.image('trace', 'assets/images/TestTraceImage.png')
+    this.load.image('trace', 'assets/images/symbol1pattern.png')
 
-    this.load.audio('ambienceTones', '../../assets/audio/ambience/ambient_tones_loop.wav')
-    this.load.audio('ambienceBitcrush', '../../assets/audio/ambience/ambient_bitcrush_loop.wav')
+    this.load.audio('ambienceTones', '../../assets/audio/ambience/ambient_tones_loop.mp3')
+    this.load.audio('ambienceBitcrush', '../../assets/audio/ambience/ambient_bitcrush_loop.mp3')
     this.load.audio('heartbeat', '../../assets/audio/noises/heartbeat.mp3')
 
     this.load.audio('monsterScreamPixelLeft', '../../assets/audio/noises/monster_pixel_scream_left.mp3')
@@ -79,6 +78,9 @@ class PanoScene extends Phaser.Scene {
     this.downOnDoor = NONE
     this.monsterList = []
     this.input.on('pointerup', (pointer) => { this.downOnDoor = NONE }, this)
+
+    // List of collectable objects
+    this.collectableList = []
   }
 
   shutdown () {
@@ -115,7 +117,7 @@ class PanoScene extends Phaser.Scene {
     // Graphics for drawing the flashlight and monster collision
     this.graphics = this.add.graphics()
 
-    this.keys = this.input.keyboard.addKeys('Q')
+    this.keys = this.input.keyboard.addKeys('Q,LEFT,RIGHT,A,D')
 
     // Setup background skybox
     // Note: These assets are loaded direclty by three.js and are not in the preload() above.
@@ -151,7 +153,7 @@ class PanoScene extends Phaser.Scene {
 
     // spotlight-----------------------------------------------
     var pic = this.add.image(500, 280, 'room').setScale(1.2)
-    pic.setDepth(100)
+    pic.setDepth(300)
     var spotlight = this.make.sprite({
       x: 400,
       y: 400,
@@ -188,8 +190,8 @@ class PanoScene extends Phaser.Scene {
     this.heartbeatAudio = this.sound.add('heartbeat', { loop: true, volume: 0.0 })
     this.heartbeatAudio.play()
 
-    this.pixelScreamLeft = this.sound.add('monsterScreamPixelLeft', { rate: 0.5, loop: true })
-    this.pixelScreamRight = this.sound.add('monsterScreamPixelRight', { rate: 0.5, loop: true })
+    this.pixelScreamLeft = this.sound.add('monsterScreamPixelLeft', { rate: 0.5 })
+    this.pixelScreamRight = this.sound.add('monsterScreamPixelRight', { rate: 0.5 })
     // this.pixelScreamLeft.play()
     // this.pixelScreamRight.play()
   }
@@ -248,30 +250,31 @@ class PanoScene extends Phaser.Scene {
     if (this.gameover) {
       this.healthAmount = 100
     }
-    // this.pixelScreamLeft.play()
-    // this.pixelScreamRight.play()
+    this.pixelScreamLeft.play()
+    this.pixelScreamRight.play()
     this.scene.start(sceneName, { collectedObjects: collectedObjects, startAngle: startAngle, healthAmount: this.healthAmount })
   }
 
   update (time) {
+    // Updates every monster position so they can travel on paths
     for (let i = 0; i < this.monsterList.length; i++) {
       this.monsterList[i].updatePanoPosition(this.controls, this.horiFOV, this.vertFOV,
         this.game.config.width, this.game.config.height)
     }
     // this.input.mouse.requestPointerLock()
 
+    // Adds the time variable to the blur shader
     this.t += this.tIncrement
     this.blurPipeline.setFloat1('time', this.t)
 
-    // Updates health bar and shader strength
+    // Updates the heartbeat audio strength based on closeness to monster
     if (this.withinRadius) {
       this.heartbeatAudio.volume = this.radiusStrength * 0.5 + 0.5
       this.heartbeatAudio.rate = this.radiusStrength * 0.5 + 0.5
-    }
-    else {
+    } else {
       this.heartbeatAudio.volume = 0.0
     }
-
+    // Updates health bar and shader strength
     if (this.withinRadius && !this.keys.Q.isDown) {
       this.closeAudio.volume = this.radiusStrength * 0.7
       this.blurPipeline.setFloat1('magnitudeAmount', this.radiusStrength)
@@ -280,65 +283,43 @@ class PanoScene extends Phaser.Scene {
         this.healthAmount = 0
         this.gameover = true
       }
-    } else {
+    } else { // Turns the blue effect off if not near a monster
       this.blurPipeline.setFloat1('magnitudeAmount', 0.0)
       this.closeAudio.volume = 0.0
     }
-
+    // Game over case
     if (this.gameover && !this.gameoverHandled) {
       this.transitionTo('Conservatory', [], 0.0)
       this.gameoverHandled = true
     }
-
+    // Turns off the flashlight if Q is held down
     if (this.keys.Q.isDown) {
       this.spotlight.scale = 0.0
     } else {
       this.spotlight.scale = 3.0
     }
-
-    // Converts the angle facing to 3d volume strengths for left and right ear (testing)
-    for (let i = 0; i < this.monsterList.length; i++) {
-      if (this.monsterList[i].angX === 135) {
-        let angleToMonster = this.monsterList[i].viewDifference
-        // Correctes the weird offset we get from pano angle
-        if (angleToMonster > 180) {
-          angleToMonster = -180 + (angleToMonster - 180)
-        }
-        let leftEarVolume = 0.5
-        let rightEarVolume = 0.5
-        if (angleToMonster <= 0) {
-          leftEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
-          if (angleToMonster < -90) {
-            rightEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
-          } else {
-            rightEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
-          }
-        } else {
-          rightEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
-          if (angleToMonster > 90) {
-            leftEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
-          } else {
-            leftEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
-          }
-        }
-
-        this.pixelScreamLeft.volume = leftEarVolume
-        this.pixelScreamRight.volume = rightEarVolume
-      }
-
-      // Updates if the  monster and flashlight are overlapping
-      this.updateOverlap()
+    // Rotates the camera using the left button
+    if (this.keys.LEFT.isDown || this.keys.A.isDown) {
+      this.controls.setRotation(-0.05)
     }
+    // Rotates the camera using the right button
+    if (this.keys.RIGHT.isDown || this.keys.D.isDown) {
+      this.controls.setRotation(0.05)
+    }
+
+    // Updates if the  monster and flashlight are overlapping
+    this.updateOverlap()
 
     // TODO: Increase health if it hasn't decreased for a while
 
+    // Updates the visual portion of the health bar
     this.infoScene.updateHealth(this.healthAmount)
     // Gets rotation of camera and sends it to the minimap in Info Scene
     this.infoScene.setMapRotation(-this.controls.getAzimuthalAngle() / Math.PI * 180)
   }
 
   // Creates a door sprite that navigates you to a different room when clicked
-  createDoor (posX, posY, scaleX, scaleY, sceneToLoad, startAngle, unlockItem) {
+  createDoor (posX, posY, scaleX, scaleY, sceneToLoad, startAngle, unlockItem = '') {
     const doorSprite = this.addPanoSprite(NONE, posX, posY, 5.0)
     doorSprite.baseScaleX *= scaleX
     doorSprite.baseScaleY *= scaleY
@@ -350,16 +331,7 @@ class PanoScene extends Phaser.Scene {
     doorSprite.on('pointerdown', (pointer) => { this.downOnDoor = doorSprite })
     doorSprite.on('pointerup', (pointer) => {
       // Controls if the door is unlocked or not
-      let canOpen = false
-      if (typeof unlockItem !== 'undefined') {
-        for (let i = 0; i < this.collectedObjects.length; i++) {
-          if (this.collectedObjects[i] === unlockItem) {
-            canOpen = true
-          }
-        }
-      } else {
-        canOpen = true
-      }
+      const canOpen = this.checkRequirement(unlockItem)
 
       if (this.downOnDoor === doorSprite && canOpen) {
         this.transitionTo(sceneToLoad, this.collectedObjects, startAngle)
@@ -369,21 +341,50 @@ class PanoScene extends Phaser.Scene {
   }
 
   // Collectable creation function used by rooms, spawns if not already in your list
-  createCollectable (posX, posY, scale, spriteName) {
+  createCollectable (posX, posY, scaleX, scaleY, spriteName, requirementObject = '') {
     let haveObject = false
     for (let i = 0; i < this.collectedObjects.length; i++) {
       if (this.collectedObjects[i] === spriteName) {
         haveObject = true
       }
     }
-    if (!haveObject) {
-      const collectable = this.addPanoSprite(spriteName, posX, posY, scale)
+    if (!haveObject) { // Spawns the object if not already in inventory
+      const collectable = this.addPanoSprite(spriteName, posX, posY, 5.0)
+      collectable.baseScaleX *= scaleX
+      collectable.baseScaleY *= scaleY
+      collectable.depth = collectable.depth + 10
       collectable.setInteractive(new Phaser.Geom.Rectangle(0, 0, collectable.width, collectable.height), Phaser.Geom.Rectangle.Contains)
+      collectable.requirement = requirementObject
+      collectable.input.enabled = this.checkRequirement(requirementObject)
+      this.collectableList.push(collectable)
       collectable.on('pointerdown', (pointer) => {
-        this.collectedObjects.push(spriteName)
+        this.addCollectedObject(spriteName)
         console.log(this.collectedObjects)
         collectable.destroy()
       }, this)
+    }
+  }
+
+  checkRequirement (requirementName) {
+    let haveRequirement = false
+    for (let i = 0; i < this.collectedObjects.length; i++) {
+      if (this.collectedObjects[i] === requirementName) {
+        haveRequirement = true
+      }
+    }
+    if (requirementName === '') {
+      haveRequirement = true
+      console.log('No requirement for collectable')
+    }
+    return haveRequirement
+  }
+
+  addCollectedObject (spriteName) {
+    this.collectedObjects.push(spriteName)
+    for (let i = 0; i < this.collectableList.length; i++) {
+      if (this.collectableList[i].requirement === spriteName) {
+        this.collectableList[i].input.enabled = true
+      }
     }
   }
 

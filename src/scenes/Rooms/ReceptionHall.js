@@ -9,12 +9,17 @@ class ReceptionHall extends PanoScene {
     // Make sure the parent doesn't override our values
     this.ignoreInitVals = true
 
-    // Setup the skybox view
-    this.skyboxName = 'ReceptionHall'
     this.vertFOV = 90
   }
 
   preload () {
+    // Setup the skybox view
+    if (this.checkRequirement('receptionDoor')) {
+      this.skyboxName = 'ReceptionHall'
+    } else {
+      this.skyboxName = 'ReceptionHall/DoorClosed'
+    }
+
     // Load enemy sprites (might want to do this in Splash instead)
     this.load.image('tom', 'assets/images/TiredTom_FrontView.png')
     this.load.image('longarms', 'assets/images/LongArmsBoi_FrontView.png')
@@ -23,8 +28,10 @@ class ReceptionHall extends PanoScene {
 
   create () {
     // Create enemies for this scene
-    // this.addPanoSprite('tom', 0, 0)
     this.createMonster(180, 0, 1, 'longarms')
+
+    // Collectable Object interaction
+    this.createCollectable(-72, 0, 0.7, 1.4, 'receptionDoor', 'key')
 
     // Doorway to Conservatory
     this.createDoor(75, 0, 0.8, 1.4, 'Conservatory', 3)
@@ -33,7 +40,7 @@ class ReceptionHall extends PanoScene {
     this.createDoor(10, 0, 0.7, 1.4, 'DiningRoom', 0.0)
 
     // Doorway to Library
-    this.createDoor(-72, 0, 0.7, 1.4, 'Library', 3.1)
+    this.createDoor(-72, 0, 0.7, 1.4, 'Library', 3.1, 'receptionDoor')
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()

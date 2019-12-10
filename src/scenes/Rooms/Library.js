@@ -29,7 +29,7 @@ class Conservatory extends PanoScene {
     this.createMonster(135, 0, 2.0, 'longarms')
 
     // Collectable Object interaction
-    this.createCollectable(180, 0, 1, 'libraryObj')
+    this.createCollectable(180, 0, 1, 1, 'libraryObj')
 
     // Doorway to Reception Hall
     this.createDoor(5, 0, 0.6, 1.4, 'ReceptionHall', 1.6)
