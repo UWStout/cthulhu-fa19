@@ -17,20 +17,7 @@ class InfoScene extends Phaser.Scene {
     }
   }
 
-  preload () {
-    this.load.image('bar', 'assets/images/insanityBar.png')
-    this.load.image('barBorder', 'assets/images/insanity_meter_Border.png')
-    this.load.image('trace', 'assets/images/TestTraceImage.png')
-    this.load.image('arrow', 'assets/images/arrow.png')
-    this.load.image('minimapBackground', 'assets/images/minimapBackground.png')
-    // Load minimap image
-    this.load.image('minimapConservatory', 'assets/images/skybox/Conservatory/mini.png')
-    this.load.image('minimapDiningRoom', 'assets/images/skybox/DiningRoom/mini.png')
-    this.load.image('minimapReceptionHall', 'assets/images/skybox/ReceptionHall/mini.png')
-    this.load.image('minimapLibrary', 'assets/images/skybox/Library/mini.png')
-    this.load.image('minimapCave', 'assets/images/skybox/Cave/mini.png')
-    this.load.image('minimapBossRoom', 'assets/images/skybox/BossRoom/mini.png')
-  }
+  preload () {}
 
   create () {
     // Local variables for accessing width and height
@@ -50,8 +37,14 @@ class InfoScene extends Phaser.Scene {
 
     this.add.image(this.width * 0.95, this.height / 13, 'minimapBackground')
     this.arrow = this.add.image(this.width * 0.95, this.height / 13, 'arrow')
-    this.minimap = this.add.image(this.width * 0.95, this.height / 13, 'minimap' + this.skyboxName)
-    console.log(this.skyboxName)
+
+    let miniMapName = 'minimap' + this.skyboxName
+    if (miniMapName.indexOf('/') >= 0) {
+      miniMapName = miniMapName.slice(0, miniMapName.indexOf('/'))
+    }
+    console.log(miniMapName)
+    this.minimap = this.add.image(this.width * 0.95, this.height / 13, miniMapName)
+
     this.updateHealth(this.healthAmount)
 
     if (this.showTrace) {

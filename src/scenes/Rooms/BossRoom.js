@@ -15,10 +15,6 @@ class Conservatory extends PanoScene {
   }
 
   preload () {
-    // Load enemy sprites (might want to do this in Splash instead)
-    this.load.image('bigmouth', 'assets/images/BigMouth_FrontView.png')
-    this.load.image('tom', 'assets/images/TiredTom_FrontView.png')
-    this.load.image('longarms', 'assets/images/LongArmsBoi_FrontView.png')
     super.preload()
   }
 

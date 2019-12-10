@@ -22,32 +22,62 @@ class Splash extends Phaser.Scene {
     // Add the logo to the screen and center it
     this.logo = this.add.sprite(centerX(this), centerY(this) - 100, 'logo')
     this.logo.setScale(2)
-    //this.logo.setScale(0.5, 0.5)
+    // this.logo.setScale(0.5, 0.5)
     centerGameObjects([this.logo])
 
     this.setupProgressBar(200)
 
-    // Load all the assets needed for next state
+    // Room Assets
+    this.load.image('bigmouth', 'assets/images/BigMouth_FrontView.png')
+    this.load.image('tom', 'assets/images/TiredTom_FrontView.png')
+    this.load.image('longarms', 'assets/images/LongArmsBoi_FrontView.png')
+    this.load.image('flashlight', 'assets/images/flashlight.png')
 
-    // The main player spritesheet
-    this.load.spritesheet('player-main', 'assets/images/player-main.png', { frameWidth: 64, frameHeight: 64 })
+    // Main Pano Scene Assets
+    this.load.image('trace', 'assets/images/symbol1pattern.png')
 
-    // The crate sprite image
-    this.load.image('crate', 'assets/images/crate.png')
+    this.load.audio('ambienceTones', 'assets/audio/ambience/ambient_tones_loop.mp3')
+    this.load.audio('ambienceBitcrush', 'assets/audio/ambience/ambient_bitcrush_loop.mp3')
+    this.load.audio('heartbeat', 'assets/audio/noises/heartbeat.mp3')
 
-    // The spritesheet for the lever
-    this.load.spritesheet('lever', 'assets/images/lever.png', { frameWidth: 32, frameHeight: 32 })
+    this.load.audio('monsterScreamPixelLeft', 'assets/audio/noises/monster_pixel_scream_left.mp3')
+    this.load.audio('monsterScreamPixelRight', 'assets/audio/noises/monster_pixel_scream_right.mp3')
+
+    this.load.image('mask', 'assets/images/spotlight/mask1.png') // spotlight stuff
+    this.load.image('room', 'assets/images/spotlight/Black.jpg') // blackbackground
+
+    // HUD info scene images
+    this.load.image('bar', 'assets/images/insanityBar.png')
+    this.load.image('barBorder', 'assets/images/insanity_meter_Border.png')
+    this.load.image('trace', 'assets/images/TestTraceImage.png')
+    this.load.image('arrow', 'assets/images/arrow.png')
+    this.load.image('minimapBackground', 'assets/images/minimapBackground.png')
+
+    // Load minimap images
+    this.load.image('minimapConservatory', 'assets/images/skybox/Conservatory/mini.png')
+    this.load.image('minimapDiningRoom', 'assets/images/skybox/DiningRoom/mini.png')
+    this.load.image('minimapReceptionHall', 'assets/images/skybox/ReceptionHall/mini.png')
+    this.load.image('minimapLibrary', 'assets/images/skybox/Library/mini.png')
+    this.load.image('minimapCave', 'assets/images/skybox/Cave/mini.png')
+    this.load.image('minimapBossRoom', 'assets/images/skybox/BossRoom/mini.png')
+
+    // Load all the assets needed for main menu
+    this.load.image('background', 'assets/images/TitleScreen/splashScreen.jpg') // background
+    this.load.image('title', 'assets/images/TitleScreen/LogoTransparent.png') // title name
+    this.load.image('play_button', 'assets/images/TitleScreen/play_button.png') // play button
+    this.load.image('options_button', 'assets/images/TitleScreen/options_button.png') // options button
+
+    this.load.image('checkedBox', 'assets/images/blue_boxCheckmark.png')
+    this.load.image('box', 'assets/images/grey_box.png')
+
+    // creepty background music
+    this.load.audio('bgMusic', 'assets/audio/ambience/ambient_drone_loop.wav')
 
     // The audiosprite with all music and SFX
     this.load.audioSprite('sounds', 'assets/audio/sounds.json', [
       'assets/audio/sounds.ogg', 'assets/audio/sounds.mp3',
       'assets/audio/sounds.m4a', 'assets/audio/sounds.ac3'
     ])
-
-    // Load a bunch of junk to slow down the preloader
-    for (let i = 0; i < 100; i++) {
-      this.load.image(`logo${i}`, './assets/images/icon.png')
-    }
   }
 
   setupProgressBar (yOffset) {
@@ -58,7 +88,7 @@ class Splash extends Phaser.Scene {
     // Create graphics assets for progress bar
     const progressBar = this.add.graphics()
     const progressBkg = this.add.graphics()
-    progressBkg.fillStyle(0x3ddf9a, 0.8) //#3ddf9a 0x222222
+    progressBkg.fillStyle(0x3ddf9a, 0.8) // #3ddf9a 0x222222
     progressBkg.fillRect(width / 2 - 160, height / 2 - 25 + yOffset, 320, 50)
 
     // Create loading text
