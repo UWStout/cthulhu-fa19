@@ -10,6 +10,8 @@ class Conservatory extends PanoScene {
     this.ignoreInitVals = true
 
     this.vertFOV = 90
+
+    this.masterSkybox = 'Conservatory'
   }
 
   preload () {

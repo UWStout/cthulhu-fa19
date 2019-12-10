@@ -363,6 +363,7 @@ class PanoScene extends Phaser.Scene {
         this.addCollectedObject(spriteName)
         console.log(this.collectedObjects)
         collectable.destroy()
+        this.transitionTo(this.masterSkybox, this.collectedObjects, this.controls.getAzimuthalAngle())
       }, this)
     }
   }
