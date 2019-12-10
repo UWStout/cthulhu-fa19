@@ -15,6 +15,19 @@ class Conservatory extends PanoScene {
   }
 
   preload () {
+    // Setup the skybox view
+    const knifeCollected = this.checkRequirement('knife')
+    const candleCollected = this.checkRequirement('candle')
+    if (knifeCollected && candleCollected) {
+      this.skyboxName = 'DiningRoom'
+    } else if (knifeCollected) {
+      this.skyboxName = 'DiningRoom/Candle'
+    } else if (candleCollected) {
+      this.skyboxName = 'DiningRoom/Knife'
+    } else {
+      this.skyboxName = 'DiningRoom/Both'
+    }
+
     // Load enemy sprites (might want to do this in Splash instead)
     this.load.image('bigmouth', 'assets/images/BigMouth_FrontView.png')
     this.load.image('tom', 'assets/images/TiredTom_FrontView.png')
@@ -23,13 +36,15 @@ class Conservatory extends PanoScene {
   }
 
   create () {
+    // Collectable Object interaction
+    this.createCollectable(35, -10, 0.8, 1, 'knife', 'receptionDoor')
+    this.createCollectable(-168, 5, 0.7, 0.7, 'candle', 'receptionDoor')
+
     // Doorway to Conservatory
     this.createDoor(150, -5, 0.7, 1.2, 'Conservatory', -1.6)
 
     // Doorway to Reception Hall
     this.createDoor(210, -5, 0.7, 1.2, 'ReceptionHall', 3.14)
-
-    // Doorway to kitchen WIP
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()

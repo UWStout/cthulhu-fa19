@@ -28,6 +28,8 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
     this.paths = []
 
     this.pathLoops = false
+
+    this.requirement = ''
   }
 
   setScale (xVal, yVal) {
@@ -51,14 +53,22 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
 
     // Wrap the x value to the correct range
     let xWrap = this.angX
-    if (viewX > 0 && xWrap < 0) {
-      xWrap += 360
-    } else if (viewX < 0 && xWrap > 0) {
+    if (xWrap > 180) {
       xWrap -= 360
+    }
+    if (xWrap < -180) {
+      xWrap += 360
     }
 
     // Compute normalized world position
-    const xn = (xWrap - viewX) / hFOV
+    let xnValue = (xWrap - viewX)
+    if (xnValue < -180) {
+      xnValue += 360
+    }
+    if (xnValue > 180) {
+      xnValue -= 360
+    }
+    const xn = xnValue / hFOV
     this.viewDifference = xWrap - viewX + 90
     // Make the vertical FOV negative to counteract shader weirdness
     const yn = (this.angY - viewY) / -vFOV

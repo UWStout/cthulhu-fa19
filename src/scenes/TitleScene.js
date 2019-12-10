@@ -7,7 +7,7 @@ class TitleScene extends Phaser.Scene {
   }
 
   preload () {
-    this.load.image('background', 'assets/images/TitleScreen/spooky-mansion.jpg') // background
+    this.load.image('background', 'assets/images/TitleScreen/splashScreen.jpg') // background
     this.load.image('title', 'assets/images/TitleScreen/LogoTransparent.png') // title name
     this.load.image('play_button', 'assets/images/TitleScreen/play_button.png') // play button
     this.load.image('options_button', 'assets/images/TitleScreen/options_button.png') // options button
@@ -16,7 +16,7 @@ class TitleScene extends Phaser.Scene {
   }
 
   create () {
-    this.add.image(-111, 0, 'background').setOrigin(0).setScale(0.89).setDepth(0)
+    this.add.image(this.cameras.main.width / 2.0, this.cameras.main.height / 2.0, 'background').setOrigin(0.5).setScale(5.7).setDepth(0)
     this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.4, 'title').setScale(1.5).setDepth(1)
     const playButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'play_button').setDepth(1)
     const optionButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 150, 'options_button').setDepth(1)

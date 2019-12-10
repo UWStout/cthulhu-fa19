@@ -18,6 +18,8 @@ class InfoScene extends Phaser.Scene {
   }
 
   preload () {
+    this.load.image('bar', 'assets/images/insanityBar.png')
+    this.load.image('barBorder', 'assets/images/insanity_meter_Border.png')
     this.load.image('trace', 'assets/images/TestTraceImage.png')
     this.load.image('arrow', 'assets/images/arrow.png')
     this.load.image('minimapBackground', 'assets/images/minimapBackground.png')
@@ -39,7 +41,12 @@ class InfoScene extends Phaser.Scene {
     this.prevHue = 0
     this.hueChecking = false
 
-    this.healthBar = this.add.image(this.width / 7, this.height / 20, 'bar')
+    this.healthBar = this.add.image(this.width / 8, this.height / 18, 'bar')
+    this.healthBarBackground = this.add.image(this.width / 8, this.height / 18, 'barBorder')
+    this.healthBar.scaleX = 0.25
+    this.healthBar.scaleY = 0.25
+    this.healthBarBackground.scaleX = 0.25
+    this.healthBarBackground.scaleY = 0.25
 
     this.add.image(this.width * 0.95, this.height / 13, 'minimapBackground')
     this.arrow = this.add.image(this.width * 0.95, this.height / 13, 'arrow')
