@@ -1,12 +1,12 @@
 {
-  "name": "uwstout-gdd325-gamebase",
+  "name": "light-within-the-darkness",
   "version": "2.0.0",
-  "description": "A base project for making 2D web games used in GDD 325 at UW Stout",
-  "author": "Seth Berrier <berriers@uwstout.edu>",
+  "description": "2D web game made in GDD 325 at UW Stout",
+  "author": "Alex Hallee, Michael Lee, Emily Shaffer, Whitney Phillips, Joseph Ceranski",
   "main": "index.html",
-  "repository": "UWStout/gdd325-web-base",
+  "repository": "UWStout/cthulhu-fa19",
   "scripts": {
-    "sfx": "audiosprite --loop running --output assets/audio/sounds assets/audio/*.wav",
+    "sfx": "audiosprite --output assets/audio/sounds assets/audio/ambience/*.* assets/audio/noises/*.*",
     "dev": "run-s clean dev-cmd",
     "prod": "run-s clean prod-cmd",
     "deploy": "run-s clean deploy-cmd",
@@ -35,11 +35,10 @@
     "audiosprite": "^0.7.1",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
-    "babel-minify-webpack-plugin": "^0.3.1",
     "browser-sync": "^2.26.7",
     "browser-sync-webpack-plugin": "^2.2.2",
     "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^5.0.4",
+    "copy-webpack-plugin": "^5.1.0",
     "cpy-cli": "^2.0.0",
     "cross-env": "^5.2.1",
     "css-loader": "^3.2.0",
@@ -57,6 +56,7 @@
     "nw-builder": "^3.5.7",
     "raw-loader": "^3.1.0",
     "run-script-os": "^1.0.7",
+    "terser-webpack-plugin": "^2.2.2",
     "webpack": "^4.39.3",
     "webpack-command": "^0.5.0"
   },
@@ -69,7 +69,7 @@
     "three": "^0.109.0"
   },
   "window": {
-    "title": "GDD 325 Example Game",
+    "title": "Light Within the Darkness",
     "icon": "./assets/images/icon.png",
     "toolbar": false,
     "frame": true,

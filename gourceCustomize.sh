@@ -11,4 +11,4 @@ function fix {
 
 # Replace non human readable names with proper ones
 fix "|HalleeAlex|" "|Alex Hallee|"
-fix "|Michael|" "|Michael |"
+fix "|Michael|" "|Michael Lee|"
