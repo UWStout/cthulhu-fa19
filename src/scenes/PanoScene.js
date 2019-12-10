@@ -6,7 +6,7 @@ import Phaser3D from '../../plugins/phaser3D/Phaser3D'
 
 // Get the important pieces from three.js
 import * as THREE from 'three'
-import 'three/examples/js/controls/OrbitControls'
+import '../../plugins/phaser3D/OrbitControls'
 
 // Import custom sprite class to make normal phaser sprites rotate in our 3D view
 import PanoSprite from '../sprites/PanoSprite'
@@ -56,18 +56,6 @@ class PanoScene extends Phaser.Scene {
   }
 
   preload () {
-    this.load.image('trace', 'assets/images/symbol1pattern.png')
-
-    this.load.audio('ambienceTones', '../../assets/audio/ambience/ambient_tones_loop.mp3')
-    this.load.audio('ambienceBitcrush', '../../assets/audio/ambience/ambient_bitcrush_loop.mp3')
-    this.load.audio('heartbeat', '../../assets/audio/noises/heartbeat.mp3')
-
-    this.load.audio('monsterScreamPixelLeft', '../../assets/audio/noises/monster_pixel_scream_left.mp3')
-    this.load.audio('monsterScreamPixelRight', '../../assets/audio/noises/monster_pixel_scream_right.mp3')
-
-    this.load.image('mask', 'assets/images/spotlight/mask1.png') // spotlight stuff
-    this.load.image('room', 'assets/images/spotlight/Black.jpg') // blackbackground
-
     this.pixelationPipeline = this.game.renderer.addPipeline('PixelFilter', new PixelationPipeline(this.game))
     if (!this.game.renderer.hasPipeline('BlurFilter')) {
       this.blurPipeline = this.game.renderer.addPipeline('BlurFilter', new BlurPipeline(this.game))
@@ -133,6 +121,7 @@ class PanoScene extends Phaser.Scene {
     this.controls.enableZoom = false
     this.controls.enablePan = false
     this.controls.initialRotate(this.startAngle)
+
     // Limits vertical height the player can rotate to
     this.controls.minPolarAngle = Math.PI / 2.4
     this.controls.maxPolarAngle = Math.PI / 1.6

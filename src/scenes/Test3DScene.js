@@ -6,7 +6,7 @@ import Phaser3D from '../../plugins/phaser3D/Phaser3D'
 
 // Get the important pieces from three.js
 import * as THREE from 'three'
-import 'three/examples/js/controls/OrbitControls'
+import '../../plugins/phaser3D/OrbitControls'
 import 'three/examples/js/controls/FlyControls'
 
 var healthBar

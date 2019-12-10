@@ -7,12 +7,6 @@ class TitleScene extends Phaser.Scene {
   }
 
   preload () {
-    this.load.image('background', 'assets/images/TitleScreen/splashScreen.jpg') // background
-    this.load.image('title', 'assets/images/TitleScreen/LogoTransparent.png') // title name
-    this.load.image('play_button', 'assets/images/TitleScreen/play_button.png') // play button
-    this.load.image('options_button', 'assets/images/TitleScreen/options_button.png') // options button
-
-    this.load.audio('bgMusic', 'assets/audio/music-theme1.wav')
   }
 
   create () {

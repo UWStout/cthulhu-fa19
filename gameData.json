@@ -3,7 +3,7 @@
   "byLine": "****catchy phrase****",
   "bannerTitle": "https://via.placeholder.com/536x300.jpg?text=Edge+of+the+Map",
   "bannerWide": "https://via.placeholder.com/900x180.jpg?text=Not+Found",
-  "markdown": "https://github.com/UWStout/cthulhu-fa19/blob/master/README.md",
+  "markdown": "README.md",
   "media": [
     {
       "title": "Game Trailer",
@@ -11,19 +11,19 @@
       "alt": "Light Within The Darkness SGX Trailer"
     }, {
       "title": "Screenshot 1",
-      "link": "https://raw.githubusercontent.com/UWStout/gdd325-fa18-website/master/edge_of_the_map/map1.png",
+      "link": "",
       "alt": "Light Within The Darkness Screenshot"
     }, {
       "title": "Screenshot 2",
-      "link": "https://raw.githubusercontent.com/UWStout/gdd325-fa18-website/master/edge_of_the_map/map2.png",
+      "link": "",
       "alt": "Light Within The Darkness Screenshot"
     }, {
       "title": "Screenshot 3",
-      "link": "https://raw.githubusercontent.com/UWStout/gdd325-fa18-website/master/edge_of_the_map/seasnake.png",
+      "link": "",
       "alt": "Light Within The Darkness Screenshot"
     }, {
       "title": "Screenshot 4",
-      "link": "https://raw.githubusercontent.com/UWStout/gdd325-fa18-website/master/edge_of_the_map/conceptSketch.png",
+      "link": "",
       "alt": "Light Within The Darkness Screenshot"
     }, {
       "title": "Source Code Evolution",
