@@ -1,6 +1,6 @@
 {
   "title": "Light Within The Darkness",
-  "byLine": "****catchy phrase****",
+  "byLine": "Beware of the things unseen in the dark",
   "bannerTitle": "https://via.placeholder.com/536x300.jpg?text=Edge+of+the+Map",
   "bannerWide": "https://via.placeholder.com/900x180.jpg?text=Not+Found",
   "markdown": "README.md",
@@ -11,11 +11,11 @@
       "alt": "Light Within The Darkness SGX Trailer"
     }, {
       "title": "Screenshot 1",
-      "link": "",
+      "link": "https://raw.githubusercontent.com/UWStout/cthulhu-fa19/master/assets/images/conservatoryfinal.jpg?token=ANC5TSG52BGQD56RIPW2GJC57FA62",
       "alt": "Light Within The Darkness Screenshot"
     }, {
       "title": "Screenshot 2",
-      "link": "",
+      "link": "https://raw.githubusercontent.com/UWStout/cthulhu-fa19/master/assets/images/TiredTom_v01.png?token=ANC5TSCRQPVXAIGG45Z23PS57FBAW",
       "alt": "Light Within The Darkness Screenshot"
     }, {
       "title": "Screenshot 3",
@@ -27,7 +27,7 @@
       "alt": "Light Within The Darkness Screenshot"
     }, {
       "title": "Source Code Evolution",
-      "vimeoID": "305124193",
+      "vimeoID": "",
       "alt": "gource visualization of the changes in the source code"
     }
   ]
