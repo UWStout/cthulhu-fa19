@@ -1,0 +1,34 @@
+{
+  "title": "Light Within The Darkness",
+  "byLine": "****catchy phrase****",
+  "bannerTitle": "https://via.placeholder.com/536x300.jpg?text=Edge+of+the+Map",
+  "bannerWide": "https://via.placeholder.com/900x180.jpg?text=Not+Found",
+  "markdown": "https://github.com/UWStout/cthulhu-fa19/blob/master/README.md",
+  "media": [
+    {
+      "title": "Game Trailer",
+      "vimeoID": "305643953",
+      "alt": "Light Within The Darkness SGX Trailer"
+    }, {
+      "title": "Screenshot 1",
+      "link": "https://raw.githubusercontent.com/UWStout/gdd325-fa18-website/master/edge_of_the_map/map1.png",
+      "alt": "Light Within The Darkness Screenshot"
+    }, {
+      "title": "Screenshot 2",
+      "link": "https://raw.githubusercontent.com/UWStout/gdd325-fa18-website/master/edge_of_the_map/map2.png",
+      "alt": "Light Within The Darkness Screenshot"
+    }, {
+      "title": "Screenshot 3",
+      "link": "https://raw.githubusercontent.com/UWStout/gdd325-fa18-website/master/edge_of_the_map/seasnake.png",
+      "alt": "Light Within The Darkness Screenshot"
+    }, {
+      "title": "Screenshot 4",
+      "link": "https://raw.githubusercontent.com/UWStout/gdd325-fa18-website/master/edge_of_the_map/conceptSketch.png",
+      "alt": "Light Within The Darkness Screenshot"
+    }, {
+      "title": "Source Code Evolution",
+      "vimeoID": "305124193",
+      "alt": "gource visualization of the changes in the source code"
+    }
+  ]
+}

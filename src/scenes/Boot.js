@@ -29,7 +29,7 @@ class Boot extends Phaser.Scene {
     text.setOrigin(0.5, 0.5)
 
     // Read the assets for the splash screen (used in next stage)
-    this.load.image('logo', './assets/images/icon.png')
+    this.load.image('logo', './assets/images/BigMouth_FrontView.png')
   }
 
   // Called repeatedly after pre-load to draw the stage

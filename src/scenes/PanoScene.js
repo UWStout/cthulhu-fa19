@@ -289,6 +289,8 @@ class PanoScene extends Phaser.Scene {
     }
     // Game over case
     if (this.gameover && !this.gameoverHandled) {
+      console.log("Game over")
+      //this.cameras.main.fade(2000, 0 ,0 ,0)
       this.transitionTo('Conservatory', [], 0.0)
       this.gameoverHandled = true
     }
