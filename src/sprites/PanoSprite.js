@@ -6,13 +6,15 @@ import Phaser from 'phaser'
 import PathObject from '../sprites/PathObject'
 
 class PanoSprite extends Phaser.GameObjects.Sprite {
-  constructor ({ scene, angX, angY, textureKey, perspectiveStrength }) {
+  constructor ({ scene, angX, angY, textureKey, perspectiveStrength, canScale }) {
     // Initialize object basics
     super(scene, 0, 0, textureKey)
 
     // Save the longitude and latitude position
     this.angX = angX || 0
     this.angY = angY || 0
+
+    this.canScale = canScale
 
     // Set strength of perspective effect
     this.perspectiveStrength = perspectiveStrength || 1.0
@@ -82,10 +84,13 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
 
     // Add scaling when near edges of view to simulate perspective
     const scaler = Math.sqrt(xn * xn + yn * yn) * this.perspectiveStrength
-    super.setScale(
-      this.baseScaleX + scaler * this.baseScaleX,
-      this.baseScaleY + scaler * this.baseScaleY
-    )
+    if (this.canScale) {
+      console.log('scaling')
+      super.setScale(
+        this.baseScaleX + scaler * this.baseScaleX,
+        this.baseScaleY + scaler * this.baseScaleY
+      )
+    }
     // Updates the 3D audio
     this.update3dAudio()
     this.angleSet = true
