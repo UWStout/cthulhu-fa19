@@ -12,6 +12,7 @@ import Model from './Model' // audio
 
 // Import the scenes used in our game
 import BootScene from './scenes/Boot' // A bootstraping loader that loads the assets need by ... the loader!
+import StudioSplashScene from './scenes/StudioSplashScene' // Seth's Safari studio splash scene
 import SplashScene from './scenes/Splash' // A fancy loading splash screen for loading more assets
 import TestScene from './scenes/TestScene' // The main game level for testing
 import TitleScene from './scenes/TitleScene' // Title Screen for game
@@ -92,6 +93,7 @@ class Game extends Phaser.Game {
 
     // Name and load ALL needed game scenes (add more scenes here as you make them)
     this.scene.add('Boot', BootScene, false)
+    this.scene.add('StudioSplash', StudioSplashScene, false)
     this.scene.add('Splash', SplashScene, false)
     this.scene.add('TitleScene', TitleScene, false)
     this.scene.add('Credits', CreditsScene, false)
