@@ -1,31 +1,18 @@
 // Import the entire 'phaser' namespace
 import Phaser from 'phaser'
 
-// Import needed functions from utils and config settings
-import { centerGameObjects, centerX, centerY } from '../utils'
+import { centerX, centerY } from '../utils'
 
-/**
- * The Splash game state. This game state displays a dynamic splash screen used
- * to communicate the progress of asset loading. It should ensure it is always
- * displayed some mimimum amount of time (in case the assets are already cached
- * locally) and it should have pre-loaded any assets it needs to display in Boot
- * before it is run. Generally only runs once, after Boot, and cannot be re-entered.
- *
- * See Phaser.State for more about game states.
- */
-class Splash extends Phaser.Scene {
-  // Initialize some local settings for this state
-  init () {
+class StudioSplashScene extends Phaser.Scene {
+  init (data) {
+    this.cameras.main.setBackgroundColor('#000000')
+    this.allowNextScene = false
+    this.nextScene = 'TitleScene'
   }
 
   preload () {
-    // Add the logo to the screen and center it
-    this.logo = this.add.sprite(centerX(this), centerY(this) - 100, 'logo')
-    this.logo.setScale(2)
-    // this.logo.setScale(0.5, 0.5)
-    centerGameObjects([this.logo])
-
-    this.setupProgressBar(200)
+    // Show the studio splash logo
+    this.showLogo()
 
     // Room Assets
     this.load.image('bigmouth', 'assets/images/BigMouth_FrontView.png')
@@ -53,6 +40,7 @@ class Splash extends Phaser.Scene {
     // HUD info scene images
     this.load.image('bar', 'assets/images/insanityBar.png')
     this.load.image('barBorder', 'assets/images/insanity_meter_Border.png')
+    this.load.image('trace', 'assets/images/TestTraceImage.png')
     this.load.image('arrow', 'assets/images/arrow.png')
     this.load.image('minimapBackground', 'assets/images/minimapBackground.png')
 
@@ -88,88 +76,66 @@ class Splash extends Phaser.Scene {
 
     // creepty background music
     this.load.audio('bgMusic', 'assets/audio/ambience/ambient_drone_loop.mp3')
-
-    // The audiosprite with all music and SFX
-    this.load.audioSprite('sounds', 'assets/audio/sounds.json', [
-      'assets/audio/sounds.ogg', 'assets/audio/sounds.mp3',
-      'assets/audio/sounds.m4a', 'assets/audio/sounds.ac3'
-    ])
   }
 
-  setupProgressBar (yOffset) {
-    // Local variables for accessing width and height
-    const width = this.cameras.main.width
-    const height = this.cameras.main.height
+  showLogo () {
+    // Create an instance of the audiosprite to play the engine SFX
+    this.bkgSfx = this.sound.addAudioSprite('sounds')
+    this.bkgSfx.play('EngineStartAndRev')
 
-    // Create graphics assets for progress bar
-    const progressBar = this.add.graphics()
-    const progressBkg = this.add.graphics()
-    progressBkg.fillStyle(0x3ddf9a, 0.8) // #3ddf9a 0x222222
-    progressBkg.fillRect(width / 2 - 160, height / 2 - 25 + yOffset, 320, 50)
+    const carImage = this.add.image(centerX(this), centerY(this), 'safariCar')
+    carImage.setScale(0.55)
+    carImage.setAlpha(0.0)
 
-    // Create loading text
-    const loadingText = this.make.text({
-      x: width / 2,
-      y: height / 2 - 50 + yOffset,
-      text: 'Loading...',
-      style: {
-        font: '20px monospace',
-        fill: '#ffffff'
-      }
-    })
-    loadingText.setOrigin(0.5, 0.5)
+    const logoImage = this.add.image(centerX(this), centerY(this), 'safariLogo')
+    logoImage.setScale(0.6)
+    logoImage.setAlpha(0.0)
 
-    const percentText = this.make.text({
-      x: width / 2,
-      y: height / 2 + yOffset,
-      text: '0%',
-      style: {
-        font: '18px monospace',
-        fill: '#ffffff'
-      }
+    const carTween = this.add.tween({
+      targets: carImage,
+      alpha: 1.0,
+      duration: 1000,
+      paused: true
     })
 
-    const assetText = this.make.text({
-      x: width / 2,
-      y: height / 2 + 50 + yOffset,
-      text: '',
-      style: {
-        font: '18px monospace',
-        fill: '#ffffff'
-      }
+    const logoTween = this.add.tween({
+      targets: logoImage,
+      alpha: 1.0,
+      duration: 1000,
+      paused: true
     })
 
-    centerGameObjects([percentText, loadingText, assetText])
+    // Fade in car image
+    setTimeout(() => {
+      carTween.play()
+    }, 2000)
 
-    // Display the progress bar
-    this.load.on('progress', (percent) => {
-      progressBar.clear()
-      progressBar.fillStyle(0xffffff, 1)
-      progressBar.fillRect(width / 2 - 150, height / 2 - 15 + yOffset, 300 * percent, 30)
-      percentText.setText(`${parseInt(percent * 100)}%`)
-    })
+    // Fade in logo image
+    setTimeout(() => {
+      logoTween.play()
+    }, 6000)
 
-    this.load.on('fileprogress', (file) => {
-      assetText.setText(`Loading asset: ${file.key}`)
-    })
+    // Fade out entire scene
+    const sceneCamera = this.cameras.main
+    setTimeout(() => {
+      sceneCamera.fadeOut(2000)
+    }, 12000)
 
-    this.load.on('complete', () => {
-      loadingText.destroy()
-      percentText.destroy()
-      assetText.destroy()
-      progressBar.destroy()
-      progressBkg.destroy()
-    })
+    const myScene = this
+    setTimeout(() => {
+      const loadingText = myScene.add.text(centerX(myScene), centerY(myScene),
+        'loading', { font: '16px Arial', fill: '#FFFFFF', align: 'center' })
+      loadingText.setOrigin(0.5, 0.5)
+      myScene.allowNextScene = true
+    }, 15000)
   }
 
-  // Pre-load is done
-  create () {}
-
-  // Called repeatedly after pre-load finishes and after 'create' has run
   update () {
-    this.scene.start('TitleScene')
+    if (this.allowNextScene) {
+      this.scene.start(this.nextScene)
+    }
   }
 }
 
-// Expose the Splash class for use in other modules
-export default Splash
+// Expose the class TestScene to other files
+export default StudioSplashScene
