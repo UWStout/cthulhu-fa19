@@ -175,7 +175,16 @@ class PanoScene extends Phaser.Scene {
     this.heartbeatAudio = this.sound.add('heartbeat', { loop: true, volume: 0.0 })
     this.heartbeatAudio.play()
 
-    this.anims.create('')
+    // Creates a walking animation for tomW
+    const config = {
+      key: 'walk',
+      frames: this.anims.generateFrameNumbers('tomW'),
+      frameRate: 5,
+      yoyo: false,
+      repeat: -1
+    }
+
+    this.anims.create(config)
   }
 
   // Adds a sprite that is orientated in the 3D world
@@ -269,7 +278,7 @@ class PanoScene extends Phaser.Scene {
     }
     // Game over case
     if (this.gameover && !this.gameoverHandled) {
-      console.log("Game over")
+      console.log('Game over')
       this.transitionTo('Conservatory', [], 0.0)
       this.gameoverHandled = true
     }
