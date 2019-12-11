@@ -11,6 +11,7 @@ class Conservatory extends PanoScene {
 
     // Setup the skybox view
     this.skyboxName = 'Cave'
+    this.masterSkybox = 'Cave'
     this.vertFOV = 90
   }
 

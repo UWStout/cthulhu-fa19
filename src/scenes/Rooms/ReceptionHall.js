@@ -9,6 +9,7 @@ class ReceptionHall extends PanoScene {
     // Make sure the parent doesn't override our values
     this.ignoreInitVals = true
 
+    this.masterSkybox = 'ReceptionHall'
     this.vertFOV = 90
   }
 

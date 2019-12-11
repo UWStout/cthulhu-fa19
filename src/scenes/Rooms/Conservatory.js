@@ -9,6 +9,8 @@ class Conservatory extends PanoScene {
     this.ignoreInitVals = true
 
     this.vertFOV = 90
+
+    this.masterSkybox = 'Conservatory'
   }
 
   preload () {
@@ -29,7 +31,7 @@ class Conservatory extends PanoScene {
     bigmouthMonster.addPath(-300, -8, 2.0, 0.5)
     bigmouthMonster.addPath(300, -8, 2.0, 0.1)
     bigmouthMonster.pathLoops = true
-    this.createMonster(-135, -8, 2.0, 'tomW').setScale(4)
+    this.createMonster(-135, -8, 2.0, 'tom')
     this.createMonster(135, -8, 2.0, 'longarms')
 
     // Collectable Object interaction
