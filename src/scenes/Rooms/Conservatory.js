@@ -45,7 +45,7 @@ class Conservatory extends PanoScene {
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
     // Makes animation for tom walking
-    tomAnimated.anims.play('walk')
+    tomAnimated.anims.play('walk').setScale(4)
   }
 }
 
