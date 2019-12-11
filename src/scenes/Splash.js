@@ -33,6 +33,9 @@ class Splash extends Phaser.Scene {
     this.load.image('longarms', 'assets/images/LongArmsBoi_FrontView.png')
     this.load.image('flashlight', 'assets/images/flashlight.png')
 
+    // Sprites
+    this.load.spritesheet('tomW', 'assets/images/TT_WA_FrontFace_SPRITESHEET.png', { frameWidth: 120, frameHeight: 120 })
+
     // Main Pano Scene Assets
     this.load.image('trace', 'assets/images/symbol1pattern.png')
 
@@ -70,7 +73,7 @@ class Splash extends Phaser.Scene {
     this.load.image('checkedBox', 'assets/images/blue_boxCheckmark.png')
     this.load.image('box', 'assets/images/grey_box.png')
 
-    // creepty background music
+    // creepy background music
     this.load.audio('bgMusic', 'assets/audio/ambience/ambient_drone_loop.wav')
 
     // The audiosprite with all music and SFX
@@ -147,8 +150,7 @@ class Splash extends Phaser.Scene {
   }
 
   // Pre-load is done
-  create () {
-  }
+  create () {}
 
   // Called repeatedly after pre-load finishes and after 'create' has run
   update () {

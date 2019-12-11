@@ -16,6 +16,7 @@ import PixelationPipeline from '../shaders/PixelationPipeline'
 import BlurPipeline from '../shaders/BlurPipeline'
 
 class PanoScene extends Phaser.Scene {
+  
   init (data) {
     this.startAngle = 0
     if (typeof data.startAngle !== 'undefined') {
@@ -79,6 +80,7 @@ class PanoScene extends Phaser.Scene {
   }
 
   create () {
+
     // Initialize a Phaser3D rendering system
     this.phaser3d = new Phaser3D(this, {
       fov: this.vertFOV,
@@ -183,6 +185,7 @@ class PanoScene extends Phaser.Scene {
     this.pixelScreamRight = this.sound.add('monsterScreamPixelRight', { rate: 0.5 })
     // this.pixelScreamLeft.play()
     // this.pixelScreamRight.play()
+
   }
 
   // Adds a sprite that is orientated in the 3D world
