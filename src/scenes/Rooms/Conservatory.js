@@ -1,7 +1,6 @@
 import PanoScene from '../PanoScene'
 import Phaser, { NONE } from 'phaser'
 import { doesNotReject } from 'assert'
-
 class Conservatory extends PanoScene {
   constructor () {
     super()
@@ -26,6 +25,7 @@ class Conservatory extends PanoScene {
   }
 
   create () {
+
     // Create enemies for this scene
     const bigmouthMonster = this.createMonster(-180, -8, 2.0, 'bigmouth')
     bigmouthMonster.addPath(-300, -8, 2.0, 0.5)

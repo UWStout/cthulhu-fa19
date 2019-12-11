@@ -16,6 +16,7 @@ import PanoSprite from '../sprites/PanoSprite'
 import BlurPipeline from '../shaders/BlurPipeline'
 
 class PanoScene extends Phaser.Scene {
+  
   init (data) {
     this.startAngle = 0
     if (typeof data.startAngle !== 'undefined') {
@@ -78,6 +79,7 @@ class PanoScene extends Phaser.Scene {
   }
 
   create () {
+
     // Initialize a Phaser3D rendering system
     this.phaser3d = new Phaser3D(this, {
       fov: this.vertFOV,
