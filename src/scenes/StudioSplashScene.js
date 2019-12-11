@@ -21,7 +21,14 @@ class StudioSplashScene extends Phaser.Scene {
     this.load.image('flashlight', 'assets/images/flashlight.png')
 
     // Sprites
-    this.load.spritesheet('tomW', 'assets/images/TT_WA_FrontFace_SPRITESHEET.png', { frameWidth: 120, frameHeight: 120 })
+    this.load.spritesheet('tomF', 'assets/images/TT_WA_FrontFace_SPRITESHEET.png', { frameWidth: 120, frameHeight: 120 }) // Tom front
+    this.load.spritesheet('tomW', 'assets/images/TT_WA_3.4_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) //Tom Walk
+
+    this.load.spritesheet('longarmsF', 'assets/images/LA_WA_FrontFace_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // longarms front
+    this.load.spritesheet('longarmsW', 'assets/images/LA_WA_3.4_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // longarms walk
+
+    this.load.spritesheet('bigmouthF', 'assets/images/BM_WA_FrontFace_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // bigmouth front
+    this.load.spritesheet('bigmouthW', 'assets/images/BM_3.4Face_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // bigmouth walk
 
     // Main Pano Scene Assets
     this.load.image('trace', 'assets/images/symbol1pattern.png')

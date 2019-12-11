@@ -21,11 +21,14 @@ class Conservatory extends PanoScene {
 
   create () {
     // Create enemies for this scene
-    const bigmouthMonster = this.createMonster(-180, 0, 2, 'bigmouth')
+    const bigmouthMonster = this.createMonster(-180, 0, 2, 'bigmouthF')
     bigmouthMonster.addSound(this, 'monsterScreamPixel', 0.5)
+    bigmouthMonster.addPath(-200, -8, 2.0, 0.5, 8.0)
+    bigmouthMonster.addPath(200, -8, 2.0, 0.1, 2.0)
+    bigmouthMonster.pathLoops = true
 
-    this.createMonster(-135, 0, 2.0, 'tom')
-    this.createMonster(135, 0, 2.0, 'longarms')
+    const tomMonster = this.createMonster(-135, 0, 2.0, 'tomF')
+    const longarmsMonster = this.createMonster(135, 0, 2.0, 'longarmsF')
 
     // Collectable Object interaction
     this.createCollectable(250, 5, 0.8, 0.35, 'book')
@@ -39,6 +42,9 @@ class Conservatory extends PanoScene {
     super.create()
 
     bigmouthMonster.playSound()
+    bigmouthMonster.anims.play('front3')
+    tomMonster.anims.play('front')
+    longarmsMonster.anims.play('front2')
   }
 }
 

@@ -26,7 +26,7 @@ class ReceptionHall extends PanoScene {
 
   create () {
     // Create enemies for this scene
-    this.createMonster(180, 0, 1, 'longarms')
+    const longarmsMonster = this.createMonster(180, 0, 1, 'longarms')
 
     // Collectable Object interaction
     this.createCollectable(-72, 0, 0.7, 1.4, 'receptionDoor', 'key')
@@ -42,6 +42,7 @@ class ReceptionHall extends PanoScene {
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
+    longarmsMonster.anims.play('front2')
   }
 }
 
