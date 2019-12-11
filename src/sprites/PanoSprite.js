@@ -6,13 +6,15 @@ import Phaser from 'phaser'
 import PathObject from '../sprites/PathObject'
 
 class PanoSprite extends Phaser.GameObjects.Sprite {
-  constructor ({ scene, angX, angY, textureKey, perspectiveStrength }) {
+  constructor ({ scene, angX, angY, textureKey, perspectiveStrength, canScale }) {
     // Initialize object basics
     super(scene, 0, 0, textureKey)
 
     // Save the longitude and latitude position
     this.angX = angX || 0
     this.angY = angY || 0
+
+    this.canScale = canScale
 
     // Set strength of perspective effect
     this.perspectiveStrength = perspectiveStrength || 1.0
@@ -82,10 +84,12 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
 
     // Add scaling when near edges of view to simulate perspective
     const scaler = Math.sqrt(xn * xn + yn * yn) * this.perspectiveStrength
-    super.setScale(
-      this.baseScaleX + scaler * this.baseScaleX,
-      this.baseScaleY + scaler * this.baseScaleY
-    )
+    if (this.canScale) {
+      super.setScale(
+        this.baseScaleX + scaler * this.baseScaleX,
+        this.baseScaleY + scaler * this.baseScaleY
+      )
+    }
     // Updates the 3D audio
     this.update3dAudio()
     this.angleSet = true
@@ -95,15 +99,17 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
   addPath (newAngX, newAngY, newScale, speed, trigger) {
     const pathObject = new PathObject()
     if (typeof trigger === 'number') { // If the trigger is a timer
-
-    } else if (typeof trigger === 'string') { // If the trigger is a timer
-
+      pathObject.triggerEvent = 'number'
+      pathObject.timerNumber = trigger
+      console.log(trigger)
+    } else if (typeof trigger === 'string') { // If the trigger is a item
+      pathObject.neededItem = trigger
     } else { // No trigger defined
       pathObject.isReady = true
     }
 
     // Sets the initial position of path (current pos if first path, previous paths end otherwise)
-    if (this.paths.length == 0) {
+    if (this.paths.length === 0) {
       pathObject.initialPosX = this.angX
       pathObject.initialPosY = this.angY
       pathObject.initialScale = this.baseScaleX
@@ -144,6 +150,35 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
           }
           this.paths.shift()
         }
+      } else {
+        if (this.paths[0].triggerEvent === 'number') {
+          this.updateTimer(this.paths[0])
+        }
+      }
+    }
+  }
+
+  updateTimer (pathObject) {
+    pathObject.timerNumber -= 0.012
+    if (pathObject.timerNumber <= 0) {
+      pathObject.isReady = true
+      console.log('Monster path timer has expired')
+    }
+  }
+
+  updatePathItems (collectedList) {
+    for (let p = 0; p < this.paths.length; p++) {
+      if (typeof this.paths[p].neededItem !== 'undefined' && !this.paths[p].isReady) {
+        let haveRequirement = false
+        for (let i = 0; i < collectedList.length; i++) {
+          if (collectedList[i] === this.paths[p].neededItem) {
+            haveRequirement = true
+          }
+        }
+        if (haveRequirement) {
+          console.log('Monster has item to allow path')
+        }
+        this.paths[p].isReady = haveRequirement
       }
     }
   }

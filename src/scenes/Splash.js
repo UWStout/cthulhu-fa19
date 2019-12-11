@@ -42,6 +42,7 @@ class Splash extends Phaser.Scene {
     this.load.audio('ambienceTones', 'assets/audio/ambience/ambient_tones_loop.mp3')
     this.load.audio('ambienceBitcrush', 'assets/audio/ambience/ambient_bitcrush_loop.mp3')
     this.load.audio('heartbeat', 'assets/audio/noises/heartbeat.mp3')
+    this.load.audio('pickup', 'assets/audio/noises/pickup_sound.mp3')
 
     this.load.audio('monsterScreamPixelLeft', 'assets/audio/noises/monster_pixel_scream_left.mp3')
     this.load.audio('monsterScreamPixelRight', 'assets/audio/noises/monster_pixel_scream_right.mp3')
@@ -52,9 +53,20 @@ class Splash extends Phaser.Scene {
     // HUD info scene images
     this.load.image('bar', 'assets/images/insanityBar.png')
     this.load.image('barBorder', 'assets/images/insanity_meter_Border.png')
-    this.load.image('trace', 'assets/images/TestTraceImage.png')
     this.load.image('arrow', 'assets/images/arrow.png')
     this.load.image('minimapBackground', 'assets/images/minimapBackground.png')
+
+    // Trace images for boss fight
+    this.load.image('traceOne', 'assets/images/symbol1.png')
+    this.load.image('traceTwo', 'assets/images/symbol2.png')
+    this.load.image('traceThree', 'assets/images/symbol3.png')
+    this.load.image('traceFour', 'assets/images/symbol4.png')
+    this.load.image('traceFive', 'assets/images/symbol5.png')
+    this.load.image('traceOnePattern', 'assets/images/symbol1pattern.png')
+    this.load.image('traceTwoPattern', 'assets/images/symbol2pattern.png')
+    this.load.image('traceThreePattern', 'assets/images/symbol3pattern.png')
+    this.load.image('traceFourPattern', 'assets/images/symbol4pattern.png')
+    this.load.image('traceFivePattern', 'assets/images/symbol5pattern.png')
 
     // Load minimap images
     this.load.image('minimapConservatory', 'assets/images/skybox/Conservatory/mini.png')
