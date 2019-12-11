@@ -89,6 +89,8 @@ class PanoScene extends Phaser.Scene {
     })
     this.horiFOV = this.vertFOV * this.phaser3d.camera.aspect
 
+    this.fadeoutTime = 300
+
     // Runs the info scene to display on top of the screen
     this.infoSceneData.healthAmount = this.healthAmount
     this.infoSceneData.skyboxName = this.skyboxName
@@ -191,6 +193,11 @@ class PanoScene extends Phaser.Scene {
     }
 
     this.anims.create(config)
+
+    // Updates the monsters path reqirements for items based if they're in inventory
+    for (let i = 0; i < this.monsterList.length; i++) {
+      this.monsterList[i].updatePathItems(this.collectedObjects)
+    }
   }
 
   // Adds a sprite that is orientated in the 3D world
@@ -206,7 +213,7 @@ class PanoScene extends Phaser.Scene {
     angY = angY || 0
     baseScale = baseScale || 1.0
     const zoomStrength = 1.0
-    if(canScale !== false) {
+    if (canScale !== false) {
       canScale = true
     }
 
@@ -384,7 +391,7 @@ class PanoScene extends Phaser.Scene {
 
   addCollectedObject (spriteName) {
     this.collectedObjects.push(spriteName)
-    for (let i = 0; i < this.collectableList.length; i++) {
+    for (let i = 0; i < this.collectableList.length; i++) { // Unlocks items that have a requirement before picking them up
       if (this.collectableList[i].requirement === spriteName) {
         this.collectableList[i].input.enabled = true
       }
@@ -438,6 +445,9 @@ class PanoScene extends Phaser.Scene {
 
   sendTrace () {
     if (this.traceNumber >= this.traceList.length) {
+      this.fadeoutTime = 1000
+      this.healthAmount = 100
+      this.transitionTo('TitleScene', this.collectedObjects, -this.controls.getAzimuthalAngle())
       console.log('Boss beat')
     } else {
       this.addTraceImage(this.traceList[this.traceNumber][0], this.traceList[this.traceNumber][1])
