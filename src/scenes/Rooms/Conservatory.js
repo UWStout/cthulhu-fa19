@@ -31,7 +31,7 @@ class Conservatory extends PanoScene {
     bigmouthMonster.addPath(-300, -8, 2.0, 0.5, 10.0)
     bigmouthMonster.addPath(300, -8, 2.0, 0.1, 'key')
     bigmouthMonster.pathLoops = true
-    const tomAnimated = this.createMonster(-135, -8, 2.0, 'tomW').setScale(4)
+    const tomAnimated = this.createMonster(-135, -8, 2.0, 'tomW')
     this.createMonster(135, -8, 2.0, 'longarms')
 
     // Collectable Object interaction
@@ -46,7 +46,7 @@ class Conservatory extends PanoScene {
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
     // Makes animation for tom walking
-    tomAnimated.anims.play('walk')
+    tomAnimated.anims.play('walk').setScale(4)
   }
 }
 
