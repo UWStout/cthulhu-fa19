@@ -30,6 +30,8 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
     this.pathLoops = false
 
     this.requirement = undefined
+
+    this.angleSet = false
   }
 
   setScale (xVal, yVal) {
@@ -69,7 +71,8 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
       xnValue -= 360
     }
     const xn = xnValue / hFOV
-    this.viewDifference = xWrap - viewX + 90
+    // Sets the view difference for 3D audio usage
+    this.viewDifference = xnValue
     // Make the vertical FOV negative to counteract shader weirdness
     const yn = (this.angY - viewY) / -vFOV
 
@@ -85,6 +88,7 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
     )
     // Updates the 3D audio
     this.update3dAudio()
+    this.angleSet = true
   }
 
   // Adds a path for the sprite to follow
@@ -146,48 +150,46 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
 
   // Converts the angle facing to 3d volume strengths for left and right ear
   update3dAudio () {
-    if (this.angX === 135) {
-      let angleToMonster = this.viewDifference
-      // Correctes the weird offset we get from pano angle
-      if (angleToMonster > 180) {
-        angleToMonster = -180 + (angleToMonster - 180)
-      }
-      this.leftEarVolume = 0.5
-      this.rightEarVolume = 0.5
-      if (angleToMonster <= 0) {
-        this.leftEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
-        if (angleToMonster < -90) {
-          this.rightEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
-        } else {
-          this.rightEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
-        }
+    let angleToMonster = this.viewDifference
+    // Correctes the weird offset we get from pano angle
+    if (angleToMonster > 180) {
+      angleToMonster = -180 + (angleToMonster - 180)
+    }
+    let leftEarVolume = 0.5
+    let rightEarVolume = 0.5
+    if (angleToMonster <= 0) {
+      leftEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
+      if (angleToMonster < -90) {
+        rightEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
       } else {
-        this.rightEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
-        if (angleToMonster > 90) {
-          this.leftEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
-        } else {
-          this.leftEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
-        }
+        rightEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
       }
+    } else {
+      rightEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
+      if (angleToMonster > 90) {
+        leftEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
+      } else {
+        leftEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
+      }
+    }
+    if (typeof this.leftSound !== 'undefined') {
+      this.leftSound.setVolume(leftEarVolume)
+      this.rightSound.setVolume(rightEarVolume)
     }
   }
 
   // Plays the sound added to the monster using 3D audio
   playSound () {
-    this.update3dAudio()
-    console.log(this.leftEarVolume)
-    this.leftSound.setVolume(this.leftEarVolume)
-    this.rightSound.setVolume(this.rightEarVolume)
+    while (!this.angleSet) {}
+    console.log(this.viewDifference)
     this.leftSound.play()
     this.rightSound.play()
   }
 
   // Adds a sound to the monster based on name of the file
   addSound (scene, soundName, speedRate = 1) {
-    console.log('Adding Sound')
     this.leftSound = scene.sound.add(soundName.concat('Left'), { rate: speedRate })
     this.rightSound = scene.sound.add(soundName.concat('Right'), { rate: speedRate })
-    console.log('Sound Added')
   }
 }
 

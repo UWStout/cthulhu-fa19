@@ -38,7 +38,7 @@ class Conservatory extends PanoScene {
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
 
-    //bigmouthMonster.playSound()
+    bigmouthMonster.playSound()
   }
 }
 

@@ -150,6 +150,10 @@ class PanoScene extends Phaser.Scene {
 
     pic.mask = new Phaser.Display.Masks.BitmapMask(this, spotlight)
     pic.mask.invertAlpha = true
+    // Make sure spotlight starts at the mouse
+    const ourPointer = this.game.input.activePointer
+    spotlight.x = ourPointer.x
+    spotlight.y = ourPointer.y
     this.input.on('pointermove', function (pointer) {
       spotlight.x = pointer.x
       spotlight.y = pointer.y
@@ -346,7 +350,7 @@ class PanoScene extends Phaser.Scene {
       collectable.setInteractive(new Phaser.Geom.Rectangle(0, 0, collectable.width, collectable.height), Phaser.Geom.Rectangle.Contains)
       collectable.requirement = requirementObject
       collectable.input.enabled = this.checkRequirement(requirementObject)
-      collectable.alpha = 0.001
+      collectable.alpha = 0.1
       this.collectableList.push(collectable)
       collectable.on('pointerdown', (pointer) => {
         this.addCollectedObject(spriteName)
