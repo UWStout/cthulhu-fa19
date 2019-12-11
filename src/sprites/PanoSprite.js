@@ -29,7 +29,7 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
 
     this.pathLoops = false
 
-    this.requirement = ''
+    this.requirement = undefined
   }
 
   setScale (xVal, yVal) {
@@ -152,25 +152,42 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
       if (angleToMonster > 180) {
         angleToMonster = -180 + (angleToMonster - 180)
       }
-      let leftEarVolume = 0.5
-      let rightEarVolume = 0.5
+      this.leftEarVolume = 0.5
+      this.rightEarVolume = 0.5
       if (angleToMonster <= 0) {
-        leftEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
+        this.leftEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
         if (angleToMonster < -90) {
-          rightEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
+          this.rightEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
         } else {
-          rightEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
+          this.rightEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
         }
       } else {
-        rightEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
+        this.rightEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
         if (angleToMonster > 90) {
-          leftEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
+          this.leftEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
         } else {
-          leftEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
+          this.leftEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
         }
       }
-      // Return volume to use
     }
+  }
+
+  // Plays the sound added to the monster using 3D audio
+  playSound () {
+    this.update3dAudio()
+    console.log(this.leftEarVolume)
+    this.leftSound.setVolume(this.leftEarVolume)
+    this.rightSound.setVolume(this.rightEarVolume)
+    this.leftSound.play()
+    this.rightSound.play()
+  }
+
+  // Adds a sound to the monster based on name of the file
+  addSound (scene, soundName, speedRate = 1) {
+    console.log('Adding Sound')
+    this.leftSound = scene.sound.add(soundName.concat('Left'), { rate: speedRate })
+    this.rightSound = scene.sound.add(soundName.concat('Right'), { rate: speedRate })
+    console.log('Sound Added')
   }
 }
 

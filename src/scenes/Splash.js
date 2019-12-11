@@ -71,7 +71,7 @@ class Splash extends Phaser.Scene {
     this.load.image('box', 'assets/images/grey_box.png')
 
     // creepty background music
-    this.load.audio('bgMusic', 'assets/audio/ambience/ambient_drone_loop.wav')
+    this.load.audio('bgMusic', 'assets/audio/ambience/ambient_drone_loop.mp3')
 
     // The audiosprite with all music and SFX
     this.load.audioSprite('sounds', 'assets/audio/sounds.json', [

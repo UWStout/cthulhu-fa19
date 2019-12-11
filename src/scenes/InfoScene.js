@@ -35,8 +35,9 @@ class InfoScene extends Phaser.Scene {
     this.healthBarBackground.scaleX = 0.25
     this.healthBarBackground.scaleY = 0.25
 
-    this.add.image(this.width * 0.95, this.height / 13, 'minimapBackground')
+    //this.add.image(this.width * 0.95, this.height / 13, 'minimapBackground')
     this.arrow = this.add.image(this.width * 0.95, this.height / 13, 'arrow')
+    this.arrow.alpha = 0
 
     let miniMapName = 'minimap' + this.skyboxName
     if (miniMapName.indexOf('/') >= 0) {
@@ -44,6 +45,7 @@ class InfoScene extends Phaser.Scene {
     }
     console.log(miniMapName)
     this.minimap = this.add.image(this.width * 0.95, this.height / 13, miniMapName)
+    this.minimap.alpha = 0
 
     this.updateHealth(this.healthAmount)
 

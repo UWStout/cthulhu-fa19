@@ -24,7 +24,7 @@ class Conservatory extends PanoScene {
     this.createDoor(180, 2, 0.85, 1.4, 'Cave', 0)
 
     // Initialize parent scene (must call AFTER creating sprites)
-    this.infoSceneData.showTrace = true
+    //this.infoSceneData.showTrace = true
     super.create()
   }
 }

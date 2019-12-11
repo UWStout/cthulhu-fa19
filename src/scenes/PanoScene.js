@@ -12,7 +12,7 @@ import '../../plugins/phaser3D/OrbitControls'
 import PanoSprite from '../sprites/PanoSprite'
 
 // Import the special pixelization filter
-import PixelationPipeline from '../shaders/PixelationPipeline'
+// import PixelationPipeline from '../shaders/PixelationPipeline'
 import BlurPipeline from '../shaders/BlurPipeline'
 
 class PanoScene extends Phaser.Scene {
@@ -56,7 +56,6 @@ class PanoScene extends Phaser.Scene {
   }
 
   preload () {
-    this.pixelationPipeline = this.game.renderer.addPipeline('PixelFilter', new PixelationPipeline(this.game))
     if (!this.game.renderer.hasPipeline('BlurFilter')) {
       this.blurPipeline = this.game.renderer.addPipeline('BlurFilter', new BlurPipeline(this.game))
     }
@@ -132,11 +131,6 @@ class PanoScene extends Phaser.Scene {
 
     this.cameras.main.fadeIn(this.fadeoutTime) // Camera fade-in for start of game
 
-    // Pixelation effect of camera
-    this.pixelationPipeline.res = {
-      width: this.cameras.main.width,
-      height: this.cameras.main.height
-    }
     // this.cameras.main.setRenderToTexture('PixelFilter')
     this.cameras.main.setRenderToTexture('BlurFilter')
 
@@ -179,10 +173,7 @@ class PanoScene extends Phaser.Scene {
     this.heartbeatAudio = this.sound.add('heartbeat', { loop: true, volume: 0.0 })
     this.heartbeatAudio.play()
 
-    this.pixelScreamLeft = this.sound.add('monsterScreamPixelLeft', { rate: 0.5 })
-    this.pixelScreamRight = this.sound.add('monsterScreamPixelRight', { rate: 0.5 })
-    // this.pixelScreamLeft.play()
-    // this.pixelScreamRight.play()
+    this.anims.create('')
   }
 
   // Adds a sprite that is orientated in the 3D world
@@ -239,8 +230,6 @@ class PanoScene extends Phaser.Scene {
     if (this.gameover) {
       this.healthAmount = 100
     }
-    this.pixelScreamLeft.play()
-    this.pixelScreamRight.play()
     this.scene.start(sceneName, { collectedObjects: collectedObjects, startAngle: startAngle, healthAmount: this.healthAmount })
   }
 
@@ -279,7 +268,6 @@ class PanoScene extends Phaser.Scene {
     // Game over case
     if (this.gameover && !this.gameoverHandled) {
       console.log("Game over")
-      //this.cameras.main.fade(2000, 0 ,0 ,0)
       this.transitionTo('Conservatory', [], 0.0)
       this.gameoverHandled = true
     }
@@ -315,7 +303,7 @@ class PanoScene extends Phaser.Scene {
     doorSprite.baseScaleX *= scaleX
     doorSprite.baseScaleY *= scaleY
     // TODO: Change alpha to 0.01 when in production so the door is basically invisible
-    doorSprite.alpha = 0.1
+    doorSprite.alpha = 0.001
     doorSprite.setInteractive(new Phaser.Geom.Rectangle(0, 0, doorSprite.width, doorSprite.height), Phaser.Geom.Rectangle.Contains)
 
     // Checks if the pointer was pressed and released on the same door
@@ -347,12 +335,13 @@ class PanoScene extends Phaser.Scene {
       collectable.setInteractive(new Phaser.Geom.Rectangle(0, 0, collectable.width, collectable.height), Phaser.Geom.Rectangle.Contains)
       collectable.requirement = requirementObject
       collectable.input.enabled = this.checkRequirement(requirementObject)
+      collectable.alpha = 0.001
       this.collectableList.push(collectable)
       collectable.on('pointerdown', (pointer) => {
         this.addCollectedObject(spriteName)
         console.log(this.collectedObjects)
         collectable.destroy()
-        this.transitionTo(this.masterSkybox, this.collectedObjects, this.controls.getAzimuthalAngle())
+        this.transitionTo(this.masterSkybox, this.collectedObjects, -this.controls.getAzimuthalAngle())
       }, this)
     }
   }
@@ -397,9 +386,9 @@ class PanoScene extends Phaser.Scene {
       var rectB = new Phaser.Geom.Rectangle(pointer.x - this.mouseCheckRadius / 2, pointer.y - this.mouseCheckRadius / 2, this.mouseCheckRadius, this.mouseCheckRadius)
 
       // Draws the boxes
-      this.graphics.lineStyle(1, 0xff0000)
-      this.graphics.strokeRectShape(rectB)
-      this.graphics.strokeRectShape(rectA)
+      // this.graphics.lineStyle(1, 0xff0000)
+      // this.graphics.strokeRectShape(rectB)
+      // this.graphics.strokeRectShape(rectA)
 
       var rectC = new Phaser.Geom.Rectangle()
       Phaser.Geom.Rectangle.Intersection(rectA, rectB, rectC)

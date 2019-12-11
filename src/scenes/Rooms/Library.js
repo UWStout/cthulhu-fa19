@@ -21,7 +21,9 @@ class Conservatory extends PanoScene {
 
   create () {
     // Create enemies for this scene
-    this.createMonster(-180, 0, 2, 'bigmouth')
+    const bigmouthMonster = this.createMonster(-180, 0, 2, 'bigmouth')
+    bigmouthMonster.addSound(this, 'monsterScreamPixel', 0.5)
+
     this.createMonster(-135, 0, 2.0, 'tom')
     this.createMonster(135, 0, 2.0, 'longarms')
 
@@ -35,6 +37,8 @@ class Conservatory extends PanoScene {
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
+
+    //bigmouthMonster.playSound()
   }
 }
 
