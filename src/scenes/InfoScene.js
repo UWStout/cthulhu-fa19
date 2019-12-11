@@ -35,17 +35,20 @@ class InfoScene extends Phaser.Scene {
     this.healthBarBackground.scaleX = 0.25
     this.healthBarBackground.scaleY = 0.25
 
-    //this.add.image(this.width * 0.95, this.height / 13, 'minimapBackground')
-    this.arrow = this.add.image(this.width * 0.95, this.height / 13, 'arrow')
-    this.arrow.alpha = 0
-
     let miniMapName = 'minimap' + this.skyboxName
     if (miniMapName.indexOf('/') >= 0) {
       miniMapName = miniMapName.slice(0, miniMapName.indexOf('/'))
     }
+    // let arrowHoriPos = 0
+    // let arrowVertPos = 0
+    // Sets offsets for the player pointer
+    // if (miniMapName === 'Library') {
+
+    // } else if (miniMapName === 'Conservatory')
+
+    this.arrow = this.add.image(this.width * 0.95, this.height / 13, 'arrow')
     console.log(miniMapName)
-    this.minimap = this.add.image(this.width * 0.95, this.height / 13, miniMapName)
-    this.minimap.alpha = 0
+    this.minimap = this.add.image(this.width * 0.95, this.height / 9, 'globalMinimap')
 
     this.updateHealth(this.healthAmount)
 
