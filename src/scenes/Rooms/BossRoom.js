@@ -21,7 +21,7 @@ class Conservatory extends PanoScene {
 
   create () {
     //const bigmouthMonster = this.createMonster(5, 20, 0.2, 'bigmouth')
-    const bigmouthMonster = this.createMonster(5, 35, 4.5, 'bigmouth')
+    //const bigmouthMonster = this.createMonster(5, 35, 4.5, 'bigmouth')
     //bigmouthMonster.addSound(this, 'monsterScreamPixel', 0.5)
 
     // Door to Cave

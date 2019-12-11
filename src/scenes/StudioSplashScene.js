@@ -44,6 +44,12 @@ class StudioSplashScene extends Phaser.Scene {
     this.load.image('arrow', 'assets/images/arrow.png')
     this.load.image('minimapBackground', 'assets/images/minimapBackground.png')
 
+    // Text HUD
+    this.load.image('text1', 'assets/images/text1.png')
+    this.load.image('text2', 'assets/images/text1.png')
+    this.load.image('text3', 'assets/images/text1.png')
+    this.load.image('text4', 'assets/images/text1.png')
+
     // Trace images for boss fight
     this.load.image('traceOne', 'assets/images/symbol1.png')
     this.load.image('traceTwo', 'assets/images/symbol2.png')
