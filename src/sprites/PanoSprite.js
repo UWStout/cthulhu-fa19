@@ -6,13 +6,15 @@ import Phaser from 'phaser'
 import PathObject from '../sprites/PathObject'
 
 class PanoSprite extends Phaser.GameObjects.Sprite {
-  constructor ({ scene, angX, angY, textureKey, perspectiveStrength }) {
+  constructor ({ scene, angX, angY, textureKey, perspectiveStrength, canScale }) {
     // Initialize object basics
     super(scene, 0, 0, textureKey)
 
     // Save the longitude and latitude position
     this.angX = angX || 0
     this.angY = angY || 0
+
+    this.canScale = canScale
 
     // Set strength of perspective effect
     this.perspectiveStrength = perspectiveStrength || 1.0
@@ -29,7 +31,9 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
 
     this.pathLoops = false
 
-    this.requirement = ''
+    this.requirement = undefined
+
+    this.angleSet = false
   }
 
   setScale (xVal, yVal) {
@@ -69,7 +73,8 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
       xnValue -= 360
     }
     const xn = xnValue / hFOV
-    this.viewDifference = xWrap - viewX + 90
+    // Sets the view difference for 3D audio usage
+    this.viewDifference = xnValue
     // Make the vertical FOV negative to counteract shader weirdness
     const yn = (this.angY - viewY) / -vFOV
 
@@ -79,27 +84,32 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
 
     // Add scaling when near edges of view to simulate perspective
     const scaler = Math.sqrt(xn * xn + yn * yn) * this.perspectiveStrength
-    super.setScale(
-      this.baseScaleX + scaler * this.baseScaleX,
-      this.baseScaleY + scaler * this.baseScaleY
-    )
+    if (this.canScale) {
+      super.setScale(
+        this.baseScaleX + scaler * this.baseScaleX,
+        this.baseScaleY + scaler * this.baseScaleY
+      )
+    }
     // Updates the 3D audio
     this.update3dAudio()
+    this.angleSet = true
   }
 
   // Adds a path for the sprite to follow
   addPath (newAngX, newAngY, newScale, speed, trigger) {
     const pathObject = new PathObject()
     if (typeof trigger === 'number') { // If the trigger is a timer
-
-    } else if (typeof trigger === 'string') { // If the trigger is a timer
-
+      pathObject.triggerEvent = 'number'
+      pathObject.timerNumber = trigger
+      console.log(trigger)
+    } else if (typeof trigger === 'string') { // If the trigger is a item
+      pathObject.neededItem = trigger
     } else { // No trigger defined
       pathObject.isReady = true
     }
 
     // Sets the initial position of path (current pos if first path, previous paths end otherwise)
-    if (this.paths.length == 0) {
+    if (this.paths.length === 0) {
       pathObject.initialPosX = this.angX
       pathObject.initialPosY = this.angY
       pathObject.initialScale = this.baseScaleX
@@ -140,37 +150,81 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
           }
           this.paths.shift()
         }
+      } else {
+        if (this.paths[0].triggerEvent === 'number') {
+          this.updateTimer(this.paths[0])
+        }
+      }
+    }
+  }
+
+  updateTimer (pathObject) {
+    pathObject.timerNumber -= 0.012
+    if (pathObject.timerNumber <= 0) {
+      pathObject.isReady = true
+      console.log('Monster path timer has expired')
+    }
+  }
+
+  updatePathItems (collectedList) {
+    for (let p = 0; p < this.paths.length; p++) {
+      if (typeof this.paths[p].neededItem !== 'undefined' && !this.paths[p].isReady) {
+        let haveRequirement = false
+        for (let i = 0; i < collectedList.length; i++) {
+          if (collectedList[i] === this.paths[p].neededItem) {
+            haveRequirement = true
+          }
+        }
+        if (haveRequirement) {
+          console.log('Monster has item to allow path')
+        }
+        this.paths[p].isReady = haveRequirement
       }
     }
   }
 
   // Converts the angle facing to 3d volume strengths for left and right ear
   update3dAudio () {
-    if (this.angX === 135) {
-      let angleToMonster = this.viewDifference
-      // Correctes the weird offset we get from pano angle
-      if (angleToMonster > 180) {
-        angleToMonster = -180 + (angleToMonster - 180)
-      }
-      let leftEarVolume = 0.5
-      let rightEarVolume = 0.5
-      if (angleToMonster <= 0) {
-        leftEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
-        if (angleToMonster < -90) {
-          rightEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
-        } else {
-          rightEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
-        }
-      } else {
-        rightEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
-        if (angleToMonster > 90) {
-          leftEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
-        } else {
-          leftEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
-        }
-      }
-      // Return volume to use
+    let angleToMonster = this.viewDifference
+    // Correctes the weird offset we get from pano angle
+    if (angleToMonster > 180) {
+      angleToMonster = -180 + (angleToMonster - 180)
     }
+    let leftEarVolume = 0.5
+    let rightEarVolume = 0.5
+    if (angleToMonster <= 0) {
+      leftEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
+      if (angleToMonster < -90) {
+        rightEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
+      } else {
+        rightEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
+      }
+    } else {
+      rightEarVolume = (Math.cos(angleToMonster / 180 * Math.PI) + 1.0) / 4.0 + 0.5
+      if (angleToMonster > 90) {
+        leftEarVolume = 0.5 - (1 + Math.cos(angleToMonster / 180 * Math.PI)) * 0.25
+      } else {
+        leftEarVolume = 0.25 + Math.cos(angleToMonster / 180 * Math.PI) * 0.75
+      }
+    }
+    if (typeof this.leftSound !== 'undefined') {
+      this.leftSound.setVolume(leftEarVolume)
+      this.rightSound.setVolume(rightEarVolume)
+    }
+  }
+
+  // Plays the sound added to the monster using 3D audio
+  playSound () {
+    while (!this.angleSet) {}
+    console.log(this.viewDifference)
+    this.leftSound.play()
+    this.rightSound.play()
+  }
+
+  // Adds a sound to the monster based on name of the file
+  addSound (scene, soundName, speedRate = 1) {
+    this.leftSound = scene.sound.add(soundName.concat('Left'), { rate: speedRate })
+    this.rightSound = scene.sound.add(soundName.concat('Right'), { rate: speedRate })
   }
 }
 

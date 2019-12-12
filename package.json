@@ -6,7 +6,7 @@
   "main": "index.html",
   "repository": "UWStout/cthulhu-fa19",
   "scripts": {
-    "sfx": "audiosprite --output assets/audio/sounds assets/audio/ambience/*.* assets/audio/noises/*.*",
+    "sfx": "audiosprite --output assets/audio/sounds assets/audio/*.wav assets/audio/ambience/*.* assets/audio/noises/*.*",
     "dev": "run-s clean dev-cmd",
     "prod": "run-s clean prod-cmd",
     "deploy": "run-s clean deploy-cmd",

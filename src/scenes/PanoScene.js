@@ -12,7 +12,6 @@ import '../../plugins/phaser3D/OrbitControls'
 import PanoSprite from '../sprites/PanoSprite'
 
 // Import the special pixelization filter
-import PixelationPipeline from '../shaders/PixelationPipeline'
 import BlurPipeline from '../shaders/BlurPipeline'
 
 class PanoScene extends Phaser.Scene {
@@ -49,22 +48,32 @@ class PanoScene extends Phaser.Scene {
 
     this.events.on('shutdown', this.shutdown, this)
 
+    if (typeof data.initialText === 'undefined') {
+      data.initialText = true
+      console.log('set initial true')
+    }
+
+    if (typeof data.collectedItem !== 'undefined') {
+      this.setInfoItem = data.collectedItem
+    }
+    console.log(data.collectedItem)
+
     this.infoSceneData = {
       healthAmount: 100,
-      showTrace: false
+      showTrace: false,
+      initialText: data.initialText
     }
   }
 
   preload () {
-    this.pixelationPipeline = this.game.renderer.addPipeline('PixelFilter', new PixelationPipeline(this.game))
     if (!this.game.renderer.hasPipeline('BlurFilter')) {
       this.blurPipeline = this.game.renderer.addPipeline('BlurFilter', new BlurPipeline(this.game))
-    }
-    else {
+    } else {
       this.blurPipeline = this.game.renderer.getPipeline('BlurFilter')
     }
     this.downOnDoor = NONE
     this.monsterList = []
+    this.traceNumber = 0
     this.input.on('pointerup', (pointer) => { this.downOnDoor = NONE }, this)
 
     // List of collectable objects
@@ -87,6 +96,8 @@ class PanoScene extends Phaser.Scene {
       z: 1000
     })
     this.horiFOV = this.vertFOV * this.phaser3d.camera.aspect
+
+    this.fadeOutTime = 300
 
     // Runs the info scene to display on top of the screen
     this.infoSceneData.healthAmount = this.healthAmount
@@ -132,11 +143,6 @@ class PanoScene extends Phaser.Scene {
 
     this.cameras.main.fadeIn(this.fadeoutTime) // Camera fade-in for start of game
 
-    // Pixelation effect of camera
-    this.pixelationPipeline.res = {
-      width: this.cameras.main.width,
-      height: this.cameras.main.height
-    }
     // this.cameras.main.setRenderToTexture('PixelFilter')
     this.cameras.main.setRenderToTexture('BlurFilter')
 
@@ -154,6 +160,10 @@ class PanoScene extends Phaser.Scene {
 
     pic.mask = new Phaser.Display.Masks.BitmapMask(this, spotlight)
     pic.mask.invertAlpha = true
+    // Make sure spotlight starts at the mouse
+    const ourPointer = this.game.input.activePointer
+    spotlight.x = ourPointer.x
+    spotlight.y = ourPointer.y
     this.input.on('pointermove', function (pointer) {
       spotlight.x = pointer.x
       spotlight.y = pointer.y
@@ -179,14 +189,66 @@ class PanoScene extends Phaser.Scene {
     this.heartbeatAudio = this.sound.add('heartbeat', { loop: true, volume: 0.0 })
     this.heartbeatAudio.play()
 
-    this.pixelScreamLeft = this.sound.add('monsterScreamPixelLeft', { rate: 0.5 })
-    this.pixelScreamRight = this.sound.add('monsterScreamPixelRight', { rate: 0.5 })
-    // this.pixelScreamLeft.play()
-    // this.pixelScreamRight.play()
+    this.pickupSound = this.sound.add('pickup')
+
+    // Animations for sprites
+    var tf = {
+      key: 'front',
+      frames: this.anims.generateFrameNumbers('tomF'),
+      frameRate: 5,
+      yoyo: false,
+      repeat: -1
+    }
+    this.anims.create(tf)
+
+    var tw = {
+      key: 'walk',
+      frames: this.anims.generateFrameNumbers('tomW'),
+      frameRate: 5,
+      yoyo: false,
+      repeat: -1
+    }
+    this.anims.create(tw)
+
+    var lf = {
+      key: 'front2',
+      frames: this.anims.generateFrameNumbers('longarmsF'),
+      frameRate: 5,
+      yoyo: false,
+      repeat: -1
+    }
+    this.anims.create(lf)
+
+    var lw = {
+      key: 'walk2',
+      frames: this.anims.generateFrameNumbers('longarmsW'),
+      frameRate: 5,
+      yoyo: false,
+      repeat: -1
+    }
+    this.anims.create(lw)
+
+    var bf = {
+      key: 'front3',
+      frames: this.anims.generateFrameNumbers('bigmouthF'),
+      frameRate: 5,
+      yoyo: false,
+      repeat: -1
+    }
+    this.anims.create(bf)
+
+    var bw = {
+      key: 'walk3',
+      frames: this.anims.generateFrameNumbers('bigmouthW'),
+      frameRate: 5,
+      yoyo: false,
+      repeat: -1
+    }
+    this.anims.create(bw)
   }
 
   // Adds a sprite that is orientated in the 3D world
-  addPanoSprite (textureKey, angX, angY, baseScale, zoomStrength) {
+  addPanoSprite (textureKey, angX, angY, baseScale, canScale) {
     // Make sure texture key was provided
     if (!textureKey) {
       console.warn('Error: PanoScene.addPanoSprite called without textureKey')
@@ -197,7 +259,10 @@ class PanoScene extends Phaser.Scene {
     angX = angX || 0
     angY = angY || 0
     baseScale = baseScale || 1.0
-    zoomStrength = zoomStrength || 1.0
+    const zoomStrength = 1.0
+    if (canScale !== false) {
+      canScale = true
+    }
 
     // Create PanoSprite with parameters
     const newSprite = new PanoSprite({
@@ -205,7 +270,8 @@ class PanoScene extends Phaser.Scene {
       angX: angX,
       angY: angY,
       textureKey: textureKey,
-      perspectiveStrength: zoomStrength
+      perspectiveStrength: zoomStrength,
+      canScale: canScale
     })
     newSprite.setScale(baseScale)
     newSprite.setDepth(this.panoSprites.length + 1)
@@ -227,24 +293,27 @@ class PanoScene extends Phaser.Scene {
   }
 
   // Used to fade between the current scene and a new scene
-  transitionTo (sceneName, collectedObjects, startAngle) {
+  transitionTo (sceneName, collectedObjects, startAngle, collectedItem) {
     this.cameras.main.fadeOut(this.fadeoutTime)
-    this.time.delayedCall(this.fadeoutTime, this.startScene, [sceneName, collectedObjects, startAngle], this)
+    this.time.delayedCall(this.fadeoutTime, this.startScene, [sceneName, collectedObjects, startAngle, collectedItem], this)
   }
 
   // Starts the new scene, called by transitionTo()
-  startScene (sceneName, collectedObjects, startAngle) {
+  startScene (sceneName, collectedObjects, startAngle, collectedItem) {
     this.closeAudio.stop()
     this.heartbeatAudio.stop()
     if (this.gameover) {
       this.healthAmount = 100
     }
-    this.pixelScreamLeft.play()
-    this.pixelScreamRight.play()
-    this.scene.start(sceneName, { collectedObjects: collectedObjects, startAngle: startAngle, healthAmount: this.healthAmount })
+    this.scene.start(sceneName, { collectedObjects: collectedObjects, startAngle: startAngle, healthAmount: this.healthAmount, initialText: false, collectedItem: collectedItem })
   }
 
   update (time) {
+    // Updates the info text sprite
+    if (typeof this.setInfoItem !== 'undefined') {
+      this.infoScene.setTextImage(this.setInfoItem)
+      this.setInfoItem = null
+    }
     // Updates every monster position so they can travel on paths
     for (let i = 0; i < this.monsterList.length; i++) {
       this.monsterList[i].updatePanoPosition(this.controls, this.horiFOV, this.vertFOV,
@@ -275,11 +344,20 @@ class PanoScene extends Phaser.Scene {
     } else { // Turns the blue effect off if not near a monster
       this.blurPipeline.setFloat1('magnitudeAmount', 0.0)
       this.closeAudio.volume = 0.0
+      this.healthAmount += 0.03
+      if (this.healthAmount > 100) {
+        this.healthAmount = 100
+      }
     }
+
+    // Decrease health if in boss room
+    if (this.skyboxName === 'BossRoom') {
+      this.healthAmount -= 0.04
+    }
+
     // Game over case
     if (this.gameover && !this.gameoverHandled) {
-      console.log("Game over")
-      //this.cameras.main.fade(2000, 0 ,0 ,0)
+      console.log('Game over')
       this.transitionTo('Conservatory', [], 0.0)
       this.gameoverHandled = true
     }
@@ -315,7 +393,7 @@ class PanoScene extends Phaser.Scene {
     doorSprite.baseScaleX *= scaleX
     doorSprite.baseScaleY *= scaleY
     // TODO: Change alpha to 0.01 when in production so the door is basically invisible
-    doorSprite.alpha = 0.1
+    doorSprite.alpha = 0.001
     doorSprite.setInteractive(new Phaser.Geom.Rectangle(0, 0, doorSprite.width, doorSprite.height), Phaser.Geom.Rectangle.Contains)
 
     // Checks if the pointer was pressed and released on the same door
@@ -344,6 +422,7 @@ class PanoScene extends Phaser.Scene {
       collectable.baseScaleX *= scaleX
       collectable.baseScaleY *= scaleY
       collectable.depth = collectable.depth + 10
+      collectable.alpha = 0.001
       collectable.setInteractive(new Phaser.Geom.Rectangle(0, 0, collectable.width, collectable.height), Phaser.Geom.Rectangle.Contains)
       collectable.requirement = requirementObject
       collectable.input.enabled = this.checkRequirement(requirementObject)
@@ -352,6 +431,8 @@ class PanoScene extends Phaser.Scene {
         this.addCollectedObject(spriteName)
         console.log(this.collectedObjects)
         collectable.destroy()
+        this.pickupSound.play()
+        this.transitionTo(this.masterSkybox, this.collectedObjects, -this.controls.getAzimuthalAngle(), spriteName)
       }, this)
     }
   }
@@ -396,9 +477,9 @@ class PanoScene extends Phaser.Scene {
       var rectB = new Phaser.Geom.Rectangle(pointer.x - this.mouseCheckRadius / 2, pointer.y - this.mouseCheckRadius / 2, this.mouseCheckRadius, this.mouseCheckRadius)
 
       // Draws the boxes
-      this.graphics.lineStyle(1, 0xff0000)
-      this.graphics.strokeRectShape(rectB)
-      this.graphics.strokeRectShape(rectA)
+      // this.graphics.lineStyle(1, 0xff0000)
+      // this.graphics.strokeRectShape(rectB)
+      // this.graphics.strokeRectShape(rectA)
 
       var rectC = new Phaser.Geom.Rectangle()
       Phaser.Geom.Rectangle.Intersection(rectA, rectB, rectC)
@@ -412,6 +493,84 @@ class PanoScene extends Phaser.Scene {
       }
     }
     this.withinRadius = isWithin
+  }
+
+  startBossFight () {
+    const traceOne = ['traceOne', [0.95, 0.63, 0.54, 0.63, 0.85, 0.63, 0.54, 0.63, 0.76, 0.65]]
+    const traceTwo = ['traceTwo', [0.97, 0.2]]
+    const traceThree = ['traceThree', [0.97, 0.2]]
+    const traceFour = ['traceFour', [0.97, 0.17]]
+    const traceFive = ['traceFive', [0.97, 0.17]]
+    this.traceList = [traceOne, traceTwo, traceThree, traceFour, traceFive]
+    this.sendTrace()
+  }
+
+  sendTrace () {
+    if (this.traceNumber >= this.traceList.length) {
+      this.fadeoutTime = 1000
+      this.healthAmount = 100
+      this.transitionTo('TitleScene', [], 0.0)
+      console.log('Boss beat')
+    } else {
+      this.addTraceImage(this.traceList[this.traceNumber][0], this.traceList[this.traceNumber][1])
+    }
+  }
+
+  addTraceImage (traceImage, traceWaypoints) {
+    console.log('Trace image added')
+    this.trace = this.addPanoSprite(traceImage.concat('Pattern'), 5, 0, 2, false)
+    this.traceMaster = this.addPanoSprite(traceImage, 5, 0, 2, false)
+    this.trace.setInteractive()
+    this.trace.alpha = 0.01
+    this.traceMaster.alpha = 0.5
+    let waypointNum = 0
+    this.traceMaster.setTint(0x0d7442)
+
+    // Initilaizes the sprite position
+    this.trace.updatePanoPosition(this.controls, this.horiFOV, this.vertFOV,
+      this.game.config.width, this.game.config.height)
+    this.traceMaster.updatePanoPosition(this.controls, this.horiFOV, this.vertFOV,
+      this.game.config.width, this.game.config.height)
+
+    // Checks the hue of the image to check if the image is being traced
+    this.trace.on('pointermove', (pointer) => {
+      // Gets the color of the pixel color based off pointer position
+      let texLocX = this.trace.x - this.trace.width - pointer.x
+      texLocX = -texLocX / this.trace.scale
+      let texLocY = this.trace.y - this.trace.height - pointer.y
+      texLocY = -texLocY / this.trace.scale
+      const colorGotten = this.game.textures.getPixel(texLocX, texLocY, traceImage.concat('Pattern'))
+      if (this.hueChecking) {
+        const hueDifference = Math.abs(this.prevHue - colorGotten.h) // Gets the color difference between previous and current
+        if (Math.abs(traceWaypoints[waypointNum] - colorGotten.h) <= 0.04) { // Waypoint matched case
+          waypointNum++
+          console.log('Waypoint Reached')
+          if (waypointNum >= traceWaypoints.length) { // Finish trace case
+            this.hueChecking = false
+            this.trace.destroy()
+            this.traceMaster.destroy()
+            this.traceNumber++
+            this.sendTrace()
+            // Play sound
+            console.log('Trace finished!')
+          }
+        }
+        if (hueDifference > 0.1 || colorGotten.h === 0) { // Fail trace case
+          this.hueChecking = false
+          waypointNum = 0
+          this.traceMaster.setTint(0x0d7442)
+          console.log('Trace lost')
+        }
+      } else {
+        if (colorGotten.h > traceWaypoints[0]) { // Start trace case
+          waypointNum++
+          this.hueChecking = true
+          this.traceMaster.setTint(0xffffff)
+          console.log('Starting Trace')
+        }
+      }
+      this.prevHue = colorGotten.h
+    }, this)
   }
 }
 

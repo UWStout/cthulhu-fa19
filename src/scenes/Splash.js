@@ -33,12 +33,23 @@ class Splash extends Phaser.Scene {
     this.load.image('longarms', 'assets/images/LongArmsBoi_FrontView.png')
     this.load.image('flashlight', 'assets/images/flashlight.png')
 
+    // Sprites
+    this.load.spritesheet('tomF', 'assets/images/TT_WA_FrontFace_SPRITESHEET.png', { frameWidth: 120, frameHeight: 120 }) // Tom front
+    this.load.spritesheet('tomW', 'assets/images/TT_WA_3.4_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) //Tom Walk
+
+    this.load.spritesheet('longarmsF', 'assets/images/LA_WA_FrontFace_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // longarms front
+    this.load.spritesheet('longarmsW', 'assets/images/LA_WA_3.4_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // longarms walk
+
+    this.load.spritesheet('bigmouthF', 'assets/images/BM_WA_FrontFace_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // bigmouth front
+    this.load.spritesheet('bigmouthW', 'assets/images/BM_3.4Face_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // bigmouth walk
+
     // Main Pano Scene Assets
     this.load.image('trace', 'assets/images/symbol1pattern.png')
 
     this.load.audio('ambienceTones', 'assets/audio/ambience/ambient_tones_loop.mp3')
     this.load.audio('ambienceBitcrush', 'assets/audio/ambience/ambient_bitcrush_loop.mp3')
     this.load.audio('heartbeat', 'assets/audio/noises/heartbeat.mp3')
+    this.load.audio('pickup', 'assets/audio/noises/pickup_sound.mp3')
 
     this.load.audio('monsterScreamPixelLeft', 'assets/audio/noises/monster_pixel_scream_left.mp3')
     this.load.audio('monsterScreamPixelRight', 'assets/audio/noises/monster_pixel_scream_right.mp3')
@@ -49,9 +60,20 @@ class Splash extends Phaser.Scene {
     // HUD info scene images
     this.load.image('bar', 'assets/images/insanityBar.png')
     this.load.image('barBorder', 'assets/images/insanity_meter_Border.png')
-    this.load.image('trace', 'assets/images/TestTraceImage.png')
     this.load.image('arrow', 'assets/images/arrow.png')
     this.load.image('minimapBackground', 'assets/images/minimapBackground.png')
+
+    // Trace images for boss fight
+    this.load.image('traceOne', 'assets/images/symbol1.png')
+    this.load.image('traceTwo', 'assets/images/symbol2.png')
+    this.load.image('traceThree', 'assets/images/symbol3.png')
+    this.load.image('traceFour', 'assets/images/symbol4.png')
+    this.load.image('traceFive', 'assets/images/symbol5.png')
+    this.load.image('traceOnePattern', 'assets/images/symbol1pattern.png')
+    this.load.image('traceTwoPattern', 'assets/images/symbol2pattern.png')
+    this.load.image('traceThreePattern', 'assets/images/symbol3pattern.png')
+    this.load.image('traceFourPattern', 'assets/images/symbol4pattern.png')
+    this.load.image('traceFivePattern', 'assets/images/symbol5pattern.png')
 
     // Load minimap images
     this.load.image('minimapConservatory', 'assets/images/skybox/Conservatory/mini.png')
@@ -69,9 +91,10 @@ class Splash extends Phaser.Scene {
 
     this.load.image('checkedBox', 'assets/images/blue_boxCheckmark.png')
     this.load.image('box', 'assets/images/grey_box.png')
+    this.load.image('globalMinimap', 'assets/images/MinimapWholeHouse.png')
 
     // creepty background music
-    this.load.audio('bgMusic', 'assets/audio/ambience/ambient_drone_loop.wav')
+    this.load.audio('bgMusic', 'assets/audio/ambience/ambient_drone_loop.mp3')
 
     // The audiosprite with all music and SFX
     this.load.audioSprite('sounds', 'assets/audio/sounds.json', [
@@ -147,8 +170,7 @@ class Splash extends Phaser.Scene {
   }
 
   // Pre-load is done
-  create () {
-  }
+  create () {}
 
   // Called repeatedly after pre-load finishes and after 'create' has run
   update () {

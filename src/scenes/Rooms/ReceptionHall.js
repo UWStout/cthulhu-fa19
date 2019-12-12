@@ -9,6 +9,7 @@ class ReceptionHall extends PanoScene {
     // Make sure the parent doesn't override our values
     this.ignoreInitVals = true
 
+    this.masterSkybox = 'ReceptionHall'
     this.vertFOV = 90
   }
 
@@ -25,7 +26,11 @@ class ReceptionHall extends PanoScene {
 
   create () {
     // Create enemies for this scene
-    this.createMonster(180, 0, 1, 'longarms')
+    const longarmsMonster = this.createMonster(200, 0, 1, 'longarms')
+    //longarmsMonster.addPath(180,0,1,3,3)
+    //longarmsMonster.addPath(320,-5,5,3,5)
+    //longarmsMonster.addPath(0,-5,1,2,2)
+    //longarmsMonster.pathLoops = true
 
     // Collectable Object interaction
     this.createCollectable(-72, 0, 0.7, 1.4, 'receptionDoor', 'key')
@@ -41,6 +46,7 @@ class ReceptionHall extends PanoScene {
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
+    longarmsMonster.anims.play('front2')
   }
 }
 

@@ -10,7 +10,7 @@ class Conservatory extends PanoScene {
     this.ignoreInitVals = true
 
     // Setup the skybox view
-    this.skyboxName = 'DiningRoom'
+    this.masterSkybox = 'DiningRoom'
     this.vertFOV = 70
   }
 
@@ -33,8 +33,8 @@ class Conservatory extends PanoScene {
 
   create () {
     // Collectable Object interaction
-    this.createCollectable(35, -10, 0.8, 1, 'knife', 'receptionDoor')
-    this.createCollectable(-168, 5, 0.7, 0.7, 'candle', 'receptionDoor')
+    this.createCollectable(35, -10, 0.8, 1, 'knife', 'book')
+    this.createCollectable(-168, 5, 0.7, 0.7, 'candle', 'bookKnife')
 
     // Doorway to Conservatory
     this.createDoor(150, -5, 0.7, 1.2, 'Conservatory', -1.6)

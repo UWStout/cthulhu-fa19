@@ -63,7 +63,6 @@ module.exports = {
       },
       hash: false
     }),
-    new MinifyPlugin({}, { comments: false }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.ProvidePlugin({ THREE: 'three' })
   ],

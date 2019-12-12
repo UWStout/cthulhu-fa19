@@ -23,6 +23,8 @@ assets/audio/sounds.*
 !.vscode/launch.json
 !.vscode/extensions.json
 
+missing
+
 # MacOS System files
 ._*
 .DS_Store
