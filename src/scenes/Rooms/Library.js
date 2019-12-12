@@ -31,12 +31,14 @@ class Conservatory extends PanoScene {
     const longarmsMonster = this.createMonster(135, 0, 2.0, 'longarmsF')
 
     // Collectable Object interaction
+    this.createCollectable(250, 5, 0.8, 0.35, 'bookCandle', 'candle')
+    this.createCollectable(250, 5, 0.8, 0.35, 'bookKnife', 'knife')
     this.createCollectable(250, 5, 0.8, 0.35, 'book')
 
     // Doorway to Reception Hall
     this.createDoor(5, 0, 0.6, 1.4, 'ReceptionHall', 1.6)
     // Door to Cave
-    this.createDoor(80, 0, 0.6, 1.4, 'Cave', 0)
+    this.createDoor(250, 5, 0.8, 0.35, 'Cave', 0, 'bookCandle')
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()

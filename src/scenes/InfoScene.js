@@ -80,6 +80,10 @@ class InfoScene extends Phaser.Scene {
     }
   }
 
+  setTextImage (sceneName) {
+
+  }
+
   addTraceImage () {
     console.log('Trace image added')
     if (this.trace) {
