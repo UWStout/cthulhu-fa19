@@ -64,12 +64,12 @@ class Game extends Phaser.Game {
     super({
       pixelArt: true, // TODO: Turn this off if you aren't doing pixel art!!
       type: Phaser.WEBGL,
-      title: 'Example Game for UW Stout\'s GDD325',
+      title: 'Light Within the Darkness',
       backgroundColor: '#000000', // #7f7f7f
       scale: {
         parent: 'content',
         mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_HORIZONTAL,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
         width: config.gameWidth,
         height: config.gameHeight
       },
