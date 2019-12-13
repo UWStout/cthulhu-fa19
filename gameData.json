@@ -10,20 +10,32 @@
       "vimeoID": "379153059",
       "alt": "Light Within The Darkness SGX Trailer"
     }, {
-      "title": "Wide Angle Room",
-      "link": "assets/images/conservatoryfinal.jpg",
-      "alt": "Light Within The Darkness Room"
+      "title": "Screenshot 1",
+      "link": "assets/images/TWtD_Shot1.png",
+      "alt": "Light Within The Darkness Spritesheet"
     }, {
-      "title": "Tired Tom Monster",
-      "link": "assets/images/TiredTom_v01.png",
+      "title": "Screenshot 2",
+      "link": "assets/images/TWtD_Shot2.png",
+      "alt": "Light Within The Darkness Spritesheet"
+    }, {
+      "title": "Screenshot 3",
+      "link": "assets/images/TWtD_Shot3.png",
       "alt": "Light Within The Darkness Monster"
+    }, {
+      "title": "Screenshot 4",
+      "link": "assets/images/TWtD_Shot4.png",
+      "alt": "Light Within The Darkness Spritesheet"
     }, {
       "title": "Long Arms Monster",
       "link": "assets/images/LongArmsBoi_FrontView.png",
       "alt": "Light Within The Darkness Monster"
     }, {
-      "title": "Monster Spritesheet",
-      "link": "assets/images/TT_WA_FrontFace_SPRITESHEET.png",
+      "title": "Wide Angle Room",
+      "link": "assets/images/conservatoryfinal.jpg",
+      "alt": "Light Within The Darkness Room"
+    }, {
+      "title": "Title Screen",
+      "link": "assets/images/LWtD_Title.png",
       "alt": "Light Within The Darkness Spritesheet"
     }, {
       "title": "Source Code Evolution",
