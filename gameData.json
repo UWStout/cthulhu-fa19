@@ -1,8 +1,8 @@
 {
   "title": "Light Within The Darkness",
   "byLine": "Beware of the things unseen in the dark",
-  "bannerTitle": "",
-  "bannerWide": "",
+  "bannerTitleURI": "assets/images/Logo.png",
+  "bannerWideURI": "assets/images/Logo.png",
   "markdown": "README.md",
   "media": [
     {
@@ -10,19 +10,19 @@
       "vimeoID": "",
       "alt": "Light Within The Darkness SGX Trailer"
     }, {
-      "title": "Screenshot 1",
+      "title": "Wide Angle Room",
       "link": "assets/images/conservatoryfinal.jpg",
       "alt": "Light Within The Darkness Room"
     }, {
-      "title": "Screenshot 2",
+      "title": "Tired Tom Monster",
       "link": "assets/images/TiredTom_v01.png",
       "alt": "Light Within The Darkness Monster"
     }, {
-      "title": "Screenshot 3",
+      "title": "Long Arms Monster",
       "link": "assets/images/LongArmsBoi_FrontView.png",
       "alt": "Light Within The Darkness Monster"
     }, {
-      "title": "Screenshot 4",
+      "title": "Monster Spritesheet",
       "link": "assets/images/TT_WA_FrontFace_SPRITESHEET.png",
       "alt": "Light Within The Darkness Spritesheet"
     }, {
