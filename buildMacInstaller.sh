@@ -1,13 +1,13 @@
 #!/bin/bash
 dirName=light-within-the-darkness
-pkgName=light-within-the-darkness
+pkgName=LWtD
 webName=Light_Within_the_Darkness
 
 # Rename the app
-mv "packaged/${dirName}/osx64/${dirName}.app" "packaged/${dirName}/osx64/${pkgName}.app"
+mv "./packaged/${dirName}/osx64/${dirName}.app" "./packaged/${dirName}/osx64/${pkgName}.app"
 
 # Since create-dmg does not override, be sure to delete previous DMG
-rm -f "packaged/${webName}-macOS.dmg"
+rm -f "./packaged/${webName}-macOS.dmg"
 
 # Create the DMG
 create-dmg \
