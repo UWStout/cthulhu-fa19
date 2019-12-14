@@ -22,13 +22,16 @@ class StudioSplashScene extends Phaser.Scene {
 
     // Sprites
     this.load.spritesheet('tomF', 'assets/images/TT_WA_FrontFace_SPRITESHEET.png', { frameWidth: 120, frameHeight: 120 }) // Tom front
-    this.load.spritesheet('tomW', 'assets/images/TT_WA_3.4_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) //Tom Walk
+    this.load.spritesheet('tomW', 'assets/images/TT_WA_3.4_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // Tom Walk
 
     this.load.spritesheet('longarmsF', 'assets/images/LA_WA_FrontFace_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // longarms front
     this.load.spritesheet('longarmsW', 'assets/images/LA_WA_3.4_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // longarms walk
 
     this.load.spritesheet('bigmouthF', 'assets/images/BM_WA_FrontFace_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // bigmouth front
     this.load.spritesheet('bigmouthW', 'assets/images/BM_3.4Face_SpriteSheet(120x120).png', { frameWidth: 120, frameHeight: 120 }) // bigmouth walk
+
+    this.load.spritesheet('bossF', 'assets/images/Boss_IA_SpriteSheet(240x240).png', { frameWidth: 240, frameHeight: 240 }) // boss idle
+    this.load.spritesheet('bossW', 'assets/images/Boss_AA_SpriteSheet(240x240).png', { frameWidth: 240, frameHeight: 240 }) // boss walk
 
     // Main Pano Scene Assets
     this.load.image('trace', 'assets/images/symbol1pattern.png')
@@ -40,6 +43,8 @@ class StudioSplashScene extends Phaser.Scene {
 
     this.load.audio('monsterScreamPixelLeft', 'assets/audio/noises/monster_pixel_scream_left.mp3')
     this.load.audio('monsterScreamPixelRight', 'assets/audio/noises/monster_pixel_scream_right.mp3')
+    this.load.audio('bossScreamLeft', 'assets/audio/noises/Monster_boss_left.mp3')
+    this.load.audio('bossScreamRight', 'assets/audio/noises/Monster_boss_right.mp3')
 
     this.load.image('mask', 'assets/images/spotlight/mask1.png') // spotlight stuff
     this.load.image('room', 'assets/images/spotlight/Black.jpg') // blackbackground
@@ -53,9 +58,10 @@ class StudioSplashScene extends Phaser.Scene {
 
     // Text HUD
     this.load.image('text1', 'assets/images/text1.png')
-    this.load.image('text2', 'assets/images/text1.png')
-    this.load.image('text3', 'assets/images/text1.png')
-    this.load.image('text4', 'assets/images/text1.png')
+    this.load.image('text2', 'assets/images/text2.png')
+    this.load.image('text3', 'assets/images/text3.png')
+    this.load.image('text4', 'assets/images/text4.png')
+    this.load.image('text5', 'assets/images/text5.png')
 
     // Trace images for boss fight
     this.load.image('traceOne', 'assets/images/symbol1.png')

@@ -10,11 +10,14 @@ class InfoScene extends Phaser.Scene {
       this.healthAmount = data.health || 100
       this.showTrace = data.showTrace || false
       this.skyboxName = data.skyboxName || ''
+      this.initialText = data.initialText || false
     } else {
       this.healthAmount = 100
       this.showTrace = false
       this.skyboxName = ''
+      this.initialText = false
     }
+
   }
 
   preload () {}
@@ -23,6 +26,12 @@ class InfoScene extends Phaser.Scene {
     // Local variables for accessing width and height
     this.width = this.cameras.main.width
     this.height = this.cameras.main.height
+
+    this.textTimer = 0
+    if (this.initialText) {
+      this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text1')
+      this.textTimer = 3
+    }
 
     // Variables for checking trace
     this.prevHue = 0
@@ -74,14 +83,35 @@ class InfoScene extends Phaser.Scene {
     }
   }
 
+  update () {
+    if (this.textTimer > 0) {
+      this.textTimer -= 0.01
+      if (this.textTimer <= 0) {
+        this.textImage.destroy()
+      }
+    }
+  }
+
   updateHealth (amount) {
     if (typeof this.healthBar !== 'undefined') {
       this.healthBar.setCrop(0, 0, this.healthBar.width * amount / 100, this.healthBar.height)
     }
   }
 
-  setTextImage (sceneName) {
-
+  setTextImage (itemName) {
+    if (itemName === 'book') {
+      this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text2')
+      this.textTimer = 3
+    } else if (itemName === 'bookKnife') {
+      this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text3')
+      this.textTimer = 3
+    } else if (itemName === 'bookCandle') {
+      this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text4')
+      this.textTimer = 3
+    } else if (itemName === 'gameWon') {
+      this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text5')
+      this.textTimer = 3
+    }
   }
 
   addTraceImage () {

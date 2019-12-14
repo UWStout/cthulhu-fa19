@@ -20,9 +20,8 @@ class Conservatory extends PanoScene {
   }
 
   create () {
-    //const bigmouthMonster = this.createMonster(5, 20, 0.2, 'bigmouth')
-    //const bigmouthMonster = this.createMonster(5, 35, 4.5, 'bigmouth')
-    //bigmouthMonster.addSound(this, 'monsterScreamPixel', 0.5)
+    this.bossMonster = this.createCollectable(5, 20, 0.2, 0.2, 'bossF', 'uncollectable')
+    this.bossMonster.addSound(this, 'bossScream', 0.75)
 
     // Door to Cave
     this.createDoor(180, 2, 0.85, 1.4, 'Cave', 0)
@@ -31,6 +30,36 @@ class Conservatory extends PanoScene {
     super.create()
 
     this.startBossFight()
+
+    this.bossMonster.anims.play('walk4')
+    this.bossMonster.addPath(5, 35, 4.5, 0.02 / (this.healthAmount / 100))
+    this.bossMonster.alpha = 0.1
+    this.bossAlpha = 0.1
+    this.bossAlphaIncrease = 1 / (this.healthAmount / 100)
+
+    this.bossMonster.playSound()
+    this.bossSoundTimer = 4.5
+  }
+
+  update () {
+    super.update()
+    this.bossMonster.updatePaths()
+    // Makes the boss less transparent over time
+    if (this.bossAlpha < 1) {
+      this.bossAlpha += 0.9 * 0.00005 * this.bossAlphaIncrease
+      if (this.bossAlpha > 1) {
+        this.bossAlpha = 1
+      }
+    }
+    this.bossMonster.alpha = this.bossAlpha
+
+    if (this.bossSoundTimer > 0) {
+      this.bossSoundTimer -= 0.005
+      if (this.bossSoundTimer < 0) {
+        this.bossMonster.playSound()
+        this.bossSoundTimer += 2 + Phaser.Math.Between(2, 5)
+      }
+    }
   }
 }
 

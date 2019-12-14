@@ -10,6 +10,7 @@ class TitleScene extends Phaser.Scene {
   }
 
   create () {
+    this.scene.stop('Info')
     this.add.image(this.cameras.main.width / 2.0, this.cameras.main.height / 2.0, 'background').setOrigin(0.5).setScale(5.7).setDepth(0)
     this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.4, 'title').setScale(1.5).setDepth(1)
     const playButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'play_button').setDepth(1)
@@ -79,6 +80,10 @@ class TitleScene extends Phaser.Scene {
     // MUSIC-----------------------------------------
 
     this.model = this.sys.game.globals.model
+    if (this.model.musicName !== 'bgMusic' && this.sys.game.globals.bgMusic !== null) {
+      this.model.bgMusicPlaying = false
+      this.sys.game.globals.bgMusic.stop()
+    }
     if (this.model.musicOn === true && this.model.bgMusicPlaying === false) {
       this.bgMusic = this.sound.add('bgMusic', { volume: 0.5, loop: true })
       this.bgMusic.play()

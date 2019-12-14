@@ -33,11 +33,11 @@ class Conservatory extends PanoScene {
     const tomAnimated = this.createMonster(-135, -8, 2.0, 'tomF')
     tomAnimated.addPath(-100, -8, 2.0, 0.5, 3.0)
     tomAnimated.addPath(100, -8, 7.0, 8.0, 2.0)
-    tomAnimated.pathLoops = true;
+    tomAnimated.pathLoops = true
     this.createMonster(135, 90, 2.0, 'longarms')
 
     // Collectable Object interaction
-    this.createCollectable(48.5, -40, 0.4, 0.48, 'key')
+    this.createCollectable(-135, -27, 0.7, 0.5, 'key')
 
     // Doorway to Dining Room
     this.createDoor(105, 0, 1, 2, 'DiningRoom', 0.0)

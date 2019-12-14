@@ -245,6 +245,24 @@ class PanoScene extends Phaser.Scene {
       repeat: -1
     }
     this.anims.create(bw)
+
+    var bossf = {
+      key: 'front4',
+      frames: this.anims.generateFrameNumbers('bossF'),
+      frameRate: 5,
+      yoyo: false,
+      repeat: -1
+    }
+    this.anims.create(bossf)
+
+    var bossw = {
+      key: 'walk4',
+      frames: this.anims.generateFrameNumbers('bossW'),
+      frameRate: 5,
+      yoyo: false,
+      repeat: -1
+    }
+    this.anims.create(bossw)
   }
 
   // Adds a sprite that is orientated in the 3D world
@@ -308,7 +326,7 @@ class PanoScene extends Phaser.Scene {
     this.scene.start(sceneName, { collectedObjects: collectedObjects, startAngle: startAngle, healthAmount: this.healthAmount, initialText: false, collectedItem: collectedItem })
   }
 
-  update (time) {
+  update () {
     // Updates the info text sprite
     if (typeof this.setInfoItem !== 'undefined') {
       this.infoScene.setTextImage(this.setInfoItem)
@@ -337,10 +355,6 @@ class PanoScene extends Phaser.Scene {
       this.closeAudio.volume = this.radiusStrength * 0.7
       this.blurPipeline.setFloat1('magnitudeAmount', this.radiusStrength)
       this.healthAmount -= 0.3 * Math.abs(this.radiusStrength)
-      if (this.healthAmount < 0) {
-        this.healthAmount = 0
-        this.gameover = true
-      }
     } else { // Turns the blue effect off if not near a monster
       this.blurPipeline.setFloat1('magnitudeAmount', 0.0)
       this.closeAudio.volume = 0.0
@@ -353,6 +367,11 @@ class PanoScene extends Phaser.Scene {
     // Decrease health if in boss room
     if (this.skyboxName === 'BossRoom') {
       this.healthAmount -= 0.04
+    }
+
+    if (this.healthAmount < 0) {
+      this.healthAmount = 0
+      this.gameover = true
     }
 
     // Game over case
@@ -434,6 +453,7 @@ class PanoScene extends Phaser.Scene {
         this.pickupSound.play()
         this.transitionTo(this.masterSkybox, this.collectedObjects, -this.controls.getAzimuthalAngle(), spriteName)
       }, this)
+      return collectable
     }
   }
 
@@ -507,9 +527,10 @@ class PanoScene extends Phaser.Scene {
 
   sendTrace () {
     if (this.traceNumber >= this.traceList.length) {
-      this.fadeoutTime = 1000
+      this.fadeoutTime = 2000
       this.healthAmount = 100
       this.transitionTo('TitleScene', [], 0.0)
+      this.infoScene.setTextImage('gameWon')
       console.log('Boss beat')
     } else {
       this.addTraceImage(this.traceList[this.traceNumber][0], this.traceList[this.traceNumber][1])
@@ -523,6 +544,7 @@ class PanoScene extends Phaser.Scene {
     this.trace.setInteractive()
     this.trace.alpha = 0.01
     this.traceMaster.alpha = 0.5
+    this.traceMaster.depth = this.traceMaster.depth + 15
     let waypointNum = 0
     this.traceMaster.setTint(0x0d7442)
 
