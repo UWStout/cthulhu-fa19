@@ -85,6 +85,7 @@ class StudioSplashScene extends Phaser.Scene {
 
     // Load all the assets needed for main menu
     this.load.image('background', 'assets/images/TitleScreen/splashScreen.jpg') // background
+    this.load.spritesheet('backgroundRain', 'assets/images/rain.png', { frameWidth: 225, frameHeight: 100 }) // Rainy title
     this.load.image('title', 'assets/images/TitleScreen/LogoTransparent.png') // title name
     this.load.image('play_button', 'assets/images/TitleScreen/play_button.png') // play button
     this.load.image('options_button', 'assets/images/TitleScreen/options_button.png') // options button

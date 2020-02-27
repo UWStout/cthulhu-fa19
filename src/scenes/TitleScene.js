@@ -10,8 +10,19 @@ class TitleScene extends Phaser.Scene {
   }
 
   create () {
+    // Animation for title rain
+    var frames = this.anims.generateFrameNumbers('backgroundRain').slice(0, 29)
+    var backgroundRainImage = {
+      key: 'rain',
+      frames: frames,
+      frameRate: 100,
+      yoyo: false,
+      repeat: -1
+    }
+    this.anims.create(backgroundRainImage)
+    // Title Objects
     this.scene.stop('Info')
-    this.add.image(this.cameras.main.width / 2.0, this.cameras.main.height / 2.0, 'background').setOrigin(0.5).setScale(5.7).setDepth(0)
+    this.add.sprite(this.cameras.main.width / 2.0, this.cameras.main.height / 2.0, 'background').setOrigin(0.5).setScale(5.7).setDepth(0).play('rain')
     this.add.image(this.game.renderer.width / 2, this.game.renderer.height * 0.4, 'title').setScale(1.5).setDepth(1)
     const playButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'play_button').setDepth(1)
     const optionButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 150, 'options_button').setDepth(1)
