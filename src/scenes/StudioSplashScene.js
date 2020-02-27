@@ -93,8 +93,11 @@ class StudioSplashScene extends Phaser.Scene {
     this.load.image('box', 'assets/images/grey_box.png')
     this.load.image('globalMinimap', 'assets/images/MinimapWholeHouse.png')
 
-    // creepty background music
+    // creepy background music
     this.load.audio('bgMusic', 'assets/audio/ambience/ambient_drone_loop.mp3')
+
+    // Particle texture
+    this.load.image('traceParticle', 'assets/images/traceParticle.png')
   }
 
   showLogo () {

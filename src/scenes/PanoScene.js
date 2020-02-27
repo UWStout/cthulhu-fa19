@@ -63,6 +63,14 @@ class PanoScene extends Phaser.Scene {
       showTrace: false,
       initialText: data.initialText
     }
+
+    // FOR DEBUGGING //
+    this.debug = true
+    // FOR PRESENTATION //
+    this.presentation = true
+    // Presentation feature where light starts on and flashlight starts off
+    this.lightStartOn = false
+    this.flashlightStartOff = false
   }
 
   preload () {
@@ -116,7 +124,19 @@ class PanoScene extends Phaser.Scene {
     // Graphics for drawing the flashlight and monster collision
     this.graphics = this.add.graphics()
 
-    this.keys = this.input.keyboard.addKeys('Q,LEFT,RIGHT,A,D')
+    this.keys = this.input.keyboard.addKeys('Q,LEFT,RIGHT,A,D,P')
+
+    // Toggles off the "light on" and then the "flashlight start off" variables
+    this.keys.P.on('down', function (event) {
+      console.log(this.lightStartOn)
+      if (this.lightStartOn) {
+        this.lightStartOn = false
+        console.log('Pressed P for light')
+      } else if (this.flashlightStartOff) {
+        this.flashlightStartOff = false
+        console.log('Pressed P for flashlight')
+      }
+    }, this)
 
     // Setup background skybox
     // Note: These assets are loaded direclty by three.js and are not in the preload() above.
@@ -190,6 +210,17 @@ class PanoScene extends Phaser.Scene {
     this.heartbeatAudio.play()
 
     this.pickupSound = this.sound.add('pickup')
+
+    // Particle effect to use for traces
+    this.traceParticles = this.add.particles('traceParticle').createEmitter({
+      x: -200,
+      y: -200,
+      speed: 10,
+      lifespan: 1000,
+      alpha: 0.5,
+      scale: { start: 0.2, end: 0, ease: 'Expo.easeIn' },
+      blendMode: 'ADD'
+    })
 
     // Animations for sprites
     var tf = {
@@ -380,12 +411,20 @@ class PanoScene extends Phaser.Scene {
       this.transitionTo('Conservatory', [], 0.0)
       this.gameoverHandled = true
     }
+
     // Turns off the flashlight if Q is held down
     if (this.keys.Q.isDown) {
       this.spotlight.scale = 0.0
     } else {
-      this.spotlight.scale = 3.0
+      this.spotlight.scale = 4.0
     }
+    // Changes spotlight if lights start on or if the flashlight starts off
+    if (this.lightStartOn) {
+      this.spotlight.scale = 30.0
+    } else if (this.flashlightStartOff) {
+      this.spotlight.scale = 0.0
+    }
+
     // Rotates the camera using the left button
     if (this.keys.LEFT.isDown || this.keys.A.isDown) {
       this.controls.setRotation(-0.05)
@@ -411,8 +450,13 @@ class PanoScene extends Phaser.Scene {
     const doorSprite = this.addPanoSprite(NONE, posX, posY, 5.0)
     doorSprite.baseScaleX *= scaleX
     doorSprite.baseScaleY *= scaleY
-    // TODO: Change alpha to 0.01 when in production so the door is basically invisible
     doorSprite.alpha = 0.001
+
+    // Makes doors slightly visible for debugging
+    if (this.debug === true) {
+      doorSprite.alpha = 0.1
+    }
+
     doorSprite.setInteractive(new Phaser.Geom.Rectangle(0, 0, doorSprite.width, doorSprite.height), Phaser.Geom.Rectangle.Contains)
 
     // Checks if the pointer was pressed and released on the same door
@@ -429,6 +473,7 @@ class PanoScene extends Phaser.Scene {
   }
 
   // Collectable creation function used by rooms, spawns if not already in your list
+  // *Remember objects are part of the skybox*
   createCollectable (posX, posY, scaleX, scaleY, spriteName, requirementObject = '') {
     let haveObject = false
     for (let i = 0; i < this.collectedObjects.length; i++) {
@@ -442,6 +487,12 @@ class PanoScene extends Phaser.Scene {
       collectable.baseScaleY *= scaleY
       collectable.depth = collectable.depth + 10
       collectable.alpha = 0.001
+
+      // Makes collectable boundraies slightly visible for debugging
+      if (this.debug === true) {
+        collectable.alpha = 0.1
+      }
+
       collectable.setInteractive(new Phaser.Geom.Rectangle(0, 0, collectable.width, collectable.height), Phaser.Geom.Rectangle.Contains)
       collectable.requirement = requirementObject
       collectable.input.enabled = this.checkRequirement(requirementObject)
@@ -457,6 +508,7 @@ class PanoScene extends Phaser.Scene {
     }
   }
 
+  // Checks if object can be interacted with based off of items in the players inventory
   checkRequirement (requirementName) {
     let haveRequirement = false
     for (let i = 0; i < this.collectedObjects.length; i++) {
@@ -471,6 +523,7 @@ class PanoScene extends Phaser.Scene {
     return haveRequirement
   }
 
+  // Adds collected objects to a list of collected objects and updates the requirements for other objects
   addCollectedObject (spriteName) {
     this.collectedObjects.push(spriteName)
     for (let i = 0; i < this.collectableList.length; i++) {
@@ -493,13 +546,15 @@ class PanoScene extends Phaser.Scene {
     let isWithin = false
     this.graphics.clear()
     for (let i = 0; i < this.monsterList.length; i++) {
-      var rectA = this.monsterList[i].getBounds()
+      var rectA = this.monsterList[i].getBounds() // TODO: Modify monster bounds to fit the sprite
       var rectB = new Phaser.Geom.Rectangle(pointer.x - this.mouseCheckRadius / 2, pointer.y - this.mouseCheckRadius / 2, this.mouseCheckRadius, this.mouseCheckRadius)
 
-      // Draws the boxes
-      // this.graphics.lineStyle(1, 0xff0000)
-      // this.graphics.strokeRectShape(rectB)
-      // this.graphics.strokeRectShape(rectA)
+      // Makes boundraies slightly visible for debugging
+      if (this.debug === true) {
+        this.graphics.lineStyle(1, 0xff0000)
+        this.graphics.strokeRectShape(rectB)
+        this.graphics.strokeRectShape(rectA)
+      }
 
       var rectC = new Phaser.Geom.Rectangle()
       Phaser.Geom.Rectangle.Intersection(rectA, rectB, rectC)
@@ -526,13 +581,14 @@ class PanoScene extends Phaser.Scene {
   }
 
   sendTrace () {
+    // Ends the game if all the traces in the list are completed
     if (this.traceNumber >= this.traceList.length) {
       this.fadeoutTime = 2000
       this.healthAmount = 100
       this.transitionTo('TitleScene', [], 0.0)
       this.infoScene.setTextImage('gameWon')
       console.log('Boss beat')
-    } else {
+    } else { // No clue what this is for
       this.addTraceImage(this.traceList[this.traceNumber][0], this.traceList[this.traceNumber][1])
     }
   }
@@ -563,11 +619,17 @@ class PanoScene extends Phaser.Scene {
       texLocY = -texLocY / this.trace.scale
       const colorGotten = this.game.textures.getPixel(texLocX, texLocY, traceImage.concat('Pattern'))
       if (this.hueChecking) {
+        // Sets the trace particle to follow the mouse
+        this.traceParticles.setPosition(pointer.x, pointer.y)
+        // Controls wether the trace is finished or broken
         const hueDifference = Math.abs(this.prevHue - colorGotten.h) // Gets the color difference between previous and current
         if (Math.abs(traceWaypoints[waypointNum] - colorGotten.h) <= 0.04) { // Waypoint matched case
           waypointNum++
           console.log('Waypoint Reached')
           if (waypointNum >= traceWaypoints.length) { // Finish trace case
+            // Sets the trace particle offscreen
+            this.traceParticles.setPosition(-200, -200)
+            // Stops the trace and updates the trace completed count
             this.hueChecking = false
             this.trace.destroy()
             this.traceMaster.destroy()
@@ -578,6 +640,9 @@ class PanoScene extends Phaser.Scene {
           }
         }
         if (hueDifference > 0.1 || colorGotten.h === 0) { // Fail trace case
+          // Sets the trace particle offscreen
+          this.traceParticles.setPosition(-200, -200)
+          // Restarts the trace tracking
           this.hueChecking = false
           waypointNum = 0
           this.traceMaster.setTint(0x0d7442)
@@ -593,6 +658,11 @@ class PanoScene extends Phaser.Scene {
       }
       this.prevHue = colorGotten.h
     }, this)
+  }
+
+  presentationLighting () {
+    this.flashlightStartOff = true
+    this.lightStartOn = true
   }
 }
 

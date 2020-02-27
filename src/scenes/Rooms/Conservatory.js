@@ -25,16 +25,34 @@ class Conservatory extends PanoScene {
   }
 
   create () {
-    // Create enemies for this scene
-    const bigmouthMonster = this.createMonster(-180, -8, 2.0, 'bigmouthF')
-    bigmouthMonster.addPath(-300, -8, 2.0, 0.5, 10.0)
-    bigmouthMonster.addPath(300, -8, 2.0, 0.1, 'key')
-    bigmouthMonster.pathLoops = true
-    const tomAnimated = this.createMonster(-135, -8, 2.0, 'tomF')
-    tomAnimated.addPath(-100, -8, 2.0, 0.5, 3.0)
-    tomAnimated.addPath(100, -8, 7.0, 8.0, 2.0)
-    tomAnimated.pathLoops = true
-    this.createMonster(135, 90, 2.0, 'longarms')
+    // Different room layouts if in presentation mode or not
+    if (this.presentation) {
+      // Makes the room start lit and with the flashlight disabled (hard coded to only work if you don't have the key)
+      let haveObject = false
+      for (let i = 0; i < this.collectedObjects.length; i++) {
+        if (this.collectedObjects[i] === 'key') {
+          haveObject = true
+        }
+      }
+      if (!haveObject) {
+        this.presentationLighting()
+      }
+    } else {
+      // Create enemies for this scene
+      const bigmouthMonster = this.createMonster(-180, -8, 2.0, 'bigmouthF')
+      bigmouthMonster.addPath(-300, -8, 2.0, 0.5, 10.0)
+      bigmouthMonster.addPath(300, -8, 2.0, 0.1, 'key')
+      bigmouthMonster.pathLoops = true
+      const tomAnimated = this.createMonster(-135, -8, 2.0, 'tomF')
+      tomAnimated.addPath(-100, -8, 2.0, 0.5, 3.0)
+      tomAnimated.addPath(100, -8, 7.0, 8.0, 2.0)
+      tomAnimated.pathLoops = true
+      this.createMonster(135, 90, 2.0, 'longarms')
+
+      // Makes animation for tom walking
+      tomAnimated.anims.play('front')
+      bigmouthMonster.anims.play('front3')
+    }
 
     // Collectable Object interaction
     this.createCollectable(-135, -27, 0.7, 0.5, 'key')
@@ -47,9 +65,6 @@ class Conservatory extends PanoScene {
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
-    // Makes animation for tom walking
-    tomAnimated.anims.play('front')
-    bigmouthMonster.anims.play('front3')
   }
 }
 
