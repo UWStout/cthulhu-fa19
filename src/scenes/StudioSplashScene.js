@@ -57,11 +57,14 @@ class StudioSplashScene extends Phaser.Scene {
     this.load.image('minimapBackground', 'assets/images/minimapBackground.png')
 
     // Text HUD
-    this.load.image('text1', 'assets/images/text1.png')
-    this.load.image('text2', 'assets/images/text2.png')
-    this.load.image('text3', 'assets/images/text3.png')
-    this.load.image('text4', 'assets/images/text4.png')
-    this.load.image('text5', 'assets/images/text5.png')
+    this.load.image('text0', 'assets/images/text0.png') //key
+    this.load.image('text1', 'assets/images/text1.png') //book
+    this.load.image('text2', 'assets/images/text2.png') //knife
+    this.load.image('text3', 'assets/images/text3.png') //candle
+    this.load.image('text4', 'assets/images/text4.png') //checkbook
+    this.load.image('text5', 'assets/images/text5.png') //seal
+    this.load.image('textlock', 'assets/images/textLocked.png') //locked
+
 
     // Trace images for boss fight
     this.load.image('traceOne', 'assets/images/symbol1.png')

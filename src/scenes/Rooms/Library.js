@@ -27,7 +27,7 @@ class Conservatory extends PanoScene {
     bigmouthMonster.addPath(200, -8, 2.0, 0.1, 2.0)
     bigmouthMonster.pathLoops = true
 
-    const tomMonster = this.createMonster(-135, 0, 2.0, 'tomF')
+    const tomMonster = this.createMonster(-200, 0, 2.0, 'tomF')
     const longarmsMonster = this.createMonster(135, 0, 2.0, 'longarmsF')
 
     // Collectable Object interaction

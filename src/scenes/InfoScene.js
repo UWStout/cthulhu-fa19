@@ -29,7 +29,7 @@ class InfoScene extends Phaser.Scene {
 
     this.textTimer = 0
     if (this.initialText) {
-      this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text1')
+      this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text0')
       this.textTimer = 3
     }
 
