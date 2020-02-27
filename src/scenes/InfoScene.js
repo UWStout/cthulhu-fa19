@@ -99,7 +99,10 @@ class InfoScene extends Phaser.Scene {
   }
 
   setTextImage (itemName) {
-    if (itemName === 'book') {
+    if (itemName === 'receptionDoor') {
+      this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text1')
+      this.textTimer = 3
+    } else if (itemName === 'book') {
       this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text2')
       this.textTimer = 3
     } else if (itemName === 'bookKnife') {
