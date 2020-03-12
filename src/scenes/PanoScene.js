@@ -16,12 +16,23 @@ import BlurPipeline from '../shaders/BlurPipeline'
 
 class PanoScene extends Phaser.Scene {
   init (data) {
+    // FOR DEBUGGING //
+    this.debug = false
+    // FOR PRESENTATION //
+    this.presentation = true
+    // Presentation feature where light starts on and flashlight starts off
+    this.lightStartOn = false
+    this.flashlightStartOff = false
+    // Starting values
     this.startAngle = 0
     if (typeof data.startAngle !== 'undefined') {
       this.startAngle = data.startAngle
     }
     // List of collected items
     this.collectedObjects = []
+    if (this.presentation) { // Adds the knife to the inventory to begin for the presentation
+      this.collectedObjects = ['knife']
+    }
     if (Array.isArray(data.collectedObjects)) {
       this.collectedObjects = data.collectedObjects
     }
@@ -43,6 +54,8 @@ class PanoScene extends Phaser.Scene {
     this.withinRadius = false
     this.radiusStrength = 0.0
 
+    this.setInfoBool = true
+
     // Pre-bind the update method for orbit controls
     this.updateSpritePositions = this.updateSpritePositions.bind(this)
 
@@ -63,14 +76,6 @@ class PanoScene extends Phaser.Scene {
       showTrace: false,
       initialText: data.initialText
     }
-
-    // FOR DEBUGGING //
-    this.debug = true
-    // FOR PRESENTATION //
-    this.presentation = true
-    // Presentation feature where light starts on and flashlight starts off
-    this.lightStartOn = false
-    this.flashlightStartOff = false
   }
 
   preload () {
@@ -96,6 +101,7 @@ class PanoScene extends Phaser.Scene {
   }
 
   create () {
+    this.input.setDefaultCursor('none')
     // Initialize a Phaser3D rendering system
     this.phaser3d = new Phaser3D(this, {
       fov: this.vertFOV,
@@ -110,6 +116,7 @@ class PanoScene extends Phaser.Scene {
     // Runs the info scene to display on top of the screen
     this.infoSceneData.healthAmount = this.healthAmount
     this.infoSceneData.skyboxName = this.skyboxName
+    this.infoSceneData.presentation = this.presentation
     this.scene.run('Info', this.infoSceneData)
     this.infoScene = this.scene.get('Info')
 
@@ -152,6 +159,8 @@ class PanoScene extends Phaser.Scene {
     this.controls.enableZoom = false
     this.controls.enablePan = false
     this.controls.initialRotate(this.startAngle)
+    this.controls.rotateSpeed = 0.1
+    this.controls.keyPanSpeed = 0.1
 
     // Limits vertical height the player can rotate to
     this.controls.minPolarAngle = Math.PI / 2.4
@@ -166,6 +175,18 @@ class PanoScene extends Phaser.Scene {
     // this.cameras.main.setRenderToTexture('PixelFilter')
     this.cameras.main.setRenderToTexture('BlurFilter')
 
+    // Lightning variables
+    this.lightning = this.add.image(500, 280, 'light').setScale(1.2).setDepth(400)
+    this.lightning.alpha = 0.0
+    this.lightningAudio = this.sound.add('thunder', { loop: false, volume: 0.8 })
+    if (this.lightStartOn) {
+      this.lightningTimer = 0.01
+    } else {
+      this.lightningTimer = Phaser.Math.Between(15, 30)
+    }
+    this.flashedOnce = false
+    this.brightnessPeak = false
+    this.flashSpeed = 0
     // spotlight-----------------------------------------------
     var pic = this.add.image(500, 280, 'room').setScale(1.2)
     pic.setDepth(300)
@@ -188,24 +209,33 @@ class PanoScene extends Phaser.Scene {
       spotlight.x = pointer.x
       spotlight.y = pointer.y
     })
+    this.flashlightTimer = 0
+    this.timeFlashlight = false
+    this.whispering = this.sound.add('whisperLoop', { loop: true, volume: 0.0 })
+    this.whispering.play()
+
+    this.face = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'face').setDepth(399)
+    this.face.scale = 2
+    //this.face.alpha = 0
     // --------------------------------------------------------
 
     // Audio related stuff
     this.model = this.sys.game.globals.model
-    if (this.model.musicName !== 'ambienceTones') {
+    if (this.model.musicName !== 'rainLoop') {
       this.model.bgMusicPlaying = false
       this.sys.game.globals.bgMusic.stop()
     }
     if (this.model.musicOn === true && this.model.bgMusicPlaying === false) {
-      this.ambience = this.sound.add('ambienceTones', { loop: true, volume: 0.3 })
+      this.ambience = this.sound.add('rainLoop', { loop: true, volume: 0.8 })
       this.ambience.play()
       this.model.bgMusicPlaying = true
       this.sys.game.globals.bgMusic = this.ambience
-      this.model.musicName = 'ambienceTones'
+      this.model.musicName = 'rainLoop'
     }
+    // Sound for when Monsters are near
     this.closeAudio = this.sound.add('ambienceBitcrush', { loop: true, volume: 0.0 })
     this.closeAudio.play()
-
+    // Sound for when light is off and monsters are near
     this.heartbeatAudio = this.sound.add('heartbeat', { loop: true, volume: 0.0 })
     this.heartbeatAudio.play()
 
@@ -294,6 +324,19 @@ class PanoScene extends Phaser.Scene {
       repeat: -1
     }
     this.anims.create(bossw)
+    // Creates music
+    this.cave = this.sound.add('cave', { loop: true, volume: 0.6 })
+    this.cave.play()
+    this.caveWater = this.sound.add('caveWater', { loop: true, volume: 0.9 })
+    this.caveWater.play()
+    this.caveMouse = this.sound.add('caveMouse', { loop: true, volume: 0.05 })
+    this.caveMouse.play()
+    // Sets music for cave
+    if (this.skyboxName !== 'Cave') {
+      this.cave.volume = 0
+      this.caveWater.volume = 0
+      this.caveMouse.volume = 0
+    }
   }
 
   // Adds a sprite that is orientated in the 3D world
@@ -351,6 +394,10 @@ class PanoScene extends Phaser.Scene {
   startScene (sceneName, collectedObjects, startAngle, collectedItem) {
     this.closeAudio.stop()
     this.heartbeatAudio.stop()
+    this.cave.stop()
+    this.caveWater.stop()
+    this.caveMouse.stop()
+    this.whispering.stop()
     if (this.gameover) {
       this.healthAmount = 100
     }
@@ -362,6 +409,14 @@ class PanoScene extends Phaser.Scene {
     if (typeof this.setInfoItem !== 'undefined') {
       this.infoScene.setTextImage(this.setInfoItem)
       this.setInfoItem = null
+    }
+    if (this.setInfoBool) {
+      this.setInfoBool = false
+      // Plays the portal animation if bookCandle collected and not triggered before
+      if (this.checkRequirement('bookCandle') && !this.checkRequirement('portalPlayed')) {
+        this.infoScene.activatePortal()
+        this.addCollectedObject('portalPlayed')
+      }
     }
     // Updates every monster position so they can travel on paths
     for (let i = 0; i < this.monsterList.length; i++) {
@@ -397,7 +452,7 @@ class PanoScene extends Phaser.Scene {
 
     // Decrease health if in boss room
     if (this.skyboxName === 'BossRoom') {
-      this.healthAmount -= 0.04
+      this.healthAmount -= 0.08
     }
 
     if (this.healthAmount < 0) {
@@ -412,12 +467,31 @@ class PanoScene extends Phaser.Scene {
       this.gameoverHandled = true
     }
 
-    // Turns off the flashlight if Q is held down
+    // Turns off the flashlight if Q is held down and controls the whisper audio
     if (this.keys.Q.isDown) {
       this.spotlight.scale = 0.0
+      if (!this.timeFlashlight) {
+        this.timeFlashlight = true
+      }
     } else {
+      this.timeFlashlight = false
+      this.flashlightTimer = 0
       this.spotlight.scale = 4.0
     }
+    if (this.timeFlashlight) {
+      this.flashlightTimer += 0.01
+      if (this.flashlightTimer > 6) {
+        this.flashlightTimer = 6
+        console.log('Whispering at full audio')
+        this.gameover = true
+      }
+      this.blurPipeline.setFloat1('magnitudeAmount', this.flashlightTimer / 6)
+      if (this.flashlightTimer >= 4.5) {
+        this.closeAudio.volume = (this.flashlightTimer - 4.5) * 0.7
+      }
+    }
+    this.whispering.volume = this.flashlightTimer / 6
+    this.face.alpha = this.flashlightTimer / 140
     // Changes spotlight if lights start on or if the flashlight starts off
     if (this.lightStartOn) {
       this.spotlight.scale = 30.0
@@ -434,6 +508,9 @@ class PanoScene extends Phaser.Scene {
       this.controls.setRotation(0.05)
     }
 
+    // Updates the lightning flash
+    this.updateLightning()
+
     // Updates if the  monster and flashlight are overlapping
     this.updateOverlap()
 
@@ -443,6 +520,47 @@ class PanoScene extends Phaser.Scene {
     this.infoScene.updateHealth(this.healthAmount)
     // Gets rotation of camera and sends it to the minimap in Info Scene
     this.infoScene.setMapRotation(-this.controls.getAzimuthalAngle() / Math.PI * 180)
+  }
+
+  updateLightning () {
+    if (this.skyboxName !== 'BossRoom' && this.skyboxName !== 'Cave' && !this.lightStartOn) {
+      var timerTriggered = false
+      if (this.lightningTimer <= 0.0) {
+        timerTriggered = true
+        if (this.flashedOnce) {
+          this.flashSpeed = 10
+        } else {
+          this.flashSpeed = 8
+        }
+        // Controls the flashing of the lightning
+        if (!this.brightnessPeak) {
+          this.lightning.alpha = this.lightning.alpha - 0.01 * this.flashSpeed
+          if (this.lightning.alpha <= 0.0) {
+            this.brightnessPeak = true
+            this.lightning.alpha = 0.0
+          }
+        } else {
+          this.lightning.alpha = this.lightning.alpha + 0.01 * this.flashSpeed
+          if (this.lightning.alpha >= 1.0) {
+            this.brightnessPeak = false
+            this.lightning.alpha = 0.0
+            // Check if to flash again or restart the timer
+            if (!this.flashedOnce) {
+              this.flashedOnce = true
+            } else {
+              this.lightningTimer = Phaser.Math.Between(15, 30)
+              this.flashedOnce = false
+            }
+          }
+        }
+      }
+      this.lightningTimer -= 0.01
+      // Triggers the lightning audio if flashing is about to begin
+      if (!timerTriggered & this.lightningTimer <= 0.0) {
+        console.log('Audio set to play')
+        this.lightningAudio.play()
+      }
+    }
   }
 
   // Creates a door sprite that navigates you to a different room when clicked
@@ -589,11 +707,11 @@ class PanoScene extends Phaser.Scene {
       this.infoScene.setTextImage('gameWon')
       console.log('Boss beat')
     } else { // No clue what this is for
-      this.addTraceImage(this.traceList[this.traceNumber][0], this.traceList[this.traceNumber][1])
+      this.addTraceImage(this.traceList[this.traceNumber][0], this.traceList[this.traceNumber][1], true)
     }
   }
 
-  addTraceImage (traceImage, traceWaypoints) {
+  addTraceImage (traceImage, traceWaypoints, partOfBoss, objectToAdd) {
     console.log('Trace image added')
     this.trace = this.addPanoSprite(traceImage.concat('Pattern'), 5, 0, 2, false)
     this.traceMaster = this.addPanoSprite(traceImage, 5, 0, 2, false)
@@ -633,8 +751,13 @@ class PanoScene extends Phaser.Scene {
             this.hueChecking = false
             this.trace.destroy()
             this.traceMaster.destroy()
-            this.traceNumber++
-            this.sendTrace()
+            // Progesses the boss fight if the trace is part of it
+            if (partOfBoss) {
+              this.traceNumber++
+              this.sendTrace()
+            } else {
+              this.addCollectedObject(objectToAdd)
+            }
             // Play sound
             console.log('Trace finished!')
           }

@@ -41,13 +41,26 @@ class StudioSplashScene extends Phaser.Scene {
     this.load.audio('heartbeat', 'assets/audio/noises/heartbeat.mp3')
     this.load.audio('pickup', 'assets/audio/noises/pickup_sound.mp3')
 
+    this.load.audio('thunder', 'assets/audio/noises/thunder.mp3')
+    this.load.audio('rainLoop', 'assets/audio/noises/rainLoop.mp3')
+    this.load.audio('whisperLoop', 'assets/audio/noises/whisperLoop.mp3')
+    this.load.audio('whisperLR', 'assets/audio/noises/whisperLeftToRight.mp3')
+    this.load.audio('doorway', 'assets/audio/noises/stepDoorway.mp3')
+    this.load.audio('doorLocked', 'assets/audio/noises/doorLocked.mp3')
+
     this.load.audio('monsterScreamPixelLeft', 'assets/audio/noises/monster_pixel_scream_left.mp3')
     this.load.audio('monsterScreamPixelRight', 'assets/audio/noises/monster_pixel_scream_right.mp3')
     this.load.audio('bossScreamLeft', 'assets/audio/noises/Monster_boss_left.mp3')
     this.load.audio('bossScreamRight', 'assets/audio/noises/Monster_boss_right.mp3')
 
+    this.load.audio('cave', 'assets/audio/noises/cave_loop.mp3')
+    this.load.audio('caveWater', 'assets/audio/noises/cave_water_loop.mp3')
+    this.load.audio('caveMouse', 'assets/audio/noises/cave_mouse_loop.mp3')
+
     this.load.image('mask', 'assets/images/spotlight/mask1.png') // spotlight stuff
-    this.load.image('room', 'assets/images/spotlight/Black.jpg') // blackbackground
+    this.load.image('room', 'assets/images/spotlight/Black.jpg') // black background
+    this.load.image('light', 'assets/images/spotlight/White.jpg') // white background
+    this.load.image('face', 'assets/images/horrorFace.png')
 
     // HUD info scene images
     this.load.image('bar', 'assets/images/insanityBar.png')
@@ -55,6 +68,8 @@ class StudioSplashScene extends Phaser.Scene {
     this.load.image('trace', 'assets/images/TestTraceImage.png')
     this.load.image('arrow', 'assets/images/arrow.png')
     this.load.image('minimapBackground', 'assets/images/minimapBackground.png')
+    this.load.image('healthBorder', 'assets/images/health_bar.png')
+    this.load.image('healthOrb', 'assets/images/health_ball.png')
 
     // Text HUD
     this.load.image('text0', 'assets/images/text0.png') //key
@@ -89,6 +104,8 @@ class StudioSplashScene extends Phaser.Scene {
     // Load all the assets needed for main menu
     this.load.image('background', 'assets/images/TitleScreen/splashScreen.jpg') // background
     this.load.spritesheet('backgroundRain', 'assets/images/rain.png', { frameWidth: 225, frameHeight: 100 }) // Rainy title
+    this.load.spritesheet('portal', 'assets/images/portalAnimation.png', { frameWidth: 225, frameHeight: 100 }) // Portal animation
+    this.load.image('portalBackground', 'assets/images/PortalBackground.png') // Portal background
     this.load.image('title', 'assets/images/TitleScreen/LogoTransparent.png') // title name
     this.load.image('play_button', 'assets/images/TitleScreen/play_button.png') // play button
     this.load.image('options_button', 'assets/images/TitleScreen/options_button.png') // options button

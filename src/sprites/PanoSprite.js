@@ -16,6 +16,8 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
 
     this.canScale = canScale
 
+    this.storedTime = 0
+
     // Set strength of perspective effect
     this.perspectiveStrength = perspectiveStrength || 1.0
 
@@ -136,6 +138,12 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
           this.paths[0].progress = 1.0
           pathDone = true
         }
+        this.triggerString = ''
+        if (this.paths[0].triggerEvent === 'number') {
+          this.triggerString = this.paths[0].timerNumber
+        } else {
+          this.triggerString = this.paths[0].neededItem
+        }
         // Calculates the new movement position and scale, and updates the sprites to match
         const currentPosX = Phaser.Math.Linear(this.paths[0].initialPosX, this.paths[0].targetPosX, this.paths[0].progress)
         const currentPosY = Phaser.Math.Linear(this.paths[0].initialPosY, this.paths[0].targetPosY, this.paths[0].progress)
@@ -146,7 +154,11 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
         // Removes the path if completed
         if (pathDone) {
           if (this.pathLoops) {
-            this.addPath(this.paths[0].targetPosX, this.paths[0].targetPosY, this.paths[0].targetScale, this.paths[0].speed)
+            if (this.triggerString !== '') {
+              this.addPath(this.paths[0].targetPosX, this.paths[0].targetPosY, this.paths[0].targetScale, this.paths[0].speed, this.triggerString)
+            } else {
+              this.addPath(this.paths[0].targetPosX, this.paths[0].targetPosY, this.paths[0].targetScale, this.paths[0].speed)
+            }
           }
           this.paths.shift()
         }
@@ -159,9 +171,14 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
   }
 
   updateTimer (pathObject) {
+    if (pathObject.timerNumber > this.storedTime) {
+      this.storedTime = pathObject.timerNumber
+    }
     pathObject.timerNumber -= 0.012
     if (pathObject.timerNumber <= 0) {
       pathObject.isReady = true
+      pathObject.timerNumber = this.storedTime
+      this.storedTime = 0
       console.log('Monster path timer has expired')
     }
   }

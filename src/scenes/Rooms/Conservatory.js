@@ -25,6 +25,7 @@ class Conservatory extends PanoScene {
   }
 
   create () {
+    this.presentationMonster = null
     // Different room layouts if in presentation mode or not
     if (this.presentation) {
       // Makes the room start lit and with the flashlight disabled (hard coded to only work if you don't have the key)
@@ -37,6 +38,10 @@ class Conservatory extends PanoScene {
       if (!haveObject) {
         this.presentationLighting()
       }
+      if (!this.checkRequirement('key')) {
+        this.presentationMonster = this.createMonster(-180, -12, 2.0, 'longarms')
+      }
+
     } else {
       // Create enemies for this scene
       const bigmouthMonster = this.createMonster(-180, -8, 2.0, 'bigmouthF')
@@ -65,6 +70,10 @@ class Conservatory extends PanoScene {
 
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
+
+    if (!this.checkRequirement('key')) {
+      this.presentationMonster.anims.play('front3')
+    }
   }
 }
 

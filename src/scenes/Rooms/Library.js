@@ -21,18 +21,16 @@ class Conservatory extends PanoScene {
 
   create () {
     // Create enemies for this scene
-    const bigmouthMonster = this.createMonster(-180, 0, 2, 'bigmouthF')
-    bigmouthMonster.addSound(this, 'monsterScreamPixel', 0.5)
-    bigmouthMonster.addPath(-200, -8, 2.0, 0.5, 8.0)
-    bigmouthMonster.addPath(200, -8, 2.0, 0.1, 2.0)
-    bigmouthMonster.pathLoops = true
-
-    const tomMonster = this.createMonster(-200, 0, 2.0, 'tomF')
-    const longarmsMonster = this.createMonster(135, 0, 2.0, 'longarmsF')
+    this.longarmsMonster = this.createMonster(90, -13, 2.0, 'longarmsF')
+    this.longarmsMonster.anims.play('walk')
+    this.longarmsMonster.addPath(270, -13, 2.0, 0.1)
+    this.longarmsMonster.pathLoops = true
 
     // Collectable Object interaction
     this.createCollectable(250, 5, 0.8, 0.35, 'bookCandle', 'candle')
-    this.createCollectable(250, 5, 0.8, 0.35, 'bookKnife', 'knife')
+    if (!this.presentation) {
+      this.createCollectable(250, 5, 0.8, 0.35, 'bookKnife', 'knife')
+    }
     this.createCollectable(250, 5, 0.8, 0.35, 'book')
 
     // Doorway to Reception Hall
@@ -43,10 +41,20 @@ class Conservatory extends PanoScene {
     // Initialize parent scene (must call AFTER creating sprites)
     super.create()
 
-    bigmouthMonster.playSound()
-    bigmouthMonster.anims.play('front3')
-    tomMonster.anims.play('front')
-    longarmsMonster.anims.play('front2')
+    var collectedBook = false
+    var collectedBookTrace = false
+    for (let i = 0; i < this.collectedObjects.length; i++) {
+      if (this.collectedObjects[i] === 'book') {
+        collectedBook = true
+      }
+      if (this.collectedObjects[i] === 'bookTrace') {
+        collectedBookTrace = true
+      }
+    }
+    if (collectedBook && !collectedBookTrace) {
+      const bookTrace = ['traceOne', [0.95, 0.63, 0.54, 0.63, 0.85, 0.63, 0.54, 0.63, 0.76, 0.65]]
+      this.addTraceImage(bookTrace[0], bookTrace[1], false, 'bookTrace')
+    }
   }
 }
 

@@ -27,6 +27,14 @@ class TitleScene extends Phaser.Scene {
     const playButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 100, 'play_button').setDepth(1)
     const optionButton = this.add.image(this.game.renderer.width / 2, this.game.renderer.height / 2 + 150, 'options_button').setDepth(1)
     const creditsButton = this.add.text(this.game.renderer.width / 2 - 65, this.game.renderer.height / 2 + 180, '<credits>').setScale(1.5).setDepth(1)
+    // Lightnig variables
+    this.lightning = this.add.image(this.cameras.main.width / 2.0, this.cameras.main.height / 2.0, 'light').setOrigin(0.5).setScale(5.7).setDepth(20)
+    this.lightning.alpha = 0.0
+    this.lightningAudio = this.sound.add('thunder', { loop: false, volume: 0.8 })
+    this.lightningTimer = Phaser.Math.Between(3, 5)
+    this.flashedOnce = false
+    this.brightnessPeak = false
+    this.flashSpeed = 0
 
     playButton.alpha = 0.5
     optionButton.alpha = 0.5
@@ -102,12 +110,48 @@ class TitleScene extends Phaser.Scene {
       this.sys.game.globals.bgMusic = this.bgMusic
       this.model.musicName = 'bgMusic'
     }
+    this.ambience = this.sound.add('rainLoop', { loop: true, volume: 0.8 })
+    this.ambience.play()
   }
 
-  // update () {
-  //   this.scene.start('Conservatory')
-  //   this.scene.start('MenuScene')
-  // }
+  update () {
+    var timerTriggered = false
+    if (this.lightningTimer <= 0.0) {
+      timerTriggered = true
+      if (this.flashedOnce) {
+        this.flashSpeed = 10
+      } else {
+        this.flashSpeed = 8
+      }
+      // Controls the flashing of the lightning
+      if (!this.brightnessPeak) {
+        this.lightning.alpha = this.lightning.alpha - 0.01 * this.flashSpeed
+        if (this.lightning.alpha <= 0.0) {
+          this.brightnessPeak = true
+          this.lightning.alpha = 0.0
+        }
+      } else {
+        this.lightning.alpha = this.lightning.alpha + 0.01 * this.flashSpeed
+        if (this.lightning.alpha >= 1.0) {
+          this.brightnessPeak = false
+          this.lightning.alpha = 0.0
+          // Check if to flash again or restart the timer
+          if (!this.flashedOnce) {
+            this.flashedOnce = true
+          } else {
+            this.lightningTimer = Phaser.Math.Between(20, 40)
+            this.flashedOnce = false
+          }
+        }
+      }
+    }
+    this.lightningTimer -= 0.01
+    // Triggers the lightning audio if flashing is about to begin
+    if (!timerTriggered & this.lightningTimer <= 0.0) {
+      console.log('Audio set to play')
+      this.lightningAudio.play()
+    }
+  }
 }
 
 // Expose the TitleScene class for use in other modules

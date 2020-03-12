@@ -33,8 +33,12 @@ class Conservatory extends PanoScene {
 
   create () {
     // Collectable Object interaction
-    this.createCollectable(35, -10, 0.8, 1, 'knife', 'book')
-    this.createCollectable(-168, 5, 0.7, 0.7, 'candle', 'bookKnife')
+    if (!this.presentation) {
+      this.createCollectable(35, -10, 0.8, 1, 'knife', 'book')
+      this.createCollectable(-168, 5, 0.7, 0.7, 'candle', 'bookKnife')
+    } else {
+      this.createCollectable(-168, 5, 0.7, 0.7, 'candle', 'bookTrace')
+    }
 
     // Doorway to Conservatory
     this.createDoor(150, -5, 0.7, 1.2, 'Conservatory', -1.6)
