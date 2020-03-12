@@ -6,13 +6,15 @@ import { centerX, centerY } from '../utils'
 class StudioSplashScene extends Phaser.Scene {
   init (data) {
     this.cameras.main.setBackgroundColor('#000000')
-    this.allowNextScene = false
+    this.allowNextScene = true // Set to true to skip splash
     this.nextScene = 'TitleScene'
   }
 
   preload () {
     // Show the studio splash logo
-    this.showLogo()
+    if (!this.allowNextScene) {
+      this.showLogo()
+    }
 
     // Room Assets
     this.load.image('bigmouth', 'assets/images/BigMouth_FrontView.png')

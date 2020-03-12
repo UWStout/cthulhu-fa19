@@ -43,6 +43,11 @@ class PanoScene extends Phaser.Scene {
     this.panoSprites = []
     this.overSprite = null
 
+    // Eased turning
+    this.rotSpeed = 0.05
+    this.rotAlpha = 0.0
+    this.rotLerpDelta = 0.02
+
     // Variables for health management
     if (typeof data.healthAmount !== 'undefined') {
       this.healthAmount = data.healthAmount
@@ -501,11 +506,18 @@ class PanoScene extends Phaser.Scene {
 
     // Rotates the camera using the left button
     if (this.keys.LEFT.isDown || this.keys.A.isDown) {
-      this.controls.setRotation(-0.05)
-    }
-    // Rotates the camera using the right button
-    if (this.keys.RIGHT.isDown || this.keys.D.isDown) {
-      this.controls.setRotation(0.05)
+      const newRot = Phaser.Math.Interpolation.Linear([0, -this.rotSpeed], this.rotAlpha)
+      console.log(`Speed: ${newRot}, alpha: ${this.rotAlpha}`)
+      this.controls.setRotation(newRot)
+      this.rotAlpha = Math.min(this.rotAlpha + this.rotLerpDelta, 1.0)
+    } else if (this.keys.RIGHT.isDown || this.keys.D.isDown) {
+      // Rotates the camera using the right button
+      const newRot = Phaser.Math.Interpolation.Linear([0, this.rotSpeed], this.rotAlpha)
+      console.log(`Speed: ${newRot}, alpha: ${this.rotAlpha}`)
+      this.controls.setRotation(newRot)
+      this.rotAlpha = Math.min(this.rotAlpha + this.rotLerpDelta, 1.0)
+    } else {
+      this.rotAlpha = 0.0
     }
 
     // Updates the lightning flash
