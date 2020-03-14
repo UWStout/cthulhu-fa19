@@ -47,6 +47,7 @@ class InfoScene extends Phaser.Scene {
 
     this.textTimer = 0
     if (this.initialText) {
+      this.textScroll = this.add.image(this.width / 2, this.height * 0.8, 'scroll').setScale(2)
       this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text0')
       this.textTimer = 3
     }
@@ -110,6 +111,7 @@ class InfoScene extends Phaser.Scene {
       this.textTimer -= 0.01
       if (this.textTimer <= 0) {
         this.textImage.destroy()
+        this.textScroll.destroy()
       }
     }
   }
@@ -129,18 +131,23 @@ class InfoScene extends Phaser.Scene {
   setTextImage (itemName) {
     if (itemName === 'book') {
       if (!this.presentation) {
+        this.textScroll = this.add.image(this.width / 2, this.height * 0.8, 'scroll').setScale(2)
         this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text2')
       } else {
+        this.textScroll = this.add.image(this.width / 2, this.height * 0.8, 'scroll').setScale(2)
         this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text3')
       }
       this.textTimer = 3
     } else if (itemName === 'bookKnife') {
+      this.textScroll = this.add.image(this.width / 2, this.height * 0.8, 'scroll').setScale(2)
       this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text3')
       this.textTimer = 3
     } else if (itemName === 'bookCandle') {
+      this.textScroll = this.add.image(this.width / 2, this.height * 0.8, 'scroll').setScale(2)
       this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text4')
       this.textTimer = 3
     } else if (itemName === 'gameWon') {
+      this.textScroll = this.add.image(this.width / 2, this.height * 0.8, 'scroll').setScale(2)
       this.textImage = this.add.image(this.width / 2, this.height * 0.8, 'text5')
       this.textTimer = 3
     }

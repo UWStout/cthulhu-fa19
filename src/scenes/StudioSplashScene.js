@@ -81,6 +81,7 @@ class StudioSplashScene extends Phaser.Scene {
     this.load.image('text4', 'assets/images/text4.png') //checkbook
     this.load.image('text5', 'assets/images/text5.png') //seal
     this.load.image('textlock', 'assets/images/textLocked.png') //locked
+    this.load.image('scroll', 'assets/images/scroll.png') //locked
 
 
     // Trace images for boss fight
