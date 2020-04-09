@@ -106,7 +106,10 @@ class PanoScene extends Phaser.Scene {
   }
 
   create () {
-    this.input.setDefaultCursor('none')
+    // Remove cursor
+    //this.input.setDefaultCursor('none')
+    //this.input.setDefaultCursor('url(assets/images/lightglare.png), pointer') //yellow circle
+    this.input.setDefaultCursor('url(assets/images/sunray25px.png), pointer') //transparent circle
     // Initialize a Phaser3D rendering system
     this.phaser3d = new Phaser3D(this, {
       fov: this.vertFOV,

@@ -83,7 +83,8 @@ class StudioSplashScene extends Phaser.Scene {
     this.load.image('textlock', 'assets/images/textLocked.png') //locked
     this.load.image('scroll', 'assets/images/scroll.png') //locked
 
-
+    // Cursors
+    this.load.image('yellowCircle', 'assets/images/new yellow circle with cross.cur')
     // Trace images for boss fight
     this.load.image('traceOne', 'assets/images/symbol1.png')
     this.load.image('traceTwo', 'assets/images/symbol2.png')
@@ -106,7 +107,7 @@ class StudioSplashScene extends Phaser.Scene {
 
     // Load all the assets needed for main menu
     this.load.image('background', 'assets/images/TitleScreen/splashScreen.jpg') // background
-    this.load.spritesheet('backgroundRain', 'assets/images/rain.png', { frameWidth: 225, frameHeight: 100 }) // Rainy title
+    this.load.spritesheet('backgroundRain', 'assets/images/rain_clone.png', { frameWidth: 225, frameHeight: 100 }) // Rainy title
     this.load.spritesheet('portal', 'assets/images/portalAnimation.png', { frameWidth: 225, frameHeight: 100 }) // Portal animation
     this.load.image('portalBackground', 'assets/images/PortalBackground.png') // Portal background
     this.load.image('title', 'assets/images/TitleScreen/LogoTransparent.png') // title name
