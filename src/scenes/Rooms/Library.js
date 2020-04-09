@@ -52,7 +52,7 @@ class Conservatory extends PanoScene {
       }
     }
     if (collectedBook && !collectedBookTrace) {
-      const bookTrace = ['traceOne', [0.95, 0.63, 0.54, 0.63, 0.85, 0.63, 0.54, 0.63, 0.76, 0.65]]
+      const bookTrace = ['traceSix', [0.95, 0.50]]
       this.addTraceImage(bookTrace[0], bookTrace[1], false, 'bookTrace')
     }
   }

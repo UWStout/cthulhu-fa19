@@ -421,7 +421,7 @@ class PanoScene extends Phaser.Scene {
     if (this.setInfoBool) {
       this.setInfoBool = false
       // Plays the portal animation if bookCandle collected and not triggered before
-      if (this.checkRequirement('bookCandle') && !this.checkRequirement('portalPlayed')) {
+      if (this.checkRequirement('bookCandle') && !this.checkRequirement('portalPlayed') && this.skyboxName === 'Cave') {
         this.infoScene.activatePortal()
         this.addCollectedObject('portalPlayed')
       }
@@ -728,8 +728,12 @@ class PanoScene extends Phaser.Scene {
 
   addTraceImage (traceImage, traceWaypoints, partOfBoss, objectToAdd) {
     console.log('Trace image added')
-    this.trace = this.addPanoSprite(traceImage.concat('Pattern'), 5, 0, 2, false)
-    this.traceMaster = this.addPanoSprite(traceImage, 5, 0, 2, false)
+    let xAngle = 5
+    if (traceImage === 'traceSix') {
+      xAngle = -105
+    }
+    this.trace = this.addPanoSprite(traceImage.concat('Pattern'), xAngle, 0, 2, false)
+    this.traceMaster = this.addPanoSprite(traceImage, xAngle, 0, 2, false)
     this.trace.setInteractive()
     this.trace.alpha = 0.01
     this.traceMaster.alpha = 0.5

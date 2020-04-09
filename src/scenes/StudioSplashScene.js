@@ -91,11 +91,13 @@ class StudioSplashScene extends Phaser.Scene {
     this.load.image('traceThree', 'assets/images/symbol3.png')
     this.load.image('traceFour', 'assets/images/symbol4.png')
     this.load.image('traceFive', 'assets/images/symbol5.png')
+    this.load.image('traceSix', 'assets/images/symbol6.png')
     this.load.image('traceOnePattern', 'assets/images/symbol1pattern.png')
     this.load.image('traceTwoPattern', 'assets/images/symbol2pattern.png')
     this.load.image('traceThreePattern', 'assets/images/symbol3pattern.png')
     this.load.image('traceFourPattern', 'assets/images/symbol4pattern.png')
     this.load.image('traceFivePattern', 'assets/images/symbol5pattern.png')
+    this.load.image('traceSixPattern', 'assets/images/symbol6pattern.png')
 
     // Load minimap images
     this.load.image('minimapConservatory', 'assets/images/skybox/Conservatory/mini.png')
