@@ -457,7 +457,7 @@ class PanoScene extends Phaser.Scene {
 
     // Decrease health if in boss room
     if (this.skyboxName === 'BossRoom') {
-      this.healthAmount -= 0.08
+      this.healthAmount -= 0.06
     }
 
     if (this.healthAmount < 0) {
@@ -496,7 +496,7 @@ class PanoScene extends Phaser.Scene {
       }
     }
     this.whispering.volume = this.flashlightTimer / 6
-    this.face.alpha = this.flashlightTimer / 140
+    this.face.alpha = this.flashlightTimer / 100
     // Changes spotlight if lights start on or if the flashlight starts off
     if (this.lightStartOn) {
       this.spotlight.scale = 30.0

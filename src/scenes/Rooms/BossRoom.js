@@ -32,7 +32,7 @@ class Conservatory extends PanoScene {
     this.startBossFight()
 
     this.bossMonster.anims.play('walk4')
-    this.bossMonster.addPath(5, 35, 4.5, 0.02 / (this.healthAmount / 100))
+    this.bossMonster.addPath(5, 35, 4.5, 0.06 / (this.healthAmount / 100))
     this.bossMonster.alpha = 0.1
     this.bossAlpha = 0.1
     this.bossAlphaIncrease = 1 / (this.healthAmount / 100)

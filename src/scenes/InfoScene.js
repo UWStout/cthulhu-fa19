@@ -75,20 +75,20 @@ class InfoScene extends Phaser.Scene {
     let arrowVertPos = 0
     // Sets offsets for the player pointer
     if (this.miniMapName === 'minimapConservatory') {
-      arrowHoriPos = this.width * 0.939
+      arrowHoriPos = this.width * 0.933
       arrowVertPos = this.height / 5.9
     } else if (this.miniMapName === 'minimapReceptionHall') {
-      arrowHoriPos = this.width * 0.938
+      arrowHoriPos = this.width * 0.933
       arrowVertPos = this.height / 8.8
     } else if (this.miniMapName === 'minimapDiningRoom') {
       arrowHoriPos = this.width * 0.9668
       arrowVertPos = this.height / 6.9
     } else if (this.miniMapName === 'minimapLibrary') {
-      arrowHoriPos = this.width * 0.941
+      arrowHoriPos = this.width * 0.936
       arrowVertPos = this.height / 22
     } else if (this.miniMapName === 'minimapCave') {
-      arrowHoriPos = this.width * 0.974
-      arrowVertPos = this.height / 22
+      arrowHoriPos = this.width * 0.965
+      arrowVertPos = this.height / 20
     } else {
       arrowHoriPos = this.width * 1.1
       arrowVertPos = -20
