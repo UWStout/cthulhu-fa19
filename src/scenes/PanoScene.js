@@ -107,9 +107,9 @@ class PanoScene extends Phaser.Scene {
 
   create () {
     // Remove cursor
-    //this.input.setDefaultCursor('none')
+    this.input.setDefaultCursor('none')
     //this.input.setDefaultCursor('url(assets/images/lightglare.png), pointer') //yellow circle
-    this.input.setDefaultCursor('url(assets/images/sunray25px.png), pointer') //transparent circle
+    //this.input.setDefaultCursor('url(assets/images/sunray25px.png), pointer') //transparent circle
     // Initialize a Phaser3D rendering system
     this.phaser3d = new Phaser3D(this, {
       fov: this.vertFOV,
@@ -205,7 +205,15 @@ class PanoScene extends Phaser.Scene {
       add: false
     }).setScale(3)
 
+    var pointerSprite = this.make.sprite({
+      x: 320,
+      y: 320,
+      key: 'pointerCircle'
+    }).setDepth(350)
+    pointerSprite.alpha = 0.4
+
     this.spotlight = spotlight
+    this.pointerImage = pointerSprite
 
     pic.mask = new Phaser.Display.Masks.BitmapMask(this, spotlight)
     pic.mask.invertAlpha = true
@@ -213,9 +221,13 @@ class PanoScene extends Phaser.Scene {
     const ourPointer = this.game.input.activePointer
     spotlight.x = ourPointer.x
     spotlight.y = ourPointer.y
+    pointerSprite.x = ourPointer.x
+    pointerSprite.y = ourPointer.y
     this.input.on('pointermove', function (pointer) {
       spotlight.x = pointer.x
       spotlight.y = pointer.y
+      pointerSprite.x = pointer.x
+      pointerSprite.y = pointer.y
     })
     this.flashlightTimer = 0
     this.timeFlashlight = false

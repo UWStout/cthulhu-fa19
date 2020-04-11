@@ -114,6 +114,7 @@ class InfoScene extends Phaser.Scene {
         this.textScroll.destroy()
       }
     }
+
   }
 
   updateHealth (amount) {
