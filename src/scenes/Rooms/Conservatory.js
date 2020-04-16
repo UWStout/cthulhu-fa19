@@ -29,15 +29,15 @@ class Conservatory extends PanoScene {
     // Different room layouts if in presentation mode or not
     if (this.presentation) {
       // Makes the room start lit and with the flashlight disabled (hard coded to only work if you don't have the key)
-      let haveObject = false
-      for (let i = 0; i < this.collectedObjects.length; i++) {
-        if (this.collectedObjects[i] === 'key') {
-          haveObject = true
-        }
-      }
-      if (!haveObject) {
-        this.presentationLighting()
-      }
+      // let haveObject = false
+      // for (let i = 0; i < this.collectedObjects.length; i++) {
+      //   if (this.collectedObjects[i] === 'key') {
+      //     haveObject = true
+      //   }
+      // }
+      // if (!haveObject) {
+      //   this.presentationLighting()
+      // }
       if (!this.checkRequirement('key')) {
         this.presentationMonster = this.createMonster(-180, -12, 2.0, 'longarms')
       }
