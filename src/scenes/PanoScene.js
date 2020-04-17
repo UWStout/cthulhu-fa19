@@ -16,12 +16,23 @@ import BlurPipeline from '../shaders/BlurPipeline'
 
 class PanoScene extends Phaser.Scene {
   init (data) {
+    // FOR DEBUGGING //
+    this.debug = false
+    // FOR PRESENTATION //
+    this.presentation = true
+    // Presentation feature where light starts on and flashlight starts off
+    this.lightStartOn = false
+    this.flashlightStartOff = false
+    // Starting values
     this.startAngle = 0
     if (typeof data.startAngle !== 'undefined') {
       this.startAngle = data.startAngle
     }
     // List of collected items
     this.collectedObjects = []
+    if (this.presentation) { // Adds the knife to the inventory to begin for the presentation
+      this.collectedObjects = ['knife']
+    }
     if (Array.isArray(data.collectedObjects)) {
       this.collectedObjects = data.collectedObjects
     }
@@ -31,6 +42,11 @@ class PanoScene extends Phaser.Scene {
     this.vertFOV = this.vertFOV || 70
     this.panoSprites = []
     this.overSprite = null
+
+    // Eased turning
+    this.rotSpeed = 0.05
+    this.rotAlpha = 0.0
+    this.rotLerpDelta = 0.02
 
     // Variables for health management
     if (typeof data.healthAmount !== 'undefined') {
@@ -42,6 +58,8 @@ class PanoScene extends Phaser.Scene {
     this.mouseCheckRadius = 240
     this.withinRadius = false
     this.radiusStrength = 0.0
+
+    this.setInfoBool = true
 
     // Pre-bind the update method for orbit controls
     this.updateSpritePositions = this.updateSpritePositions.bind(this)
@@ -88,6 +106,10 @@ class PanoScene extends Phaser.Scene {
   }
 
   create () {
+    // Remove cursor
+    this.input.setDefaultCursor('none')
+    //this.input.setDefaultCursor('url(assets/images/lightglare.png), pointer') //yellow circle
+    //this.input.setDefaultCursor('url(assets/images/sunray25px.png), pointer') //transparent circle
     // Initialize a Phaser3D rendering system
     this.phaser3d = new Phaser3D(this, {
       fov: this.vertFOV,
@@ -102,6 +124,7 @@ class PanoScene extends Phaser.Scene {
     // Runs the info scene to display on top of the screen
     this.infoSceneData.healthAmount = this.healthAmount
     this.infoSceneData.skyboxName = this.skyboxName
+    this.infoSceneData.presentation = this.presentation
     this.scene.run('Info', this.infoSceneData)
     this.infoScene = this.scene.get('Info')
 
@@ -116,7 +139,19 @@ class PanoScene extends Phaser.Scene {
     // Graphics for drawing the flashlight and monster collision
     this.graphics = this.add.graphics()
 
-    this.keys = this.input.keyboard.addKeys('Q,LEFT,RIGHT,A,D')
+    this.keys = this.input.keyboard.addKeys('Q,LEFT,RIGHT,A,D,P')
+
+    // Toggles off the "light on" and then the "flashlight start off" variables
+    this.keys.P.on('down', function (event) {
+      console.log(this.lightStartOn)
+      if (this.lightStartOn) {
+        this.lightStartOn = false
+        console.log('Pressed P for light')
+      } else if (this.flashlightStartOff) {
+        this.flashlightStartOff = false
+        console.log('Pressed P for flashlight')
+      }
+    }, this)
 
     // Setup background skybox
     // Note: These assets are loaded direclty by three.js and are not in the preload() above.
@@ -132,6 +167,8 @@ class PanoScene extends Phaser.Scene {
     this.controls.enableZoom = false
     this.controls.enablePan = false
     this.controls.initialRotate(this.startAngle)
+    this.controls.rotateSpeed = 0.1
+    this.controls.keyPanSpeed = 0.1
 
     // Limits vertical height the player can rotate to
     this.controls.minPolarAngle = Math.PI / 2.4
@@ -146,6 +183,18 @@ class PanoScene extends Phaser.Scene {
     // this.cameras.main.setRenderToTexture('PixelFilter')
     this.cameras.main.setRenderToTexture('BlurFilter')
 
+    // Lightning variables
+    this.lightning = this.add.image(500, 280, 'light').setScale(1.2).setDepth(400)
+    this.lightning.alpha = 0.0
+    this.lightningAudio = this.sound.add('thunder', { loop: false, volume: 0.8 })
+    if (this.lightStartOn) {
+      this.lightningTimer = 0.01
+    } else {
+      this.lightningTimer = Phaser.Math.Between(15, 30)
+    }
+    this.flashedOnce = false
+    this.brightnessPeak = false
+    this.flashSpeed = 0
     // spotlight-----------------------------------------------
     var pic = this.add.image(500, 280, 'room').setScale(1.2)
     pic.setDepth(300)
@@ -156,7 +205,15 @@ class PanoScene extends Phaser.Scene {
       add: false
     }).setScale(3)
 
+    var pointerSprite = this.make.sprite({
+      x: 320,
+      y: 320,
+      key: 'pointerCircle'
+    }).setDepth(350)
+    pointerSprite.alpha = 0.4
+
     this.spotlight = spotlight
+    this.pointerImage = pointerSprite
 
     pic.mask = new Phaser.Display.Masks.BitmapMask(this, spotlight)
     pic.mask.invertAlpha = true
@@ -164,32 +221,56 @@ class PanoScene extends Phaser.Scene {
     const ourPointer = this.game.input.activePointer
     spotlight.x = ourPointer.x
     spotlight.y = ourPointer.y
+    pointerSprite.x = ourPointer.x
+    pointerSprite.y = ourPointer.y
     this.input.on('pointermove', function (pointer) {
       spotlight.x = pointer.x
       spotlight.y = pointer.y
+      pointerSprite.x = pointer.x
+      pointerSprite.y = pointer.y
     })
+    this.flashlightTimer = 0
+    this.timeFlashlight = false
+    this.whispering = this.sound.add('whisperLoop', { loop: true, volume: 0.0 })
+    this.whispering.play()
+
+    this.face = this.add.image(this.game.config.width / 2, this.game.config.height / 2, 'face').setDepth(399)
+    this.face.scale = 2
+    //this.face.alpha = 0
     // --------------------------------------------------------
 
     // Audio related stuff
     this.model = this.sys.game.globals.model
-    if (this.model.musicName !== 'ambienceTones') {
+    if (this.model.musicName !== 'rainLoop') {
       this.model.bgMusicPlaying = false
       this.sys.game.globals.bgMusic.stop()
     }
     if (this.model.musicOn === true && this.model.bgMusicPlaying === false) {
-      this.ambience = this.sound.add('ambienceTones', { loop: true, volume: 0.3 })
+      this.ambience = this.sound.add('rainLoop', { loop: true, volume: 0.8 })
       this.ambience.play()
       this.model.bgMusicPlaying = true
       this.sys.game.globals.bgMusic = this.ambience
-      this.model.musicName = 'ambienceTones'
+      this.model.musicName = 'rainLoop'
     }
+    // Sound for when Monsters are near
     this.closeAudio = this.sound.add('ambienceBitcrush', { loop: true, volume: 0.0 })
     this.closeAudio.play()
-
+    // Sound for when light is off and monsters are near
     this.heartbeatAudio = this.sound.add('heartbeat', { loop: true, volume: 0.0 })
     this.heartbeatAudio.play()
 
     this.pickupSound = this.sound.add('pickup')
+
+    // Particle effect to use for traces
+    this.traceParticles = this.add.particles('traceParticle').createEmitter({
+      x: -200,
+      y: -200,
+      speed: 10,
+      lifespan: 1000,
+      alpha: 0.5,
+      scale: { start: 0.2, end: 0, ease: 'Expo.easeIn' },
+      blendMode: 'ADD'
+    })
 
     // Animations for sprites
     var tf = {
@@ -263,6 +344,19 @@ class PanoScene extends Phaser.Scene {
       repeat: -1
     }
     this.anims.create(bossw)
+    // Creates music
+    this.cave = this.sound.add('cave', { loop: true, volume: 0.6 })
+    this.cave.play()
+    this.caveWater = this.sound.add('caveWater', { loop: true, volume: 0.9 })
+    this.caveWater.play()
+    this.caveMouse = this.sound.add('caveMouse', { loop: true, volume: 0.05 })
+    this.caveMouse.play()
+    // Sets music for cave
+    if (this.skyboxName !== 'Cave') {
+      this.cave.volume = 0
+      this.caveWater.volume = 0
+      this.caveMouse.volume = 0
+    }
   }
 
   // Adds a sprite that is orientated in the 3D world
@@ -320,6 +414,10 @@ class PanoScene extends Phaser.Scene {
   startScene (sceneName, collectedObjects, startAngle, collectedItem) {
     this.closeAudio.stop()
     this.heartbeatAudio.stop()
+    this.cave.stop()
+    this.caveWater.stop()
+    this.caveMouse.stop()
+    this.whispering.stop()
     if (this.gameover) {
       this.healthAmount = 100
     }
@@ -331,6 +429,14 @@ class PanoScene extends Phaser.Scene {
     if (typeof this.setInfoItem !== 'undefined') {
       this.infoScene.setTextImage(this.setInfoItem)
       this.setInfoItem = null
+    }
+    if (this.setInfoBool) {
+      this.setInfoBool = false
+      // Plays the portal animation if bookCandle collected and not triggered before
+      if (this.checkRequirement('bookCandle') && !this.checkRequirement('portalPlayed') && this.skyboxName === 'Cave') {
+        this.infoScene.activatePortal()
+        this.addCollectedObject('portalPlayed')
+      }
     }
     // Updates every monster position so they can travel on paths
     for (let i = 0; i < this.monsterList.length; i++) {
@@ -366,7 +472,7 @@ class PanoScene extends Phaser.Scene {
 
     // Decrease health if in boss room
     if (this.skyboxName === 'BossRoom') {
-      this.healthAmount -= 0.04
+      this.healthAmount -= 0.06
     }
 
     if (this.healthAmount < 0) {
@@ -380,20 +486,57 @@ class PanoScene extends Phaser.Scene {
       this.transitionTo('Conservatory', [], 0.0)
       this.gameoverHandled = true
     }
-    // Turns off the flashlight if Q is held down
+
+    // Turns off the flashlight if Q is held down and controls the whisper audio
     if (this.keys.Q.isDown) {
       this.spotlight.scale = 0.0
+      if (!this.timeFlashlight) {
+        this.timeFlashlight = true
+      }
     } else {
-      this.spotlight.scale = 3.0
+      this.timeFlashlight = false
+      this.flashlightTimer = 0
+      this.spotlight.scale = 4.0
     }
+    if (this.timeFlashlight) {
+      this.flashlightTimer += 0.01
+      if (this.flashlightTimer > 6) {
+        this.flashlightTimer = 6
+        console.log('Whispering at full audio')
+        this.gameover = true
+      }
+      this.blurPipeline.setFloat1('magnitudeAmount', this.flashlightTimer / 6)
+      if (this.flashlightTimer >= 4.5) {
+        this.closeAudio.volume = (this.flashlightTimer - 4.5) * 0.7
+      }
+    }
+    this.whispering.volume = this.flashlightTimer / 6
+    this.face.alpha = this.flashlightTimer / 100
+    // Changes spotlight if lights start on or if the flashlight starts off
+    if (this.lightStartOn) {
+      this.spotlight.scale = 30.0
+    } else if (this.flashlightStartOff) {
+      this.spotlight.scale = 0.0
+    }
+
     // Rotates the camera using the left button
     if (this.keys.LEFT.isDown || this.keys.A.isDown) {
-      this.controls.setRotation(-0.05)
+      const newRot = Phaser.Math.Interpolation.Linear([0, -this.rotSpeed], this.rotAlpha)
+      console.log(`Speed: ${newRot}, alpha: ${this.rotAlpha}`)
+      this.controls.setRotation(newRot)
+      this.rotAlpha = Math.min(this.rotAlpha + this.rotLerpDelta, 1.0)
+    } else if (this.keys.RIGHT.isDown || this.keys.D.isDown) {
+      // Rotates the camera using the right button
+      const newRot = Phaser.Math.Interpolation.Linear([0, this.rotSpeed], this.rotAlpha)
+      console.log(`Speed: ${newRot}, alpha: ${this.rotAlpha}`)
+      this.controls.setRotation(newRot)
+      this.rotAlpha = Math.min(this.rotAlpha + this.rotLerpDelta, 1.0)
+    } else {
+      this.rotAlpha = 0.0
     }
-    // Rotates the camera using the right button
-    if (this.keys.RIGHT.isDown || this.keys.D.isDown) {
-      this.controls.setRotation(0.05)
-    }
+
+    // Updates the lightning flash
+    this.updateLightning()
 
     // Updates if the  monster and flashlight are overlapping
     this.updateOverlap()
@@ -406,13 +549,59 @@ class PanoScene extends Phaser.Scene {
     this.infoScene.setMapRotation(-this.controls.getAzimuthalAngle() / Math.PI * 180)
   }
 
+  updateLightning () {
+    if (this.skyboxName !== 'BossRoom' && this.skyboxName !== 'Cave' && !this.lightStartOn) {
+      var timerTriggered = false
+      if (this.lightningTimer <= 0.0) {
+        timerTriggered = true
+        if (this.flashedOnce) {
+          this.flashSpeed = 10
+        } else {
+          this.flashSpeed = 8
+        }
+        // Controls the flashing of the lightning
+        if (!this.brightnessPeak) {
+          this.lightning.alpha = this.lightning.alpha - 0.01 * this.flashSpeed
+          if (this.lightning.alpha <= 0.0) {
+            this.brightnessPeak = true
+            this.lightning.alpha = 0.0
+          }
+        } else {
+          this.lightning.alpha = this.lightning.alpha + 0.01 * this.flashSpeed
+          if (this.lightning.alpha >= 1.0) {
+            this.brightnessPeak = false
+            this.lightning.alpha = 0.0
+            // Check if to flash again or restart the timer
+            if (!this.flashedOnce) {
+              this.flashedOnce = true
+            } else {
+              this.lightningTimer = Phaser.Math.Between(15, 30)
+              this.flashedOnce = false
+            }
+          }
+        }
+      }
+      this.lightningTimer -= 0.01
+      // Triggers the lightning audio if flashing is about to begin
+      if (!timerTriggered & this.lightningTimer <= 0.0) {
+        console.log('Audio set to play')
+        this.lightningAudio.play()
+      }
+    }
+  }
+
   // Creates a door sprite that navigates you to a different room when clicked
   createDoor (posX, posY, scaleX, scaleY, sceneToLoad, startAngle, unlockItem = '') {
     const doorSprite = this.addPanoSprite(NONE, posX, posY, 5.0)
     doorSprite.baseScaleX *= scaleX
     doorSprite.baseScaleY *= scaleY
-    // TODO: Change alpha to 0.01 when in production so the door is basically invisible
     doorSprite.alpha = 0.001
+
+    // Makes doors slightly visible for debugging
+    if (this.debug === true) {
+      doorSprite.alpha = 0.1
+    }
+
     doorSprite.setInteractive(new Phaser.Geom.Rectangle(0, 0, doorSprite.width, doorSprite.height), Phaser.Geom.Rectangle.Contains)
 
     // Checks if the pointer was pressed and released on the same door
@@ -429,6 +618,7 @@ class PanoScene extends Phaser.Scene {
   }
 
   // Collectable creation function used by rooms, spawns if not already in your list
+  // *Remember objects are part of the skybox*
   createCollectable (posX, posY, scaleX, scaleY, spriteName, requirementObject = '') {
     let haveObject = false
     for (let i = 0; i < this.collectedObjects.length; i++) {
@@ -442,6 +632,12 @@ class PanoScene extends Phaser.Scene {
       collectable.baseScaleY *= scaleY
       collectable.depth = collectable.depth + 10
       collectable.alpha = 0.001
+
+      // Makes collectable boundraies slightly visible for debugging
+      if (this.debug === true) {
+        collectable.alpha = 0.1
+      }
+
       collectable.setInteractive(new Phaser.Geom.Rectangle(0, 0, collectable.width, collectable.height), Phaser.Geom.Rectangle.Contains)
       collectable.requirement = requirementObject
       collectable.input.enabled = this.checkRequirement(requirementObject)
@@ -457,6 +653,7 @@ class PanoScene extends Phaser.Scene {
     }
   }
 
+  // Checks if object can be interacted with based off of items in the players inventory
   checkRequirement (requirementName) {
     let haveRequirement = false
     for (let i = 0; i < this.collectedObjects.length; i++) {
@@ -471,6 +668,7 @@ class PanoScene extends Phaser.Scene {
     return haveRequirement
   }
 
+  // Adds collected objects to a list of collected objects and updates the requirements for other objects
   addCollectedObject (spriteName) {
     this.collectedObjects.push(spriteName)
     for (let i = 0; i < this.collectableList.length; i++) {
@@ -493,13 +691,15 @@ class PanoScene extends Phaser.Scene {
     let isWithin = false
     this.graphics.clear()
     for (let i = 0; i < this.monsterList.length; i++) {
-      var rectA = this.monsterList[i].getBounds()
+      var rectA = this.monsterList[i].getBounds() // TODO: Modify monster bounds to fit the sprite
       var rectB = new Phaser.Geom.Rectangle(pointer.x - this.mouseCheckRadius / 2, pointer.y - this.mouseCheckRadius / 2, this.mouseCheckRadius, this.mouseCheckRadius)
 
-      // Draws the boxes
-      // this.graphics.lineStyle(1, 0xff0000)
-      // this.graphics.strokeRectShape(rectB)
-      // this.graphics.strokeRectShape(rectA)
+      // Makes boundraies slightly visible for debugging
+      if (this.debug === true) {
+        this.graphics.lineStyle(1, 0xff0000)
+        this.graphics.strokeRectShape(rectB)
+        this.graphics.strokeRectShape(rectA)
+      }
 
       var rectC = new Phaser.Geom.Rectangle()
       Phaser.Geom.Rectangle.Intersection(rectA, rectB, rectC)
@@ -526,21 +726,26 @@ class PanoScene extends Phaser.Scene {
   }
 
   sendTrace () {
+    // Ends the game if all the traces in the list are completed
     if (this.traceNumber >= this.traceList.length) {
       this.fadeoutTime = 2000
       this.healthAmount = 100
       this.transitionTo('TitleScene', [], 0.0)
       this.infoScene.setTextImage('gameWon')
       console.log('Boss beat')
-    } else {
-      this.addTraceImage(this.traceList[this.traceNumber][0], this.traceList[this.traceNumber][1])
+    } else { // No clue what this is for
+      this.addTraceImage(this.traceList[this.traceNumber][0], this.traceList[this.traceNumber][1], true)
     }
   }
 
-  addTraceImage (traceImage, traceWaypoints) {
+  addTraceImage (traceImage, traceWaypoints, partOfBoss, objectToAdd) {
     console.log('Trace image added')
-    this.trace = this.addPanoSprite(traceImage.concat('Pattern'), 5, 0, 2, false)
-    this.traceMaster = this.addPanoSprite(traceImage, 5, 0, 2, false)
+    let xAngle = 5
+    if (traceImage === 'traceSix') {
+      xAngle = -105
+    }
+    this.trace = this.addPanoSprite(traceImage.concat('Pattern'), xAngle, 0, 2, false)
+    this.traceMaster = this.addPanoSprite(traceImage, xAngle, 0, 2, false)
     this.trace.setInteractive()
     this.trace.alpha = 0.01
     this.traceMaster.alpha = 0.5
@@ -563,21 +768,35 @@ class PanoScene extends Phaser.Scene {
       texLocY = -texLocY / this.trace.scale
       const colorGotten = this.game.textures.getPixel(texLocX, texLocY, traceImage.concat('Pattern'))
       if (this.hueChecking) {
+        // Sets the trace particle to follow the mouse
+        this.traceParticles.setPosition(pointer.x, pointer.y)
+        // Controls wether the trace is finished or broken
         const hueDifference = Math.abs(this.prevHue - colorGotten.h) // Gets the color difference between previous and current
         if (Math.abs(traceWaypoints[waypointNum] - colorGotten.h) <= 0.04) { // Waypoint matched case
           waypointNum++
           console.log('Waypoint Reached')
           if (waypointNum >= traceWaypoints.length) { // Finish trace case
+            // Sets the trace particle offscreen
+            this.traceParticles.setPosition(-200, -200)
+            // Stops the trace and updates the trace completed count
             this.hueChecking = false
             this.trace.destroy()
             this.traceMaster.destroy()
-            this.traceNumber++
-            this.sendTrace()
+            // Progesses the boss fight if the trace is part of it
+            if (partOfBoss) {
+              this.traceNumber++
+              this.sendTrace()
+            } else {
+              this.addCollectedObject(objectToAdd)
+            }
             // Play sound
             console.log('Trace finished!')
           }
         }
         if (hueDifference > 0.1 || colorGotten.h === 0) { // Fail trace case
+          // Sets the trace particle offscreen
+          this.traceParticles.setPosition(-200, -200)
+          // Restarts the trace tracking
           this.hueChecking = false
           waypointNum = 0
           this.traceMaster.setTint(0x0d7442)
@@ -593,6 +812,11 @@ class PanoScene extends Phaser.Scene {
       }
       this.prevHue = colorGotten.h
     }, this)
+  }
+
+  presentationLighting () {
+    this.flashlightStartOff = true
+    this.lightStartOn = true
   }
 }
 
