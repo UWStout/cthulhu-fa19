@@ -1,3 +1,4 @@
+/* global __DEV__ */
 // Import the entire 'phaser' namespace
 import Phaser from 'phaser'
 
@@ -194,7 +195,7 @@ class P3dScene extends Phaser.Scene {
 
   startScene (skyboxName) {
     this.scene.start('Test3D', { skyboxName: skyboxName, defaultFOV: 90 })
-    console.log('Starting Scene')
+    if (__DEV__) console.log('Starting Scene')
   }
 
   setupSceneChangeKeys () {

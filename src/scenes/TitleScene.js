@@ -1,4 +1,4 @@
-
+/* global __DEV__ */
 // Import the entire 'phaser' namespace
 import Phaser from 'phaser'
 class TitleScene extends Phaser.Scene {
@@ -61,7 +61,7 @@ class TitleScene extends Phaser.Scene {
 
     playButton.on('pointerup', () => { // starts scene
       this.scene.start('Conservatory')
-      console.log('Game started')
+      if (__DEV__) console.log('Game started')
     })
 
     // OPTIONS--------------------------------------
@@ -77,7 +77,7 @@ class TitleScene extends Phaser.Scene {
 
     optionButton.on('pointerup', () => { // starts scene
       this.scene.start('Options')
-      console.log('Options menu')
+      if (__DEV__) console.log('Options menu')
     })
 
     // CREDITS--------------------------------------
@@ -93,7 +93,7 @@ class TitleScene extends Phaser.Scene {
 
     creditsButton.on('pointerup', () => { // starts scene
       this.scene.start('Credits')
-      console.log('display credits')
+      if (__DEV__) console.log('display credits')
     })
 
     // MUSIC-----------------------------------------
@@ -148,7 +148,7 @@ class TitleScene extends Phaser.Scene {
     this.lightningTimer -= 0.01
     // Triggers the lightning audio if flashing is about to begin
     if (!timerTriggered & this.lightningTimer <= 0.0) {
-      console.log('Audio set to play')
+      if (__DEV__) console.log('Audio set to play')
       this.lightningAudio.play()
     }
   }

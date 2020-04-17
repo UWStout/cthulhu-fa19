@@ -32,7 +32,7 @@ class PixelationPipeline extends Phaser.Renderer.WebGL.Pipelines.TextureTintPipe
     this._res.height = newRes.height
     this.setFloat2('aspectRatioMultiplier',
       this._res.width / this._res.height, 1)
-    console.log('set resolution')
+    if (__DEV__) console.log('set resolution')
   }
 }
 

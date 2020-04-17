@@ -1,42 +1,54 @@
 {
   "title": "Light Within The Darkness",
   "byLine": "Beware of the things unseen in the dark",
-  "bannerTitleURI": "assets/images/Logo.png",
+  "bannerTitleURI": "assets/images/webContent/Rain-Logo.gif",
   "bannerWideURI": "assets/images/LWtD_Title.PNG",
   "markdownURI": "README.md",
   "media": [
     {
-      "title": "Game Trailer",
-      "vimeoID": "379153059",
-      "alt": "Light Within The Darkness SGX Trailer"
+      "title": "IUGS Trailer",
+      "vimeoID": "408414488",
+      "alt": "Light Within The Darkness Intel University Games Showcase Trailer"
     }, {
       "title": "Screenshot 1",
-      "link": "assets/images/TWtD_Shot1.PNG",
-      "alt": "Light Within The Darkness Spritesheet"
+      "link": "assets/images/webContent/Bookshelf.png",
+      "alt": "Screenshot of library bookshelf"
     }, {
       "title": "Screenshot 2",
-      "link": "assets/images/TWtD_Shot2.PNG",
-      "alt": "Light Within The Darkness Spritesheet"
+      "link": "assets/images/webContent/Creature.png",
+      "alt": "Screenshot of creature interaction"
     }, {
       "title": "Screenshot 3",
-      "link": "assets/images/TWtD_Shot3.PNG",
-      "alt": "Light Within The Darkness Monster"
+      "link": "assets/images/webContent/Doorway.png",
+      "alt": "Screenshot of doorway passage"
     }, {
       "title": "Screenshot 4",
-      "link": "assets/images/TWtD_Shot4.PNG",
-      "alt": "Light Within The Darkness Spritesheet"
+      "link": "assets/images/webContent/Fireplace.png",
+      "alt": "Screenshot of fireplace room"
+    }, {
+      "title": "Screenshot 5",
+      "link": "assets/images/webContent/Tracing.png",
+      "alt": "Screenshot of ritual tracing"
     }, {
       "title": "Long Arms Monster",
       "link": "assets/images/LongArmsBoi_FrontView.png",
-      "alt": "Light Within The Darkness Monster"
+      "alt": "Monster sprite"
     }, {
-      "title": "Wide Angle Room",
-      "link": "assets/images/conservatoryfinal.jpg",
-      "alt": "Light Within The Darkness Room"
+      "title": "Maya Rendered Conservatory",
+      "link": "assets/images/webContent/Conservatory-Render.jpeg",
+      "alt": "3d rendered conservatory"
     }, {
-      "title": "Title Screen",
-      "link": "assets/images/LWtD_Title.PNG",
-      "alt": "Light Within The Darkness Spritesheet"
+      "title": "Hand painted over conservatory",
+      "link": "assets/images/webContent/Conservatory-Overpaint.jpeg",
+      "alt": "The hand painted-over conservatory"
+    }, {
+      "title": "Maya Rendered Library",
+      "link": "assets/images/webContent/Library-Render.jpeg",
+      "alt": "3d rendered library"
+    }, {
+      "title": "Hand painted over library",
+      "link": "assets/images/webContent/Library-Overpaint.jpeg",
+      "alt": "The hand painted over library"
     }, {
       "title": "Source Code Evolution",
       "vimeoID": "378641963",

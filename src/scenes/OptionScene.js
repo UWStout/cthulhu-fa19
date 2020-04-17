@@ -1,3 +1,4 @@
+/* global __DEV__ */
 // Import the entire 'phaser' namespace
 import Phaser from 'phaser'
 class OptionScene extends Phaser.Scene {
@@ -24,14 +25,14 @@ class OptionScene extends Phaser.Scene {
     this.musicButton.on('pointerdown', function () {
       // this.musicOn = !this.musicOn
       this.model.musicOn = !this.model.musicOn
-      console.log('toggle music')
+      if (__DEV__) console.log('toggle music')
       this.updateAudio()
     }.bind(this))
 
     this.soundButton.on('pointerdown', function () {
       // this.soundOn = !this.soundOn
       this.model.soundOn = !this.model.soundOn
-      console.log('toggle sound')
+      if (__DEV__) console.log('toggle sound')
       this.updateAudio()
     }.bind(this))
 
@@ -51,7 +52,7 @@ class OptionScene extends Phaser.Scene {
     menuButton.on('pointerup', () => {
       // Go back to title screen
       this.scene.start('TitleScene')
-      console.log('Back to menu')
+      if (__DEV__) console.log('Back to menu')
     })
 
     this.updateAudio()

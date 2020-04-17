@@ -74,18 +74,18 @@ class StudioSplashScene extends Phaser.Scene {
     this.load.image('healthOrb', 'assets/images/health_ball.png')
 
     // Text HUD
-    this.load.image('text0', 'assets/images/text0.png') //key
-    this.load.image('text1', 'assets/images/text1.png') //book
-    this.load.image('text2', 'assets/images/text2.png') //knife
-    this.load.image('text3', 'assets/images/text3.png') //candle
-    this.load.image('text4', 'assets/images/text4.png') //checkbook
-    this.load.image('text5', 'assets/images/text5.png') //seal
-    this.load.image('textlock', 'assets/images/textLocked.png') //locked
-    this.load.image('scroll', 'assets/images/scroll.png') //locked
+    this.load.image('text0', 'assets/images/text0.png') // key
+    this.load.image('text1', 'assets/images/text1.png') // book
+    this.load.image('text2', 'assets/images/text2.png') // knife
+    this.load.image('text3', 'assets/images/text3.png') // candle
+    this.load.image('text4', 'assets/images/text4.png') // checkbook
+    this.load.image('text5', 'assets/images/text5.png') // seal
+    this.load.image('textlock', 'assets/images/textLocked.png') // locked
+    this.load.image('scroll', 'assets/images/scroll.png') // locked
     this.load.image('pointerCircle', 'assets/images/pointerImage.png')
 
     // Cursors
-    this.load.image('yellowCircle', 'assets/images/new yellow circle with cross.cur')
+    // this.load.image('yellowCircle', 'assets/images/new yellow circle with cross.cur')
     // Trace images for boss fight
     this.load.image('traceOne', 'assets/images/symbol1.png')
     this.load.image('traceTwo', 'assets/images/symbol2.png')
@@ -111,7 +111,7 @@ class StudioSplashScene extends Phaser.Scene {
     // Load all the assets needed for main menu
     this.load.image('background', 'assets/images/TitleScreen/splashScreen.jpg') // background
     this.load.spritesheet('backgroundRain', 'assets/images/rain_clone.png', { frameWidth: 225, frameHeight: 100 }) // Rainy title
-    this.load.spritesheet('portal', 'assets/images/portalAnimation.png', { frameWidth: 225, frameHeight: 100 }) // Portal animation
+    this.load.spritesheet('portal', 'assets/images/PortalAnimation.png', { frameWidth: 225, frameHeight: 100 }) // Portal animation
     this.load.image('portalBackground', 'assets/images/PortalBackground.png') // Portal background
     this.load.image('title', 'assets/images/TitleScreen/LogoTransparent.png') // title name
     this.load.image('play_button', 'assets/images/TitleScreen/play_button.png') // play button

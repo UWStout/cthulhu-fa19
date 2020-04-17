@@ -103,7 +103,7 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
     if (typeof trigger === 'number') { // If the trigger is a timer
       pathObject.triggerEvent = 'number'
       pathObject.timerNumber = trigger
-      console.log(trigger)
+      if (__DEV__) console.log(trigger)
     } else if (typeof trigger === 'string') { // If the trigger is a item
       pathObject.neededItem = trigger
     } else { // No trigger defined
@@ -179,7 +179,7 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
       pathObject.isReady = true
       pathObject.timerNumber = this.storedTime
       this.storedTime = 0
-      console.log('Monster path timer has expired')
+      if (__DEV__) console.log('Monster path timer has expired')
     }
   }
 
@@ -193,7 +193,7 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
           }
         }
         if (haveRequirement) {
-          console.log('Monster has item to allow path')
+          if (__DEV__) console.log('Monster has item to allow path')
         }
         this.paths[p].isReady = haveRequirement
       }
@@ -233,7 +233,7 @@ class PanoSprite extends Phaser.GameObjects.Sprite {
   // Plays the sound added to the monster using 3D audio
   playSound () {
     while (!this.angleSet) {}
-    console.log(this.viewDifference)
+    if (__DEV__) console.log(this.viewDifference)
     this.leftSound.play()
     this.rightSound.play()
   }

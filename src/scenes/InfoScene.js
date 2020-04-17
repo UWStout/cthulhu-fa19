@@ -96,7 +96,7 @@ class InfoScene extends Phaser.Scene {
 
     this.arrow = this.add.image(arrowHoriPos, arrowVertPos, 'arrow')
     this.arrow.setScale(0.8)
-    console.log(this.miniMapName)
+    if (__DEV__) console.log(this.miniMapName)
     this.minimap = this.add.image(this.width * 0.95, this.height / 9, 'globalMinimap')
 
     this.updateHealth(this.healthAmount)

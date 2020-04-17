@@ -1,3 +1,5 @@
+/* global __DEV__ */
+
 // Import the entire 'phaser' namespace
 import Phaser, { NONE } from 'phaser'
 
@@ -68,13 +70,13 @@ class PanoScene extends Phaser.Scene {
 
     if (typeof data.initialText === 'undefined') {
       data.initialText = true
-      console.log('set initial true')
+      if (__DEV__) console.log('set initial true')
     }
 
     if (typeof data.collectedItem !== 'undefined') {
       this.setInfoItem = data.collectedItem
     }
-    console.log(data.collectedItem)
+    if (__DEV__) console.log(data.collectedItem)
 
     this.infoSceneData = {
       healthAmount: 100,
@@ -143,13 +145,13 @@ class PanoScene extends Phaser.Scene {
 
     // Toggles off the "light on" and then the "flashlight start off" variables
     this.keys.P.on('down', function (event) {
-      console.log(this.lightStartOn)
+      if (__DEV__) console.log(this.lightStartOn)
       if (this.lightStartOn) {
         this.lightStartOn = false
-        console.log('Pressed P for light')
+        if (__DEV__) console.log('Pressed P for light')
       } else if (this.flashlightStartOff) {
         this.flashlightStartOff = false
-        console.log('Pressed P for flashlight')
+        if (__DEV__) console.log('Pressed P for flashlight')
       }
     }, this)
 
@@ -482,7 +484,7 @@ class PanoScene extends Phaser.Scene {
 
     // Game over case
     if (this.gameover && !this.gameoverHandled) {
-      console.log('Game over')
+      if (__DEV__) console.log('Game over')
       this.transitionTo('Conservatory', [], 0.0)
       this.gameoverHandled = true
     }
@@ -502,7 +504,7 @@ class PanoScene extends Phaser.Scene {
       this.flashlightTimer += 0.01
       if (this.flashlightTimer > 6) {
         this.flashlightTimer = 6
-        console.log('Whispering at full audio')
+        if (__DEV__) console.log('Whispering at full audio')
         this.gameover = true
       }
       this.blurPipeline.setFloat1('magnitudeAmount', this.flashlightTimer / 6)
@@ -522,13 +524,11 @@ class PanoScene extends Phaser.Scene {
     // Rotates the camera using the left button
     if (this.keys.LEFT.isDown || this.keys.A.isDown) {
       const newRot = Phaser.Math.Interpolation.Linear([0, -this.rotSpeed], this.rotAlpha)
-      console.log(`Speed: ${newRot}, alpha: ${this.rotAlpha}`)
       this.controls.setRotation(newRot)
       this.rotAlpha = Math.min(this.rotAlpha + this.rotLerpDelta, 1.0)
     } else if (this.keys.RIGHT.isDown || this.keys.D.isDown) {
       // Rotates the camera using the right button
       const newRot = Phaser.Math.Interpolation.Linear([0, this.rotSpeed], this.rotAlpha)
-      console.log(`Speed: ${newRot}, alpha: ${this.rotAlpha}`)
       this.controls.setRotation(newRot)
       this.rotAlpha = Math.min(this.rotAlpha + this.rotLerpDelta, 1.0)
     } else {
@@ -584,7 +584,7 @@ class PanoScene extends Phaser.Scene {
       this.lightningTimer -= 0.01
       // Triggers the lightning audio if flashing is about to begin
       if (!timerTriggered & this.lightningTimer <= 0.0) {
-        console.log('Audio set to play')
+        if (__DEV__) console.log('Audio set to play')
         this.lightningAudio.play()
       }
     }
@@ -644,7 +644,7 @@ class PanoScene extends Phaser.Scene {
       this.collectableList.push(collectable)
       collectable.on('pointerdown', (pointer) => {
         this.addCollectedObject(spriteName)
-        console.log(this.collectedObjects)
+        if (__DEV__) console.log(this.collectedObjects)
         collectable.destroy()
         this.pickupSound.play()
         this.transitionTo(this.masterSkybox, this.collectedObjects, -this.controls.getAzimuthalAngle(), spriteName)
@@ -663,7 +663,7 @@ class PanoScene extends Phaser.Scene {
     }
     if (requirementName === '') {
       haveRequirement = true
-      console.log('No requirement for collectable')
+      if (__DEV__) console.log('No requirement for collectable')
     }
     return haveRequirement
   }
@@ -732,14 +732,14 @@ class PanoScene extends Phaser.Scene {
       this.healthAmount = 100
       this.transitionTo('TitleScene', [], 0.0)
       this.infoScene.setTextImage('gameWon')
-      console.log('Boss beat')
+      if (__DEV__) console.log('Boss beat')
     } else { // No clue what this is for
       this.addTraceImage(this.traceList[this.traceNumber][0], this.traceList[this.traceNumber][1], true)
     }
   }
 
   addTraceImage (traceImage, traceWaypoints, partOfBoss, objectToAdd) {
-    console.log('Trace image added')
+    if (__DEV__) console.log('Trace image added')
     let xAngle = 5
     if (traceImage === 'traceSix') {
       xAngle = -105
@@ -774,7 +774,7 @@ class PanoScene extends Phaser.Scene {
         const hueDifference = Math.abs(this.prevHue - colorGotten.h) // Gets the color difference between previous and current
         if (Math.abs(traceWaypoints[waypointNum] - colorGotten.h) <= 0.04) { // Waypoint matched case
           waypointNum++
-          console.log('Waypoint Reached')
+          if (__DEV__) console.log('Waypoint Reached')
           if (waypointNum >= traceWaypoints.length) { // Finish trace case
             // Sets the trace particle offscreen
             this.traceParticles.setPosition(-200, -200)
@@ -790,7 +790,7 @@ class PanoScene extends Phaser.Scene {
               this.addCollectedObject(objectToAdd)
             }
             // Play sound
-            console.log('Trace finished!')
+            if (__DEV__) console.log('Trace finished!')
           }
         }
         if (hueDifference > 0.1 || colorGotten.h === 0) { // Fail trace case
@@ -800,14 +800,14 @@ class PanoScene extends Phaser.Scene {
           this.hueChecking = false
           waypointNum = 0
           this.traceMaster.setTint(0x0d7442)
-          console.log('Trace lost')
+          if (__DEV__) console.log('Trace lost')
         }
       } else {
         if (colorGotten.h > traceWaypoints[0]) { // Start trace case
           waypointNum++
           this.hueChecking = true
           this.traceMaster.setTint(0xffffff)
-          console.log('Starting Trace')
+          if (__DEV__) console.log('Starting Trace')
         }
       }
       this.prevHue = colorGotten.h
